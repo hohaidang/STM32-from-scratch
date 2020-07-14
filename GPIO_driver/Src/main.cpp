@@ -21,15 +21,7 @@
 
 int main(void)
 {
-	GPIO_Handle_t LED2;
-	LED2.pGPIOx = GPIOA;
-	LED2.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_5;
-	LED2.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT;
-	LED2.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_LOW;
-	LED2.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
-
-	GPIO_PeriClockControl(LED2.pGPIOx, ENABLE);
-	GPIO_Init(&LED2);
-	GPIO_WriteToOutputPin(LED2.pGPIOx, GPIO_PIN_NO_5, 1);
+	GPIO_Handler LED2 = GPIO_Handler(GPIO_PIN_NO_5, GPIO_MODE_OUT, GPIO_SPEED_LOW, GPIO_OP_TYPE_PP);
+	LED2.GPIO_WriteToOutputPin(0);
 	for(;;);
 }

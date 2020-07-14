@@ -1,10 +1,12 @@
-stm32f446re_gpio_driver.cpp:15:6:void GPIO_PeriClockControl(GPIO_RegDef_t*, uint8_t)	16	static
-stm32f446re_gpio_driver.cpp:48:6:void GPIO_Init(GPIO_Handle_t*)	24	static
-stm32f446re_gpio_driver.cpp:91:6:void GPIO_DeInit(GPIO_RegDef_t*)	16	static
-stm32f446re_gpio_driver.cpp:119:9:uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t*, uint8_t)	24	static
-stm32f446re_gpio_driver.cpp:125:10:uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t*)	24	static
-stm32f446re_gpio_driver.cpp:131:6:void GPIO_WriteToOutputPin(GPIO_RegDef_t*, uint8_t, uint8_t)	16	static
-stm32f446re_gpio_driver.cpp:139:6:void GPIO_WriteToOutputPort(GPIO_RegDef_t*, uint16_t)	16	static
-stm32f446re_gpio_driver.cpp:143:6:void GPIO_ToggleOutputPin(GPIO_RegDef_t*, uint8_t)	16	static
-stm32f446re_gpio_driver.cpp:148:6:void GPIO_IRQConfig(uint8_t, uint8_t, uint8_t)	16	static
-stm32f446re_gpio_driver.cpp:152:6:void GPIO_IRQHandling(uint8_t)	16	static
+stm32f446re_gpio_driver.cpp:13:1:GPIO_Handler::GPIO_Handler(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t)	16	static
+stm32f446re_gpio_driver.cpp:30:1:GPIO_Handler::~GPIO_Handler()	16	static
+stm32f446re_gpio_driver.cpp:35:6:void GPIO_Handler::GPIO_PeriClockControl()	16	static
+stm32f446re_gpio_driver.cpp:56:6:void GPIO_Handler::GPIO_Init()	24	static
+stm32f446re_gpio_driver.cpp:99:6:void GPIO_Handler::GPIO_DeInit()	16	static
+stm32f446re_gpio_driver.cpp:127:9:uint8_t GPIO_Handler::GPIO_ReadFromInputPin()	24	static
+stm32f446re_gpio_driver.cpp:133:10:uint16_t GPIO_Handler::GPIO_ReadFromInputPort()	24	static
+stm32f446re_gpio_driver.cpp:139:6:void GPIO_Handler::GPIO_WriteToOutputPin(uint8_t)	16	static
+stm32f446re_gpio_driver.cpp:148:6:void GPIO_Handler::GPIO_WriteToOutputPort(uint16_t)	16	static
+stm32f446re_gpio_driver.cpp:153:6:void GPIO_Handler::GPIO_ToggleOutputPin()	16	static
+stm32f446re_gpio_driver.cpp:158:6:void GPIO_IRQConfig(uint8_t, uint8_t, uint8_t)	16	static
+stm32f446re_gpio_driver.cpp:162:6:void GPIO_IRQHandling(uint8_t)	16	static

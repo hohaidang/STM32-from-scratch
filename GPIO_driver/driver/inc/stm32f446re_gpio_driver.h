@@ -10,22 +10,7 @@
 
 #include "stm32f4xx.h"
 
-
-// Configuration pin
-typedef struct {
-	uint8_t GPIO_PinNumber;
-	uint8_t GPIO_PinMode; /*!<possible values from @GPIO_PIN_MODES>*/
-	uint8_t GPIO_PinSpeed; /*!<possible values from @GPIO_PIN_SPEEDS>*/
-	uint8_t GPIO_PinPuPdControl;
-	uint8_t GPIO_PinOPType; /*!<possible values from @GPIO_PIN_OUTPUTTYPE>*/
-	uint8_t GPIO_PinAltFunMode;
-}GPIO_PinConfig_t;
-
-typedef struct {
-	GPIO_RegDef_t *pGPIOx; // this holds the base address of GPIO port
-	GPIO_PinConfig_t GPIO_PinConfig; // this hold Pin configuration setting
-}GPIO_Handle_t;
-
+// @GPIO_PIN_NUMS
 #define GPIO_PIN_NO_0			0
 #define GPIO_PIN_NO_1			1
 #define GPIO_PIN_NO_2			2
@@ -67,22 +52,52 @@ typedef struct {
 #define GPIO_PIN_PU				1 // pull-up
 #define GPIO_PIN_PD				2 // pull-down
 
-// peripheral clock setup
-void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi); // EnorDi: enable or disable
+class GPIO_Handler {
+	// Configuration pin
+	typedef struct {
+		uint8_t GPIO_PinNumber;
+		uint8_t GPIO_PinMode;
+		uint8_t GPIO_PinSpeed;
+		uint8_t GPIO_PinPuPdControl;
+		uint8_t GPIO_PinOPType;
+		uint8_t GPIO_PinAltFunMode;
+	}GPIO_PinConfig_t;
 
-// init and de-init
-void GPIO_Init(GPIO_Handle_t *pGPIOHandle);
-void GPIO_DeInit(GPIO_RegDef_t *pGPIOx);
+	typedef struct {
+		GPIO_RegDef_t *pGPIOx; // this holds the base address of GPIO port
+		GPIO_PinConfig_t GPIO_PinConfig; // this hold Pin configuration setting
+	}GPIO_Handle_t;
 
-// Data read and write
-uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber);
-uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx);
-void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t Value);
-void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value);
-void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber);
+protected:
+	GPIO_Handle_t GPIOx_;
 
-// IRQ Configuration and ISR Handling
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi);
-void GPIO_IRQHandling(uint8_t PinNumber);
+public:
+	GPIO_Handler(
+			uint8_t GPIO_PinNumber, /*!<possible values from @GPIO_PIN_NUMS>*/
+			uint8_t GPIO_PinMode, 	/*!<possible values from @GPIO_PIN_MODES>*/
+			uint8_t GPIO_PinSpeed,	/*!<possible values from @GPIO_PIN_SPEEDS>*/
+			uint8_t GPIO_PinOPType, /*!<possible values from @GPIO_PIN_OUTPUTTYPE>*/
+			uint8_t GPIO_PinPuPdControl = GPIO_NO_PUPD,
+			uint8_t GPIO_PinAltFunMode = 1);
+
+	~GPIO_Handler();
+
+	// Data read and write
+	uint8_t GPIO_ReadFromInputPin();
+	uint16_t GPIO_ReadFromInputPort();
+	void GPIO_WriteToOutputPin(uint8_t Value);
+	void GPIO_WriteToOutputPort(uint16_t Value);
+	void GPIO_ToggleOutputPin();
+
+	// IRQ Configuration and ISR Handling
+	void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi);
+	void GPIO_IRQHandling(uint8_t PinNumber);
+
+private:
+	// peripheral clock setup
+	void GPIO_PeriClockControl(); // EnorDi: enable or disable
+	void GPIO_Init();
+	void GPIO_DeInit();
+};
 
 #endif /* INC_STM32F446RE_GPIO_DRIVER_H_ */

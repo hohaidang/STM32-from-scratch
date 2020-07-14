@@ -18,10 +18,42 @@
  */
 
 #include "../driver/inc/stm32f446re_gpio_driver.h"
+//#define GPIO_OPENDRAIN
+#define LED_BOTTON_CONT
+
+void delay(void) {
+	for(uint32_t i = 0; i < 500000; ++i){};
+}
+
+void small_delay(void) {
+	for(uint32_t i = 0; i < 250000; ++i){};
+}
 
 int main(void)
 {
-	GPIO_Handler LED2 = GPIO_Handler(GPIO_PIN_NO_5, GPIO_MODE_OUT, GPIO_SPEED_LOW, GPIO_OP_TYPE_PP);
-	LED2.GPIO_WriteToOutputPin(0);
-	for(;;);
+#ifdef LED_BOTTON_CONT
+	GPIO_Handler LED2 = GPIO_Handler(GPIOA, GPIO_PIN_NO_5, GPIO_MODE_OUT, GPIO_SPEED_LOW, GPIO_OP_TYPE_PP, GPIO_NO_PUPD);
+	GPIO_Handler USER_BOTTON = GPIO_Handler(GPIOC, GPIO_PIN_NO_13, GPIO_MODE_IN, GPIO_SPEED_LOW);
+	LED2.GPIO_WriteToOutputPin(1);
+	for(;;) {
+		if(!USER_BOTTON.GPIO_ReadFromInputPin()) {
+			small_delay(); // remove deboucing for Botton
+			LED2.GPIO_ToggleOutputPin();
+		}
+	}
+#elif GPIO_OPENDRAIN
+	GPIO_Handler LED2 = GPIO_Handler(GPIOA, GPIO_PIN_NO_5, GPIO_MODE_OUT, GPIO_SPEED_LOW, GPIO_OP_TYPE_OD, GPIO_NO_PUPD);
+	LED2.GPIO_WriteToOutputPin(1);
+	for(;;) {
+		delay();
+		LED2.GPIO_ToggleOutputPin();
+	}
+#else
+	GPIO_Handler LED2 = GPIO_Handler(GPIOA, GPIO_PIN_NO_5, GPIO_MODE_OUT, GPIO_SPEED_LOW, GPIO_OP_TYPE_PP, GPIO_NO_PUPD);
+	LED2.GPIO_WriteToOutputPin(1);
+	for(;;) {
+		delay();
+		LED2.GPIO_ToggleOutputPin();
+	}
+#endif
 }

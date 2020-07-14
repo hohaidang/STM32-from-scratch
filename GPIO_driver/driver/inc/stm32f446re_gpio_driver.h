@@ -40,7 +40,7 @@
 
 // @GPIO_PIN_OUTPUTTYPE
 #define GPIO_OP_TYPE_PP			0 // output push-pull
-#define GPIO_OP_TYPE_OP			1 // output open-drain
+#define GPIO_OP_TYPE_OD			1 // output open-drain
 
 // @GPIO_PIN_SPEEDS
 #define GPIO_SPEED_LOW			0
@@ -48,6 +48,7 @@
 #define GPIO_SPEED_FAST			2
 #define GPIO_SPEED_HIGH			3
 
+// @GPIO_PIN_PUPD, pull-up/down register
 #define GPIO_NO_PUPD			0 // Gpio pull up, pull down
 #define GPIO_PIN_PU				1 // pull-up
 #define GPIO_PIN_PD				2 // pull-down
@@ -73,12 +74,13 @@ protected:
 
 public:
 	GPIO_Handler(
+			GPIO_RegDef_t *GPIOx_ADDR, /*!<possible values from @GPIOx_ADDR>*/
 			uint8_t GPIO_PinNumber, /*!<possible values from @GPIO_PIN_NUMS>*/
 			uint8_t GPIO_PinMode, 	/*!<possible values from @GPIO_PIN_MODES>*/
 			uint8_t GPIO_PinSpeed,	/*!<possible values from @GPIO_PIN_SPEEDS>*/
-			uint8_t GPIO_PinOPType, /*!<possible values from @GPIO_PIN_OUTPUTTYPE>*/
-			uint8_t GPIO_PinPuPdControl = GPIO_NO_PUPD,
-			uint8_t GPIO_PinAltFunMode = 1);
+			uint8_t GPIO_PinOPType = GPIO_OP_TYPE_PP, /*!<possible values from @GPIO_PIN_OUTPUTTYPE>*/
+			uint8_t GPIO_PinPuPdControl = GPIO_NO_PUPD, /*!<possible values from @GPIO_PIN_PUPD>*/
+			uint8_t GPIO_PinAltFunMode = 0);
 
 	~GPIO_Handler();
 
@@ -90,8 +92,9 @@ public:
 	void GPIO_ToggleOutputPin();
 
 	// IRQ Configuration and ISR Handling
-	void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi);
-	void GPIO_IRQHandling(uint8_t PinNumber);
+	void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);
+	void GPIO_IRQHandling(uint8_t IRQNumber, uint8_t IRQPriority);
+	void GPIO_IRQPriorityConfig(uint8_t IRQPriority);
 
 private:
 	// peripheral clock setup

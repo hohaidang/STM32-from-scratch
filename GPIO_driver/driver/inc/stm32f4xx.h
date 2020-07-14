@@ -14,6 +14,25 @@
 #define __vo volatile
 #define __weak __attribute__((weak))
 
+// Check ARM Cortex - M4 device generic User Guide
+// ARM Cortex Mx Processor NVIC ISERx Register Address
+#define NVIC_ISER0			((__vo uint32_t *) 0xE000E100)
+#define NVIC_ISER1			((__vo uint32_t *) 0xE000E104)
+#define NVIC_ISER2			((__vo uint32_t *) 0xE000E108)
+#define NVIC_ISER3			((__vo uint32_t *) 0xE000E10C)
+
+// ARM Cortex Mx Processor NVIC ICERx Register Address
+#define NVIC_ICER0			((__vo uint32_t *) 0xE000E180)
+#define NVIC_ICER1			((__vo uint32_t *) 0xE000E184)
+#define NVIC_ICER2			((__vo uint32_t *) 0xE000E188)
+#define NVIC_ICER3			((__vo uint32_t *) 0xE000E18C)
+
+#define NVIC_PR_BASE_ADDR   ((__vo uint32_t *) 0xE000E400)
+
+typedef struct {
+	__vo uint32_t PRI[60];
+}NVIC_PIR_RegDef_t;
+
 typedef struct {
 	__vo uint32_t MODER;                        /*!< GPIO port mode register,                    	Address offset: 0x00      */
 	__vo uint32_t OTYPER;                       /*!< TODO,     										Address offset: 0x04      */
@@ -63,8 +82,28 @@ typedef struct {
 	  __vo uint32_t DCKCFGR2;      /*!< TODO, */
 } RCC_RegDef_t;
 
+typedef struct {
+	__vo uint32_t MEMRMP;
+	__vo uint32_t PMC;
+	__vo uint32_t EXTICR[4];
+	uint32_t RESERVED1[2];        /*!< Reserved, 0x18 - 0x1C  */
+	__vo uint32_t CMPCR;
+	uint32_t RESERVED2[2]; 		  /*!< Reserved, 0x24 - 0x28  */
+	__vo uint32_t CFGR;
+} SYSCFG_RegDef_t;
+
+// peripheral register definition for EXTI
+typedef struct {
+	__vo uint32_t IMR;
+	__vo uint32_t EMR;
+	__vo uint32_t RTSR;
+	__vo uint32_t FTSR;
+	__vo uint32_t SWIER;
+	__vo uint32_t PR;
+} EXTI_RegDef_t;
 
 #define AHB1PERIPH_BASEADDR 		0x40020000U
+#define APB2PERIPH_BASEADDR			0x40010000U
 
 
 #define GPIOA_BASEADDR				(AHB1PERIPH_BASEADDR)
@@ -77,7 +116,10 @@ typedef struct {
 #define GPIOH_BASEADDR 				(AHB1PERIPH_BASEADDR + 0x1C00)
 #define GPIOI_BASEADDR 				(AHB1PERIPH_BASEADDR + 0x2000)
 #define RCC_BASEADDR				(AHB1PERIPH_BASEADDR + 0x3800)
+#define EXTI_BASEADDR				(APB2PERIPH_BASEADDR + 0x3C00)
+#define SYSCFG_BASEADDR				(APB2PERIPH_BASEADDR + 0x3800)
 
+// @GPIOx_ADDR
 #define GPIOA						((GPIO_RegDef_t *) GPIOA_BASEADDR)
 #define GPIOB						((GPIO_RegDef_t *) GPIOB_BASEADDR)
 #define GPIOC						((GPIO_RegDef_t *) GPIOC_BASEADDR)
@@ -86,16 +128,20 @@ typedef struct {
 #define GPIOF						((GPIO_RegDef_t *) GPIOF_BASEADDR)
 #define GPIOG						((GPIO_RegDef_t *) GPIOG_BASEADDR)
 #define GPIOH						((GPIO_RegDef_t *) GPIOH_BASEADDR)
-#define RCC							((RCC_RegDef_t *) RCC_BASEADDR)
+#define RCC							((RCC_RegDef_t *)  RCC_BASEADDR)
+#define EXTI						((EXTI_RegDef_t *) EXTI_BASEADDR)
+#define SYSCFG						((SYSCFG_RegDef_t *) SYSCFG_BASEADDR)
 
-#define GPIOA_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 0))
-#define GPIOB_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 1))
-#define GPIOC_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 2))
-#define GPIOD_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 3))
-#define GPIOE_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 4))
-#define GPIOF_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 5))
-#define GPIOG_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 6))
-#define GPIOH_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 7))
+#define GPIOA_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 0u))
+#define GPIOB_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 1u))
+#define GPIOC_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 2u))
+#define GPIOD_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 3u))
+#define GPIOE_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 4u))
+#define GPIOF_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 5u))
+#define GPIOG_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 6u))
+#define GPIOH_PCLK_EN()				(RCC->AHB1ENR |=  (1 << 7u))
+
+#define SYSCFG_PCLK_EN()			(RCC->APB2ENR |= (1 << 14u))
 
 // set first then reset
 #define GPIOA_REG_RESET()               do{ (RCC->AHB1RSTR |= (1 << 0)); (RCC->AHB1RSTR &= ~(1 << 0)); }while(0)
@@ -107,13 +153,30 @@ typedef struct {
 #define GPIOG_REG_RESET()               do{ (RCC->AHB1RSTR |= (1 << 6)); (RCC->AHB1RSTR &= ~(1 << 6)); }while(0)
 #define GPIOH_REG_RESET()               do{ (RCC->AHB1RSTR |= (1 << 7)); (RCC->AHB1RSTR &= ~(1 << 7)); }while(0)
 
-
-#define GPIOA_PCLK_DIS()			(RCC->AHB1RSTR |= (0 << 0))
+// EXIT position in interrupt vector table
+#define IRQ_NO_EXTI0			6
+#define IRQ_NO_EXTI1			7
+#define IRQ_NO_EXTI2			8
+#define IRQ_NO_EXTI3			9
+#define IRQ_NO_EXTI4			10
+#define IRQ_NO_EXTI9_5			23
+#define IRQ_NO_EXTI15_10		40
 
 #define ENABLE			1
 #define DISABLE			0
 #define SET				1
 #define RESET			0
 
+
+inline uint8_t gpio_baseAddr_to_code(GPIO_RegDef_t *Port) {
+	return ( (Port == GPIOA) ? 0x00 : \
+			 (Port == GPIOB) ? 0x01 : \
+			 (Port == GPIOC) ? 0x02 : \
+			 (Port == GPIOD) ? 0x03 : \
+			 (Port == GPIOE) ? 0x04 : \
+			 (Port == GPIOF) ? 0x05 : \
+			 (Port == GPIOG) ? 0x06 : \
+			 (Port == GPIOH) ? 0x07 : 0x00 );
+}
 
 #endif /* INC_STM3F407XX_H_ */

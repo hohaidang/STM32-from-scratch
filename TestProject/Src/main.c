@@ -94,6 +94,13 @@ void insertion_sort(int *pNumbers , unsigned int len)
 
 int main()
 {
+//	int a = 5;
+//	if(a) {
+//		printf("Dang");
+//	}
+//	else {
+//		printf("Ducc");
+//	}
 
     unsigned int len = sizeof(numbers)/sizeof(int);
 

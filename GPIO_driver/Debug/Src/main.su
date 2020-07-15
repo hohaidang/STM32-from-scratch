@@ -1,3 +1,0 @@
-main.cpp:24:6:void delay()	16	static
-main.cpp:28:6:void small_delay()	16	static
-main.cpp:32:5:int main()	48	static

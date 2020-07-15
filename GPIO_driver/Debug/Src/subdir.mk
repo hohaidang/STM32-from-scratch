@@ -8,10 +8,10 @@ C_SRCS += \
 ../Src/sysmem.c 
 
 CPP_SRCS += \
-../Src/main.cpp 
+../Src/004_btm_interrupt.cpp 
 
 OBJS += \
-./Src/main.o \
+./Src/004_btm_interrupt.o \
 ./Src/syscalls.o \
 ./Src/sysmem.o 
 
@@ -20,12 +20,12 @@ C_DEPS += \
 ./Src/sysmem.d 
 
 CPP_DEPS += \
-./Src/main.d 
+./Src/004_btm_interrupt.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-Src/main.o: ../Src/main.cpp
-	arm-none-eabi-g++ "$<" -mcpu=cortex-m4 -std=gnu++14 -g3 -DSTM32 -DSTM32F4 -DSTM32F446RETx -DDEBUG -DNUCLEO_F446RE -c -I../Inc -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-threadsafe-statics -fno-use-cxa-atexit -Wall -fstack-usage -MMD -MP -MF"Src/main.d" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
+Src/004_btm_interrupt.o: ../Src/004_btm_interrupt.cpp
+	arm-none-eabi-g++ "$<" -mcpu=cortex-m4 -std=gnu++14 -g3 -DSTM32 -DSTM32F4 -DSTM32F446RETx -DDEBUG -DNUCLEO_F446RE -c -I../Inc -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-threadsafe-statics -fno-use-cxa-atexit -Wall -fstack-usage -MMD -MP -MF"Src/004_btm_interrupt.d" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
 Src/syscalls.o: ../Src/syscalls.c
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F446RETx -DDEBUG -DNUCLEO_F446RE -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/syscalls.d" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
 Src/sysmem.o: ../Src/sysmem.c

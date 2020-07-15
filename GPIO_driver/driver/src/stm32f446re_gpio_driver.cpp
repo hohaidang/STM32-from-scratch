@@ -5,17 +5,26 @@
  *      Author: prnsoft
  */
 
-
-
-
 #include "../inc/stm32f446re_gpio_driver.h"
 
+static inline uint8_t get_irq_pinNum(uint8_t);
 
+
+/*********************************************************************
+ * @fn      		  - GPIO_Handler
+ *
+ * @brief             - Constructor, initialize GPIO, clock, IRQ, Alt Function
+ *
+ * @param None
+ *
+ * @return None
+ **********************************************************************/
 GPIO_Handler::GPIO_Handler(
 		GPIO_RegDef_t *GPIOx_ADDR,
 		uint8_t GPIO_PinNumber,
 		uint8_t GPIO_PinMode,
 		uint8_t GPIO_PinSpeed,
+		uint8_t GPIO_IRQ_Priority,
 		uint8_t GPIO_PinOPType,
 		uint8_t GPIO_PinPuPdControl,
 		uint8_t GPIO_PinAltFunMode) {
@@ -28,8 +37,25 @@ GPIO_Handler::GPIO_Handler(
 	GPIOx_.GPIO_PinConfig.GPIO_PinAltFunMode = GPIO_PinAltFunMode;
 	GPIO_PeriClockControl();
 	GPIO_Init();
+	// Configure interrupt
+	if(GPIO_PinMode >= GPIO_MODE_IT_FT) {
+		uint8_t IRQ_number = get_irq_pinNum(GPIO_PinNumber);
+		GPIO_IRQInterruptConfig(IRQ_number, ENABLE);
+		GPIO_IRQPriorityConfig(IRQ_number, GPIO_IRQ_Priority);
+	}
 }
 
+/*********************************************************************
+ * @fn      		  - GPIO_Handler
+ *
+ * @brief             - DeConstructor, Reset GPIO PORT
+ *
+ * @param None
+ *
+ * @return None
+ *
+ * @Node: Be careful when using many Peripheral device in the same PORT
+ **********************************************************************/
 GPIO_Handler::~GPIO_Handler() {
 	GPIO_DeInit();
 }
@@ -55,9 +81,17 @@ void GPIO_Handler::GPIO_PeriClockControl() {
 	}
 }
 
-// init and de-init
+/*********************************************************************
+ * @fn      		  - GPIO_Init
+ *
+ * @brief             - Initial GPIO with clock, Speed, In/out mode, ...
+ *
+ * @param None
+ *
+ * @return None
+ **********************************************************************/
 void GPIO_Handler::GPIO_Init() {
-	uint32_t temp;
+	uint32_t temp = 0;
 	// 1. configure the mode of gpio pin
 	if(GPIOx_.GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_ANALOG) {
 		// the non interrupt mode
@@ -92,6 +126,7 @@ void GPIO_Handler::GPIO_Init() {
 		uint8_t temp1 = GPIOx_.GPIO_PinConfig.GPIO_PinNumber >> 2;
 		uint8_t temp2 = GPIOx_.GPIO_PinConfig.GPIO_PinNumber % 4;
 		uint8_t portCode = gpio_baseAddr_to_code(GPIOx_.pGPIOx);
+		SYSCFG_PCLK_EN();
 		SYSCFG->EXTICR[temp1] |= (portCode << (4 * temp2));
 
 		// 3. Enable the exti interrupt delivery using IMR
@@ -128,6 +163,13 @@ void GPIO_Handler::GPIO_Init() {
 	}
 }
 
+/*********************************************************************
+ * @fn      		  - GPIO_DeInit
+ *
+ * @brief - Reset GPIO Port
+ *
+ * @return uint8, b'0000_000x
+ */
 void GPIO_Handler::GPIO_DeInit() {
 	if(GPIOx_.pGPIOx == GPIOA) {
 		GPIOA_REG_RESET();
@@ -155,20 +197,40 @@ void GPIO_Handler::GPIO_DeInit() {
 	}
 }
 
-// Data read and write
-uint8_t GPIO_Handler::GPIO_ReadFromInputPin() {
+/*********************************************************************
+ * @fn      		  - GPIO_IRQPriorityConfig
+ *
+ * @brief - Read single bit in Pin
+ *
+ * @return uint8, b'0000_000x
+ */
+uint8_t GPIO_Handler::GPIO_ReadFromInputPin() const {
 	uint8_t value;
 	value = (uint8_t)((GPIOx_.pGPIOx->IDR >> GPIOx_.GPIO_PinConfig.GPIO_PinNumber) & 0x00000001);
 	return value;
 }
 
-uint16_t GPIO_Handler::GPIO_ReadFromInputPort() {
+/*********************************************************************
+ * @fn      		  - GPIO_ReadFromInputPort
+ *
+ * @brief - Read 16 bits PORT(A, B, C,...)
+ *
+ * @return uint16_t: PORT value
+ */
+uint16_t GPIO_Handler::GPIO_ReadFromInputPort() const {
 	uint16_t value;
 	value = GPIOx_.pGPIOx->IDR;
 	return value;
 }
 
-void GPIO_Handler::GPIO_WriteToOutputPin(uint8_t Value) {
+/*********************************************************************
+ * @fn      		  - GPIO_WriteToOutputPin
+ *
+ * @brief - Write single bit to Pin
+ * @Param[in] Value: write value
+ * @return None
+ */
+void GPIO_Handler::GPIO_WriteToOutputPin(const uint8_t Value) {
 	if(Value == SET) {
 		GPIOx_.pGPIOx->ODR |= (0x1 << GPIOx_.GPIO_PinConfig.GPIO_PinNumber);
 	}
@@ -177,57 +239,99 @@ void GPIO_Handler::GPIO_WriteToOutputPin(uint8_t Value) {
 	}
 }
 
-void GPIO_Handler::GPIO_WriteToOutputPort(uint16_t Value) {
+/*********************************************************************
+ * @fn      		  - GPIO_WriteToOutputPort
+ *
+ * @brief - Write value to PORT
+ * @Param[in] Value: write value
+ * @return None
+ */
+void GPIO_Handler::GPIO_WriteToOutputPort(const uint16_t Value) {
 	GPIOx_.pGPIOx->ODR &= 0x0000;
 	GPIOx_.pGPIOx->ODR = Value;
 }
+
 
 void GPIO_Handler::GPIO_ToggleOutputPin() {
 	GPIOx_.pGPIOx->ODR ^= (0x1 << GPIOx_.GPIO_PinConfig.GPIO_PinNumber);
 }
 
-// IRQ Configuration and ISR Handling
-void GPIO_Handler::GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi) {
+/*********************************************************************
+ * @fn      		  - GPIO_IRQInterruptConfig
+ *
+ * @brief             - Enable Interrupt for NVIC
+ *
+ * @param[in] IRQNumber     - IRQNumber IRQ Position number
+ * @param[in] EnorDi		- Enable/Disable Flag
+ *
+ * @return None
+ */
+void GPIO_Handler::GPIO_IRQInterruptConfig(const uint8_t IRQNumber, const uint8_t EnorDi) {
 	if(EnorDi == ENABLE) {
-		if(IRQNumber <= 31) {
+		if (IRQNumber <= 31) {
 			//	program ISER0 register
 			*NVIC_ISER0 |= (1 << IRQNumber);
-		}
-		else if (IRQNumber > 31 && IRQNumber < 64) {
+		} else if (IRQNumber > 31 && IRQNumber < 64) {
 			// program ISER1 register
-			*NVIC_ISER1 |= (1 << IRQNumber % 32);
-		}
-		else if(IRQNumber >= 64 && IRQNumber < 96) {
+			*NVIC_ISER1 |= (1 << (IRQNumber % 32));
+		} else if (IRQNumber >= 64 && IRQNumber < 96) {
 			// program ISER2 register
-			*NVIC_ISER2 |= (1 << IRQNumber % 64);
+			*NVIC_ISER2 |= (1 << (IRQNumber % 64));
 		}
 	}
 	else {
-		if(IRQNumber <= 31) {
+		if (IRQNumber <= 31) {
 			// program ICER0 register
 			*NVIC_ICER0 |= (1 << IRQNumber);
-		}
-		else if (IRQNumber > 31 && IRQNumber < 64) {
+		} else if (IRQNumber > 31 && IRQNumber < 64) {
 			// program ICER1 register
-			*NVIC_ICER1 |= (1 << IRQNumber % 32);
-		}
-		else if (IRQNumber >= 64 && IRQNumber < 96) {
+			*NVIC_ICER1 |= (1 << (IRQNumber % 32));
+		} else if (IRQNumber >= 64 && IRQNumber < 96) {
 			// program ICE2 register
-			*NVIC_ICER2 |= (1 << IRQNumber % 64);
+			*NVIC_ICER2 |= (1 << (IRQNumber % 64));
 		}
 	}
-}
-
-void GPIO_Handler::GPIO_IRQPriorityConfig(uint8_t IQPriority) {
 
 }
 
-void GPIO_Handler::GPIO_IRQHandling(uint8_t IRQNumber, uint8_t IRQPriority) {
+
+/*********************************************************************
+ * @fn      		  - GPIO_IRQPriorityConfig
+ *
+ * @brief - Configure priority for GPIO, 0->15, lower number higher priority
+ *
+ * @param[in] IRQNumber: IRQ position for EXIT
+ * @param[in] IRPriority: 0->15
+ * @return None
+ */
+void GPIO_Handler::GPIO_IRQPriorityConfig(const uint8_t IRQNumber, const uint8_t IRQPriority) {
 	// 1. first lets find out the ipr register
 	uint8_t iprx = IRQNumber >> 2;
 	uint8_t iprx_section = IRQNumber % 4;
+	uint8_t shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
 
-	*(NVIC_PR_BASE_ADDR + iprx) |= (IRQPriority << iprx_section);
+	*(NVIC_PR_BASE_ADDR + iprx) |= (IRQPriority << shift_amount);
 }
 
+/*********************************************************************
+ * @fn      		  - GPIO_IRQHandling
+ *
+ * @brief - Clear the interrupt flag for the next interrupt
+ *
+ * @param None
+ *
+ * @return None
+ */
+void GPIO_Handler::GPIO_IRQHandling() {
+	// clear the EXIT PR register corresponding to the pin number
+	if(EXTI->PR & (1 << GPIOx_.GPIO_PinConfig.GPIO_PinNumber)) {
+		// clear by set to 1
+		EXTI->PR |= (1 << GPIOx_.GPIO_PinConfig.GPIO_PinNumber);
+	}
+}
 
+static inline uint8_t get_irq_pinNum(uint8_t PinNumber) {
+	return (PinNumber < 5) 	? PinNumber + 6 : \
+		   (PinNumber < 10)	? IRQ_NO_EXTI9_5 : \
+		   (PinNumber < 16) ? IRQ_NO_EXTI15_10 : 0;
+}

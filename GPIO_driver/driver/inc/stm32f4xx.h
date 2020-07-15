@@ -29,6 +29,10 @@
 
 #define NVIC_PR_BASE_ADDR   ((__vo uint32_t *) 0xE000E400)
 
+// Cortex M4 just have 16 priorities NVIC (4 most significant bits)
+// https://community.arm.com/developer/ip-products/system/b/embedded-blog/posts/cutting-through-the-confusion-with-arm-cortex-m-interrupt-priorities
+#define NO_PR_BITS_IMPLEMENTED			4
+
 typedef struct {
 	__vo uint32_t PRI[60];
 }NVIC_PIR_RegDef_t;
@@ -116,6 +120,7 @@ typedef struct {
 #define GPIOH_BASEADDR 				(AHB1PERIPH_BASEADDR + 0x1C00)
 #define GPIOI_BASEADDR 				(AHB1PERIPH_BASEADDR + 0x2000)
 #define RCC_BASEADDR				(AHB1PERIPH_BASEADDR + 0x3800)
+
 #define EXTI_BASEADDR				(APB2PERIPH_BASEADDR + 0x3C00)
 #define SYSCFG_BASEADDR				(APB2PERIPH_BASEADDR + 0x3800)
 
@@ -162,10 +167,14 @@ typedef struct {
 #define IRQ_NO_EXTI9_5			23
 #define IRQ_NO_EXTI15_10		40
 
+// @GPIO_IRQ_Priority
+#define IRQ_Prio_NO_15			15
+
 #define ENABLE			1
 #define DISABLE			0
 #define SET				1
 #define RESET			0
+
 
 
 inline uint8_t gpio_baseAddr_to_code(GPIO_RegDef_t *Port) {

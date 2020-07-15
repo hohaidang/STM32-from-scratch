@@ -752,12 +752,12 @@ LOAD c:/st/stm32cubeide_1.3.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
                 0x000000000000038f       0x1e c:/st/stm32cubeide_1.3.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.7-2018-q2-update.win32_1.0.0.201904181610/tools/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7e-m/crtn.o
 OUTPUT(GPIO_driver.elf elf32-littlearm)
 
-.debug_info     0x0000000000000000     0x2744
+.debug_info     0x0000000000000000     0x274a
  .debug_info    0x0000000000000000      0x40c Src/004_btm_interrupt.o
  .debug_info    0x000000000000040c      0xefd Src/syscalls.o
  .debug_info    0x0000000000001309      0x91c Src/sysmem.o
  .debug_info    0x0000000000001c25       0x22 Startup/startup_stm32f446retx.o
- .debug_info    0x0000000000001c47      0xafd driver/src/stm32f446re_gpio_driver.o
+ .debug_info    0x0000000000001c47      0xb03 driver/src/stm32f446re_gpio_driver.o
 
 .debug_abbrev   0x0000000000000000      0x84c
  .debug_abbrev  0x0000000000000000      0x174 Src/004_btm_interrupt.o
@@ -846,12 +846,12 @@ OUTPUT(GPIO_driver.elf elf32-littlearm)
  .debug_macro   0x00000000000037e3       0x16 Src/sysmem.o
  .debug_macro   0x00000000000037f9       0x8f driver/src/stm32f446re_gpio_driver.o
 
-.debug_line     0x0000000000000000     0x176d
- .debug_line    0x0000000000000000      0x3f5 Src/004_btm_interrupt.o
- .debug_line    0x00000000000003f5      0x758 Src/syscalls.o
- .debug_line    0x0000000000000b4d      0x559 Src/sysmem.o
- .debug_line    0x00000000000010a6       0x84 Startup/startup_stm32f446retx.o
- .debug_line    0x000000000000112a      0x643 driver/src/stm32f446re_gpio_driver.o
+.debug_line     0x0000000000000000     0x176f
+ .debug_line    0x0000000000000000      0x3f8 Src/004_btm_interrupt.o
+ .debug_line    0x00000000000003f8      0x758 Src/syscalls.o
+ .debug_line    0x0000000000000b50      0x559 Src/sysmem.o
+ .debug_line    0x00000000000010a9       0x84 Startup/startup_stm32f446retx.o
+ .debug_line    0x000000000000112d      0x642 driver/src/stm32f446re_gpio_driver.o
 
 .debug_str      0x0000000000000000     0xaad6
  .debug_str     0x0000000000000000     0x5313 Src/004_btm_interrupt.o

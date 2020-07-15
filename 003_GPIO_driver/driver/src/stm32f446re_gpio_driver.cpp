@@ -6,7 +6,6 @@
  */
 
 #include "../inc/stm32f446re_gpio_driver.h"
-
 static inline uint8_t get_irq_pinNum(uint8_t);
 
 

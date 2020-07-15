@@ -5,7 +5,8 @@
 int main(void)
 {
 	uint32_t value = 0;
-	volatile uint32_t *p;
+	//volatile uint32_t *p;
+	uint32_t *p;
 	p = (uint32_t *) SRAM_ADDRESS1;
 
 	while(1) {

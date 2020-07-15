@@ -1,2 +1,0 @@
-004_btm_interrupt.cpp:26:5:int main()	40	static
-004_btm_interrupt.cpp:39:7:void EXTI15_10_IRQHandler()	8	static

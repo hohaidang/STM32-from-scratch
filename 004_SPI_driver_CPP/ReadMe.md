@@ -1,0 +1,5 @@
+SPI1
+PA5 - SPI1_SCK
+PA6 - SPI1_MISO
+PA7 - SPI1_MOSI
+PB6 - slave select

@@ -1,3 +1,0 @@
-main.cpp:36:6:void SPI1_GPIOInits()	56	static
-main.cpp:77:5:int main()	56	static
-main.cpp:110:10:void EXTI9_5_IRQHandler()	8	static

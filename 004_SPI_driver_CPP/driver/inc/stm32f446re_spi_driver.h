@@ -34,7 +34,7 @@
 #define SPI_DFF_16BITS                          1
 
 // @SPI_CPOL
-#define SPI_CPOL_HIGH                           0   // start clock with high, idle clock is high
+#define SPI_CPOL_HIGH                           1   // start clock with high, idle clock is high
 #define SPI_CPOL_LOW                            0   // start clock with low, idle clock is low
 
 // @SPI_CPHA

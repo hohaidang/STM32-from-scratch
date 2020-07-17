@@ -77,14 +77,6 @@ void SPI1_GPIOInits(void) {
 int main(void)
 {
     SPI1_GPIOInits();
-    // initialize check clock GPIO
-
-    GPIO_CheckSCLK = new GPIO_Handler(GPIOC,
-                                   GPIO_PIN_NO_8,
-                                   GPIO_MODE_IT_RFT,
-                                   GPIO_SPEED_FAST,
-                                   IRQ_Prio_NO_14);
-
     // Serial clock 8MHz
     SPI1_Handler = new SPI_Handler(SPI1,
                                    SPI_DEVICE_MODE_MASTER,
@@ -100,14 +92,14 @@ int main(void)
 
 
 
-	for(;;);
-	return 0;
+    for(;;);
+    return 0;
 }
 
-extern "C" {
-    void EXTI9_5_IRQHandler(void) {
-        // handle the interrupt
-        ++data;
-        GPIO_IRQHandling(GPIO_PIN_NO_8);
-    }
-}
+//extern "C" {
+//    void EXTI9_5_IRQHandler(void) {
+//        // handle the interrupt
+//        ++data;
+//        GPIO_IRQHandling(GPIO_PIN_NO_8);
+//    }
+//}

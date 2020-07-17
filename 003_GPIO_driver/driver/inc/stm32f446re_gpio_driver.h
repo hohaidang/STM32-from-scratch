@@ -53,6 +53,8 @@
 #define GPIO_PIN_PU				1 // pull-up
 #define GPIO_PIN_PD				2 // pull-down
 
+void GPIO_IRQHandling(uint8_t PinNumber);
+
 class GPIO_Handler {
 	// Configuration pin
 	typedef struct {
@@ -91,7 +93,6 @@ public:
 	void GPIO_WriteToOutputPin(const uint8_t Value);
 	void GPIO_WriteToOutputPort(const uint16_t Value);
 	void GPIO_ToggleOutputPin();
-	void GPIO_IRQHandling();
 
 private:
 	// peripheral clock setup

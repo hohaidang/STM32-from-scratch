@@ -34,7 +34,7 @@
 #define SPI_DFF_16BITS                          1
 
 // @SPI_CPOL
-#define SPI_CPOL_HIGH                           1   // start clock with high, idle clock is high
+#define SPI_CPOL_HIGH                           0   // start clock with high, idle clock is high
 #define SPI_CPOL_LOW                            0   // start clock with low, idle clock is low
 
 // @SPI_CPHA
@@ -45,6 +45,10 @@
 #define SPI_SSM_EN                              1   // sw slave management free slave select pin, 1 master 1 slave
 #define SPI_SSM_DI                              0   // hw slave management use multiple slave and multiple slave select
 
+// SPI related status flags definitions
+#define SPI_TXE_FLAG    (1u << SPI_SR_TXE)
+#define SPI_RXNE_FLAG   (1u << SPI_SR_RXNE)
+#define SPI_BSY_FLAG    (1u << SPI_SR_BSY)
 
 /*********************************************************************
  * @class      		  - SPI_Handler
@@ -77,7 +81,14 @@ protected:
 	SPI_Handle_t SPIx_ = {};
 
 public:
-	SPI_Handler();
+	SPI_Handler(SPI_RegDef_t *SPIx_ADDR,
+	            uint8_t DeviceMode,
+	            uint8_t BusConfig,
+	            uint8_t SclkSpeed,
+	            uint8_t DFF,
+	            uint8_t CPOL,
+	            uint8_t CPHA,
+	            uint8_t SSM);
 	~SPI_Handler();
 
 	// peripheral clock setup
@@ -86,13 +97,17 @@ public:
 	void SPI_DeInit();
 
 	// Data Send and Receive
-	void SPI_SendData();
+	void SPI_SendData(uint8_t *pTxBuffer, uint32_t Len);
 	void SPI_ReceiveData();
 
 	// IRQ Configuration and ISR Handling
 	void SPI_IRQInterruptConfig(const uint8_t IRQNumber, const uint8_t EnorDi);
 	void SPI_IRQPriorityConfig(const uint8_t IRQNumber, const uint8_t IRQPriority);
 	void SPI_IRQHandling();
+private:
+	uint8_t SPI_GetFlagStatus(uint8_t FlagName);
+	void SPI_PeripheralControl(uint8_t EnOrDi);
+	void SPI_SSIConfig(uint8_t EnOrDi);
 };
 
 

@@ -321,11 +321,11 @@ void GPIO_Handler::GPIO_IRQPriorityConfig(const uint8_t IRQNumber, const uint8_t
  *
  * @return None
  */
-void GPIO_Handler::GPIO_IRQHandling() {
+void GPIO_IRQHandling(uint8_t PinNumber) {
 	// clear the EXIT PR register corresponding to the pin number
-	if(EXTI->PR & (1 << GPIOx_.GPIO_PinConfig.GPIO_PinNumber)) {
+	if(EXTI->PR & (1 << PinNumber)) {
 		// clear by set to 1
-		EXTI->PR |= (1 << GPIOx_.GPIO_PinConfig.GPIO_PinNumber);
+		EXTI->PR |= (1 << PinNumber);
 	}
 }
 

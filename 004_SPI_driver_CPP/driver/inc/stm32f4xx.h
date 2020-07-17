@@ -8,8 +8,8 @@
 #ifndef INC_STM3F407XX_H_
 #define INC_STM3F407XX_H_
 
-#include<stddef.h>
-#include<stdint.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #define __vo volatile
 #define __weak __attribute__((weak))
@@ -205,12 +205,15 @@ typedef struct {
 #define IRQ_NO_EXTI15_10		40
 
 // @GPIO_IRQ_Priority
+#define IRQ_Prio_NO_14          14
 #define IRQ_Prio_NO_15			15
 
 #define ENABLE			1
 #define DISABLE			0
 #define SET				1
 #define RESET			0
+#define FLAG_RESET      RESET
+#define FLAG_SET        SET
 
 /******************************************************************************************
  *Bit position definitions of SPI peripheral
@@ -258,6 +261,8 @@ typedef struct {
 #define SPI_SR_BSY                      7
 #define SPI_SR_FRE                      8
 
+
+
 inline uint8_t gpio_baseAddr_to_code(GPIO_RegDef_t *Port) {
 	return ( (Port == GPIOA) ? 0x00 : \
 			 (Port == GPIOB) ? 0x01 : \
@@ -268,5 +273,8 @@ inline uint8_t gpio_baseAddr_to_code(GPIO_RegDef_t *Port) {
 			 (Port == GPIOG) ? 0x06 : \
 			 (Port == GPIOH) ? 0x07 : 0x00 );
 }
+
+#include "stm32f446re_spi_driver.h"
+#include "stm32f446re_gpio_driver.h"
 
 #endif /* INC_STM3F407XX_H_ */

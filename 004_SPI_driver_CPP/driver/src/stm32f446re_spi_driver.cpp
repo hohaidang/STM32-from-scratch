@@ -13,10 +13,27 @@
  *
  * @brief             -
  **********************************************************************/
-SPI_Handler::SPI_Handler(){
-
+SPI_Handler::SPI_Handler(SPI_RegDef_t *SPIx_ADDR,
+                         uint8_t DeviceMode,
+                         uint8_t BusConfig,
+                         uint8_t SclkSpeed,
+                         uint8_t DFF,
+                         uint8_t CPOL,
+                         uint8_t CPHA,
+                         uint8_t SSM) {
+    SPIx_.pSPIx = SPIx_ADDR;
+    SPIx_.SPIConfig.SPI_DeviceMode = DeviceMode;
+    SPIx_.SPIConfig.SPI_BusConfig = BusConfig;
+    SPIx_.SPIConfig.SPI_SclkSpeed = SclkSpeed;
+    SPIx_.SPIConfig.SPI_DFF = DFF;
+    SPIx_.SPIConfig.SPI_CPOL = CPOL;
+    SPIx_.SPIConfig.SPI_CPHA = CPHA;
+    SPIx_.SPIConfig.SPI_SSM = SSM;
     SPI_PeriClockControl();
     SPI_Init();
+    SPI_SSIConfig(ENABLE);
+    // Enable SPI peripheral
+    SPI_PeripheralControl(ENABLE);
 }
 
 /*********************************************************************
@@ -96,6 +113,8 @@ void SPI_Handler::SPI_Init() {
     // 6. configure CPOA
     tempReg |= (SPIx_.SPIConfig.SPI_CPHA << SPI_CR1_CPHA);
 
+    tempReg |= (SPIx_.SPIConfig.SPI_SSM << SPI_CR1_SSM);
+
     SPIx_.pSPIx->CR1 = tempReg;
 }
 
@@ -132,6 +151,84 @@ void SPI_Handler::SPI_DeInit() {
  *
  * @return None
  **********************************************************************/
-void SPI_Handler::SPI_SendData() {
+void SPI_Handler::SPI_PeripheralControl(uint8_t EnOrDi) {
+    if(ENABLE == EnOrDi) {
+        SPIx_.pSPIx->CR1 |= (1 << SPI_CR1_SPE);
+    }
+    else {
+        SPIx_.pSPIx->CR1 &= ~(1 << SPI_CR1_SPE);
+    }
+}
 
+/*********************************************************************
+ * @fn                -
+ *
+ * @brief             -
+ *
+ * @param None
+ *
+ * @return None
+ **********************************************************************/
+uint8_t SPI_Handler::SPI_GetFlagStatus(uint8_t FlagName) {
+    if(SPIx_.pSPIx->SR & FlagName) {
+        return FLAG_SET;
+    }
+    return FLAG_RESET;
+}
+
+/*********************************************************************
+ * @fn                -
+ *
+ * @brief             -
+ *
+ * @param None
+ * @Node              - This is blocking call
+ *
+ * @return None
+ **********************************************************************/
+void SPI_Handler::SPI_SendData(uint8_t *pTxBuffer, uint32_t Len) {
+    while(Len > 0) {
+        // 1. wait util tx buffer empty
+        while(SPI_GetFlagStatus(SPI_TXE_FLAG) == FLAG_RESET);
+
+        // 2. check the DFF bit in CR1
+        if(SPIx_.pSPIx->CR1 & (1 << SPI_CR1_DFF)) {
+            // 16 BIT DFF
+            // 1. load the data into the DR
+            SPIx_.pSPIx->DR = *((uint16_t *) pTxBuffer);
+            Len -= 2;
+            (uint16_t *)pTxBuffer++;
+        }
+        else {
+            SPIx_.pSPIx->DR = *pTxBuffer;
+            Len -= 1;
+            pTxBuffer++;
+        }
+    }
+}
+
+
+/*********************************************************************
+ * @fn                - SPI_SSIConfig
+ *
+ * @brief             -
+ *
+ * @param[in]         -
+ * @param[in]         -
+ * @param[in]         -
+ *
+ * @return            -
+ *
+ * @Note              -
+
+ */
+void SPI_Handler::SPI_SSIConfig(uint8_t EnOrDi)
+{
+    if(EnOrDi == ENABLE)
+    {
+        SPIx_.pSPIx->CR1 |=  (1 << SPI_CR1_SSI);
+    }else
+    {
+        SPIx_.pSPIx->CR1 &=  ~(1 << SPI_CR1_SSI);
+    }
 }

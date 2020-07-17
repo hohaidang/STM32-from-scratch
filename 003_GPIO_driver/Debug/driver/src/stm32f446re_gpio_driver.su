@@ -11,5 +11,5 @@ stm32f446re_gpio_driver.cpp:248:6:void GPIO_Handler::GPIO_WriteToOutputPort(uint
 stm32f446re_gpio_driver.cpp:254:6:void GPIO_Handler::GPIO_ToggleOutputPin()	16	static
 stm32f446re_gpio_driver.cpp:268:6:void GPIO_Handler::GPIO_IRQInterruptConfig(uint8_t, uint8_t)	16	static
 stm32f446re_gpio_driver.cpp:306:6:void GPIO_Handler::GPIO_IRQPriorityConfig(uint8_t, uint8_t)	24	static
-stm32f446re_gpio_driver.cpp:324:6:void GPIO_Handler::GPIO_IRQHandling()	16	static
+stm32f446re_gpio_driver.cpp:324:6:void GPIO_IRQHandling(uint8_t)	16	static
 stm32f446re_gpio_driver.cpp:332:23:uint8_t get_irq_pinNum(uint8_t)	16	static

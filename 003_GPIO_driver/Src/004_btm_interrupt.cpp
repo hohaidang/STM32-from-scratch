@@ -46,7 +46,7 @@ extern "C" {
 	void EXTI15_10_IRQHandler(void) {
 		// handle the interrupt
 		LED2->GPIO_ToggleOutputPin();
-    	USER_BUTTON->GPIO_IRQHandling();
+    	GPIO_IRQHandling(GPIO_PIN_NO_13);
 	}
 }
 

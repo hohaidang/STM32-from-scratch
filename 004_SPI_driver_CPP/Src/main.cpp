@@ -17,9 +17,97 @@
  ******************************************************************************
  */
 
+#include "../driver/inc/stm32f4xx.h"
+#include <string.h>
+using namespace std;
 
+//SPI1, AHB/APB2
+//PA5 - SPI1_SCK
+//PA6 - SPI1_MISO
+//PA7 - SPI1_MOSI
+//PA4 - slave select
+// Alternate function 5
+
+SPI_Handler *SPI1_Handler;
+GPIO_Handler *GPIO_CheckSCLK;
+
+volatile int data = 0;
+
+void SPI1_GPIOInits(void) {
+    // 1. Init GPIO for SPI1
+    GPIO_Handler SPI1_Sck = GPIO_Handler(GPIOA,
+                                         GPIO_PIN_NO_5,
+                                         GPIO_MODE_ALTFN,
+                                         GPIO_SPEED_HIGH,
+                                         IRQ_Prio_NO_15,
+                                         GPIO_OP_TYPE_PP,
+                                         GPIO_NO_PUPD,
+                                         5);
+
+    GPIO_Handler SPI1_Mosi = GPIO_Handler(GPIOA,
+                                          GPIO_PIN_NO_7,
+                                          GPIO_MODE_ALTFN,
+                                          GPIO_SPEED_HIGH,
+                                          IRQ_Prio_NO_15,
+                                          GPIO_OP_TYPE_PP,
+                                          GPIO_NO_PUPD,
+                                          5);
+
+//    GPIO_Handler SPI1_Miso = GPIO_Handler(GPIOA,
+//                                          GPIO_PIN_NO_6,
+//                                          GPIO_MODE_ALTFN,
+//                                          GPIO_SPEED_HIGH,
+//                                          IRQ_Prio_NO_15,
+//                                          GPIO_OP_TYPE_PP,
+//                                          GPIO_NO_PUPD,
+//                                          5);
+
+
+//
+//    GPIO_Handler SPI1_Nss = GPIO_Handler(GPIOA,
+//                                         GPIO_PIN_NO_4,
+//                                         GPIO_MODE_ALTFN,
+//                                         GPIO_SPEED_HIGH,
+//                                         IRQ_Prio_NO_15,
+//                                         GPIO_OP_TYPE_PP,
+//                                         GPIO_NO_PUPD,
+//                                         5);
+}
 
 int main(void)
 {
+    SPI1_GPIOInits();
+    // initialize check clock GPIO
+
+    GPIO_CheckSCLK = new GPIO_Handler(GPIOC,
+                                   GPIO_PIN_NO_8,
+                                   GPIO_MODE_IT_RFT,
+                                   GPIO_SPEED_FAST,
+                                   IRQ_Prio_NO_14);
+
+    // Serial clock 8MHz
+    SPI1_Handler = new SPI_Handler(SPI1,
+                                   SPI_DEVICE_MODE_MASTER,
+                                   SPI_BUS_CONFIG_FD,
+                                   SPI_SCLK_SPEED_DIV2,
+                                   SPI_DFF_8BITS,
+                                   SPI_CPOL_LOW,
+                                   SPI_CPHA_LOW,
+                                   SPI_SSM_EN);
+
+    char user_data[] = "Hello world";
+    SPI1_Handler->SPI_SendData((uint8_t*) user_data, strlen(user_data));
+
+
+
 	for(;;);
+	return 0;
+}
+
+extern "C" {
+    void EXTI9_5_IRQHandler(void) {
+        // handle the interrupt
+        ++data;
+        GPIO_IRQHandling(GPIO_PIN_NO_8);
+    }
 }

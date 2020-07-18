@@ -37,13 +37,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  16 .debug_macro  00003888  00000000  00000000  00023328  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   00001771  00000000  00000000  00026bb0  2**0
+ 17 .debug_line   00001849  00000000  00000000  00026bb0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    0000aaca  00000000  00000000  00028321  2**0
+ 18 .debug_str    0000aad7  00000000  00000000  000283f9  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  00032deb  2**0
+ 19 .comment      0000007b  00000000  00000000  00032ed0  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  0000089c  00000000  00000000  00032e68  2**2
+ 20 .debug_frame  0000089c  00000000  00000000  00032f4c  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -208,7 +208,7 @@ int _kill(int pid, int sig)
  80002be:	2316      	movs	r3, #22
  80002c0:	6013      	str	r3, [r2, #0]
 	return -1;
- 80002c2:	f04f 33ff 	mov.w	r3, #4294967295
+ 80002c2:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
 }
  80002c6:	4618      	mov	r0, r3
  80002c8:	3708      	adds	r7, #8
@@ -224,7 +224,7 @@ void _exit (int status)
  80002d2:	af00      	add	r7, sp, #0
  80002d4:	6078      	str	r0, [r7, #4]
 	_kill(status, -1);
- 80002d6:	f04f 31ff 	mov.w	r1, #4294967295
+ 80002d6:	f04f 31ff 	mov.w	r1, #4294967295	; 0xffffffff
  80002da:	6878      	ldr	r0, [r7, #4]
  80002dc:	f7ff ffe7 	bl	80002ae <_kill>
 	while (1) {}		/* Make sure we hang here */
@@ -275,7 +275,7 @@ caddr_t _sbrk(int incr)
  8000314:	230c      	movs	r3, #12
  8000316:	6013      	str	r3, [r2, #0]
 		return (caddr_t) -1;
- 8000318:	f04f 33ff 	mov.w	r3, #4294967295
+ 8000318:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
  800031c:	e006      	b.n	800032c <_sbrk+0x48>
 	}
 
@@ -1681,7 +1681,7 @@ static inline uint8_t get_irq_pinNum(uint8_t PinNumber) {
  8000c48:	d904      	bls.n	8000c54 <_raise_r+0x14>
  8000c4a:	2316      	movs	r3, #22
  8000c4c:	6003      	str	r3, [r0, #0]
- 8000c4e:	f04f 30ff 	mov.w	r0, #4294967295
+ 8000c4e:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
  8000c52:	bd38      	pop	{r3, r4, r5, pc}
  8000c54:	6c42      	ldr	r2, [r0, #68]	; 0x44
  8000c56:	b112      	cbz	r2, 8000c5e <_raise_r+0x1e>

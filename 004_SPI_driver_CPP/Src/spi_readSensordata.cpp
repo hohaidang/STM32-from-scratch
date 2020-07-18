@@ -28,6 +28,11 @@ using namespace std;
 //PA4 - slave select
 // Alternate function 5
 
+void small_delay(void) {
+	for(uint32_t i = 0; i < 250000; ++i){};
+}
+
+
 SPI_Handler *SPI1_Handler;
 GPIO_Handler *GPIO_CheckSCLK;
 
@@ -41,7 +46,7 @@ void SPI1_GPIOInits(void) {
                                          GPIO_SPEED_HIGH,
                                          IRQ_Prio_NO_15,
                                          GPIO_OP_TYPE_PP,
-                                         GPIO_NO_PUPD,
+										 GPIO_PIN_PU,
                                          5);
 
     GPIO_Handler SPI1_Mosi = GPIO_Handler(GPIOA,
@@ -50,32 +55,36 @@ void SPI1_GPIOInits(void) {
                                           GPIO_SPEED_HIGH,
                                           IRQ_Prio_NO_15,
                                           GPIO_OP_TYPE_PP,
-                                          GPIO_NO_PUPD,
+										  GPIO_PIN_PU,
                                           5);
 
-//    GPIO_Handler SPI1_Miso = GPIO_Handler(GPIOA,
-//                                          GPIO_PIN_NO_6,
-//                                          GPIO_MODE_ALTFN,
-//                                          GPIO_SPEED_HIGH,
-//                                          IRQ_Prio_NO_15,
-//                                          GPIO_OP_TYPE_PP,
-//                                          GPIO_NO_PUPD,
-//                                          5);
+    GPIO_Handler SPI1_Miso = GPIO_Handler(GPIOA,
+                                          GPIO_PIN_NO_6,
+                                          GPIO_MODE_ALTFN,
+                                          GPIO_SPEED_HIGH,
+                                          IRQ_Prio_NO_15,
+                                          GPIO_OP_TYPE_PP,
+										  GPIO_PIN_PU,
+                                          5);
 
 
-//
-//    GPIO_Handler SPI1_Nss = GPIO_Handler(GPIOA,
-//                                         GPIO_PIN_NO_4,
-//                                         GPIO_MODE_ALTFN,
-//                                         GPIO_SPEED_HIGH,
-//                                         IRQ_Prio_NO_15,
-//                                         GPIO_OP_TYPE_PP,
-//                                         GPIO_NO_PUPD,
-//                                         5);
+
+    GPIO_Handler SPI1_Nss = GPIO_Handler(GPIOA,
+                                         GPIO_PIN_NO_4,
+                                         GPIO_MODE_ALTFN,
+                                         GPIO_SPEED_HIGH,
+                                         IRQ_Prio_NO_15,
+                                         GPIO_OP_TYPE_PP,
+										 GPIO_PIN_PU,
+                                         5);
 }
 
 int main(void)
 {
+	// GPIO Button Init
+	GPIO_Handler user_button = GPIO_Handler(GPIOC, GPIO_PIN_NO_13, GPIO_MODE_IN, GPIO_SPEED_LOW);
+
+
     SPI1_GPIOInits();
     // Serial clock 8MHz
     SPI1_Handler = new SPI_Handler(SPI1,
@@ -83,16 +92,35 @@ int main(void)
                                    SPI_BUS_CONFIG_FD,
                                    SPI_SCLK_SPEED_DIV2,
                                    SPI_DFF_8BITS,
-                                   SPI_CPOL_LOW,
-                                   SPI_CPHA_LOW,
-                                   SPI_SSM_EN);
+                                   SPI_CPOL_HIGH,
+                                   SPI_CPHA_HIGH,
+								   SPI_SSM_DI);
 
-    char user_data[] = "Hello world";
-    SPI1_Handler->SPI_SendData((uint8_t*) user_data, strlen(user_data));
+//    GPIO_Handler PB6 = GPIO_Handler(GPIOB,
+//    								GPIO_PIN_NO_6,
+//									GPIO_MODE_OUT,
+//									GPIO_SPEED_LOW);
+//    PB6.GPIO_WriteToOutputPin(0);
+//
+    uint8_t tempCode = 0xF6;
+//    SPI1_Handler->SPI_SendData((uint8_t*) &tempCode, 1);
+//    uint16_t answer = SPI1_Handler->SPI_ReceiveData();
 
 
+    uint8_t RxBuffer[3];
 
-    for(;;);
+    for(;;) {
+    	while(user_button.GPIO_ReadFromInputPin());
+    	small_delay();
+    	SPI1_Handler->SPI_PeripheralControl(ENABLE);
+    	SPI1_Handler->SPI_SendData((uint8_t*) &tempCode, 1);
+    	SPI1_Handler->SPI_ReceiveData(&RxBuffer[0], 1);
+
+    	// Disable the SPI2 peripheral
+    	while(SPI1_Handler->SPI_GetFlagStatus(SPI_BSY_FLAG));
+    	SPI1_Handler->SPI_PeripheralControl(DISABLE);
+
+    }
     return 0;
 }
 

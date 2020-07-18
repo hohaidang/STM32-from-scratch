@@ -98,16 +98,20 @@ public:
 
 	// Data Send and Receive
 	void SPI_SendData(uint8_t *pTxBuffer, uint32_t Len);
-	void SPI_ReceiveData();
+	uint16_t SPI_ReceiveData();
 
 	// IRQ Configuration and ISR Handling
 	void SPI_IRQInterruptConfig(const uint8_t IRQNumber, const uint8_t EnorDi);
 	void SPI_IRQPriorityConfig(const uint8_t IRQNumber, const uint8_t IRQPriority);
 	void SPI_IRQHandling();
-private:
 	uint8_t SPI_GetFlagStatus(uint8_t FlagName);
 	void SPI_PeripheralControl(uint8_t EnOrDi);
+	void SPI_ReceiveData(uint8_t *pRxBuffer, uint32_t Len);
+private:
+
+
 	void SPI_SSIConfig(uint8_t EnOrDi);
+	void SPI_SSOEConfig(uint8_t EnOrDi);
 };
 
 

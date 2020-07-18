@@ -31,9 +31,10 @@ SPI_Handler::SPI_Handler(SPI_RegDef_t *SPIx_ADDR,
     SPIx_.SPIConfig.SPI_SSM = SSM;
     SPI_PeriClockControl();
     SPI_Init();
-    SPI_SSIConfig(ENABLE);
+//    SPI_SSIConfig(ENABLE);
+    SPI_SSOEConfig(ENABLE);
     // Enable SPI peripheral
-    SPI_PeripheralControl(ENABLE);
+    //SPI_PeripheralControl(ENABLE);
 }
 
 /*********************************************************************
@@ -207,6 +208,22 @@ void SPI_Handler::SPI_SendData(uint8_t *pTxBuffer, uint32_t Len) {
     }
 }
 
+//uint16_t SPI_Handler::SPI_ReceiveData() {
+//	uint16_t answer = 0;
+//	while(SPI_GetFlagStatus(SPI_RXNE_FLAG) == FLAG_RESET) {}
+//	answer = SPIx_.pSPIx->DR;
+//	return answer;
+//}
+
+
+void SPI_Handler::SPI_SSOEConfig(uint8_t EnOrDi) {
+	if(EnOrDi == ENABLE) {
+		SPIx_.pSPIx->CR2 |= (1 << SPI_CR2_SSOE);
+	}
+	else {
+		SPIx_.pSPIx->CR2 &= ~(1 << SPI_CR2_SSOE);
+	}
+}
 
 /*********************************************************************
  * @fn                - SPI_SSIConfig
@@ -231,4 +248,32 @@ void SPI_Handler::SPI_SSIConfig(uint8_t EnOrDi)
     {
         SPIx_.pSPIx->CR1 &=  ~(1 << SPI_CR1_SSI);
     }
+}
+
+
+void SPI_Handler::SPI_ReceiveData(uint8_t *pRxBuffer, uint32_t Len)
+{
+	while(Len > 0)
+		{
+			//1. wait until RXNE is set
+			while(SPI_GetFlagStatus(SPI_RXNE_FLAG)  == (uint8_t)FLAG_RESET );
+
+			//2. check the DFF bit in CR1
+			if( (SPIx_.pSPIx->CR1 & ( 1 << SPI_CR1_DFF) ) )
+			{
+				//16 bit DFF
+				//1. load the data from DR to Rxbuffer address
+				 *((uint16_t*)pRxBuffer) = SPIx_.pSPIx->DR ;
+				Len--;
+				Len--;
+				(uint16_t*)pRxBuffer++;
+			}else
+			{
+				//8 bit DFF
+				*(pRxBuffer) = SPIx_.pSPIx->DR ;
+				Len--;
+				pRxBuffer++;
+			}
+		}
+
 }

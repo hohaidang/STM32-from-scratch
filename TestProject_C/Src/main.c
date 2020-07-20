@@ -29,7 +29,7 @@ void SPI1_GPIOInits(void)
 	SPIPins.GPIO_PinConfig.GPIO_PinAltFunMode = 5;
 	SPIPins.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
 	SPIPins.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PIN_PU;
-	SPIPins.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
+	SPIPins.GPIO_PinConfig.GPIO_PinSpeed = GPOI_SPEED_HIGH;
 
 	//SCLK
 	SPIPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_5;
@@ -44,9 +44,9 @@ void SPI1_GPIOInits(void)
 	GPIO_Init(&SPIPins);
 
 
-	//NSS
-	SPIPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_4;
-	GPIO_Init(&SPIPins);
+//	//NSS
+//	SPIPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_4;
+//	GPIO_Init(&SPIPins);
 
 
 }
@@ -54,18 +54,18 @@ void SPI1_GPIOInits(void)
 void SPI1_Inits(void)
 {
 
-	SPI_Handle_t SPI2handle;
+	SPI_Handle_t SPI1handle;
 
-	SPI2handle.pSPIx = SPI1;
-	SPI2handle.SPIConfig.SPI_BusConfig = SPI_BUS_CONFIG_FD;
-	SPI2handle.SPIConfig.SPI_DeviceMode = SPI_DEVICE_MODE_MASTER;
-	SPI2handle.SPIConfig.SPI_SclkSpeed = SPI_SCLK_SPEED_DIV8;//generates sclk of 2MHz
-	SPI2handle.SPIConfig.SPI_DFF = SPI_DFF_8BITS;
-	SPI2handle.SPIConfig.SPI_CPOL = SPI_CPOL_LOW;
-	SPI2handle.SPIConfig.SPI_CPHA = SPI_CPHA_LOW;
-	SPI2handle.SPIConfig.SPI_SSM = SPI_SSM_DI; //Hardware slave management enabled for NSS pin
+	SPI1handle.pSPIx = SPI1;
+	SPI1handle.SPIConfig.SPI_BusConfig = SPI_BUS_CONFIG_FD;
+	SPI1handle.SPIConfig.SPI_DeviceMode = SPI_DEVICE_MODE_MASTER;
+	SPI1handle.SPIConfig.SPI_SclkSpeed = SPI_SCLK_SPEED_DIV8;//generates sclk of 2MHz
+	SPI1handle.SPIConfig.SPI_DFF = SPI_DFF_8BITS;
+	SPI1handle.SPIConfig.SPI_CPOL = SPI_CPOL_LOW;
+	SPI1handle.SPIConfig.SPI_CPHA = SPI_CPOL_LOW;
+	SPI1handle.SPIConfig.SPI_SSM = SPI_SSM_EN; //Hardware slave management enabled for NSS pin
 
-	SPI_Init(&SPI2handle);
+	SPI_Init(&SPI1handle);
 }
 
 void GPIO_ButtonInit(void)
@@ -81,16 +81,24 @@ void GPIO_ButtonInit(void)
 
 	GPIO_Init(&GPIOBtn);
 
+	GPIO_Handle_t SPI_NSS;
+	SPI_NSS.pGPIOx = GPIOB;
+	SPI_NSS.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_6;
+	SPI_NSS.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT;
+	SPI_NSS.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
+	SPI_NSS.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
+	SPI_NSS.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
+	GPIO_Init(&SPI_NSS);
+	GPIO_WriteToOutputPin(SPI_NSS.pGPIOx, GPIO_PIN_NO_6, 0);
 }
 
 
 int main(void)
 {
-	uint8_t user_data = 0xF3;
-	uint8_t receive_data[2] = {5, 5};
-	uint8_t configure_sensor = 0x27;
-	uint8_t temp_data[3];
-	uint8_t chipID[1];
+	uint8_t dummyByte = 0x00;
+	uint8_t dummyRead = 0x00;
+//	uint8_t temp_data[3];
+	uint8_t chipID = 0;
 
 	GPIO_ButtonInit();
 
@@ -106,25 +114,30 @@ int main(void)
 	* i.e when SPE=1 , NSS will be pulled to low
 	* and NSS pin will be high when SPE=0
 	*/
-	SPI_SSOEConfig(SPI1, ENABLE);
+	//SPI_SSOEConfig(SPI1, ENABLE);
 
 //	while(1)
 //	{
 		//wait till button is pressed
-		while(GPIO_ReadFromInputPin(GPIOC, GPIO_PIN_NO_13) );
-
-		//to avoid button de-bouncing related issues 200ms of delay
-		delay();
+//		while(GPIO_ReadFromInputPin(GPIOC, GPIO_PIN_NO_13) );
+//
+//		//to avoid button de-bouncing related issues 200ms of delay
+//		delay();
 
 		//enable the SPI2 peripheral
 		SPI_PeripheralControl(SPI1, ENABLE);
 
 
 		//to send data
-		uint8_t configure[2] = {0x74, 0x27};
-		SPI_SendData(SPI1, configure, 2);
-		SPI_SendData(SPI1, (uint8_t *)0xD0, 1);
-		SPI_ReceiveData(SPI1, chipID, 1);
+		uint8_t tx_buffer[1] = {0xD0};
+		uint8_t rx_buffer[1] = {0};
+		SPI_SendData(SPI1, tx_buffer, 1);
+//		delay();
+//		SPI_ReceiveData(SPI1, &dummyRead, 1);
+
+		SPI_SendData(SPI1, &dummyByte, 1);
+		SPI_ReceiveData(SPI1, rx_buffer, 1);
+
 
 		//lets confirm SPI is not busy
 		while( SPI_GetFlagStatus(SPI1, SPI_BUSY_FLAG) );

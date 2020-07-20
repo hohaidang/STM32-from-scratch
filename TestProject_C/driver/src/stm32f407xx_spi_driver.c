@@ -108,7 +108,9 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
 
 	tempreg |= pSPIHandle->SPIConfig.SPI_SSM << SPI_CR1_SSM;
 
+
 	pSPIHandle->pSPIx->CR1 = tempreg;
+	SPI_SSIConfig(pSPIHandle->pSPIx, ENABLE);
 
 }
 

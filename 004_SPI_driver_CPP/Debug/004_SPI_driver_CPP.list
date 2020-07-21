@@ -37,13 +37,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  16 .debug_macro  00004142  00000000  00000000  00024c90  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   00001f52  00000000  00000000  00028dd2  2**0
+ 17 .debug_line   00001e3e  00000000  00000000  00028dd2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    0000b8c0  00000000  00000000  0002ad24  2**0
+ 18 .debug_str    0000b8b3  00000000  00000000  0002ac10  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  000365e4  2**0
+ 19 .comment      0000007b  00000000  00000000  000364c3  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00000a80  00000000  00000000  00036660  2**2
+ 20 .debug_frame  00000a80  00000000  00000000  00036540  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -388,7 +388,7 @@ int _kill(int pid, int sig)
  80003e6:	2316      	movs	r3, #22
  80003e8:	6013      	str	r3, [r2, #0]
 	return -1;
- 80003ea:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
+ 80003ea:	f04f 33ff 	mov.w	r3, #4294967295
 }
  80003ee:	4618      	mov	r0, r3
  80003f0:	3708      	adds	r7, #8
@@ -404,7 +404,7 @@ void _exit (int status)
  80003fa:	af00      	add	r7, sp, #0
  80003fc:	6078      	str	r0, [r7, #4]
 	_kill(status, -1);
- 80003fe:	f04f 31ff 	mov.w	r1, #4294967295	; 0xffffffff
+ 80003fe:	f04f 31ff 	mov.w	r1, #4294967295
  8000402:	6878      	ldr	r0, [r7, #4]
  8000404:	f7ff ffe7 	bl	80003d6 <_kill>
 	while (1) {}		/* Make sure we hang here */
@@ -455,7 +455,7 @@ caddr_t _sbrk(int incr)
  800043c:	230c      	movs	r3, #12
  800043e:	6013      	str	r3, [r2, #0]
 		return (caddr_t) -1;
- 8000440:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
+ 8000440:	f04f 33ff 	mov.w	r3, #4294967295
  8000444:	e006      	b.n	8000454 <_sbrk+0x48>
 	}
 
@@ -2579,7 +2579,7 @@ void SPI_Handler::SPI_ReceiveData(uint8_t *pRxBuffer, uint32_t Len)
  80011ac:	d904      	bls.n	80011b8 <_raise_r+0x14>
  80011ae:	2316      	movs	r3, #22
  80011b0:	6003      	str	r3, [r0, #0]
- 80011b2:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+ 80011b2:	f04f 30ff 	mov.w	r0, #4294967295
  80011b6:	bd38      	pop	{r3, r4, r5, pc}
  80011b8:	6c42      	ldr	r2, [r0, #68]	; 0x44
  80011ba:	b112      	cbz	r2, 80011c2 <_raise_r+0x1e>

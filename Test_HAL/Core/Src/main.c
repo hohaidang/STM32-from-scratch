@@ -24,7 +24,13 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 uint8_t buffer_tx[1] = {0xD0};
-uint8_t buffer_rx[10];
+uint8_t chipId = 0;
+
+uint8_t buffer_cfg_tx[4] = {0x74, 0x27, 0x75, 0x02};
+//uint8_t buffer_cfg_tx[2] = {0x74, 0x27};
+uint8_t buffer_data_tx[1] = {0xF6};
+//uint8_t buffer_temp_rx[3] = {0, 0, 0};
+uint8_t buffer_rx[500];
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -100,18 +106,18 @@ int main(void)
   	uint8_t status = 0;
   	uint8_t dummy = 0xFF;
   	status |= HAL_SPI_Transmit(&hspi1, buffer_tx, 1, 100);
+  	status |= HAL_SPI_Receive(&hspi1, &chipId, 1, 100);
+//  	HAL_SPI_TransmitReceive(&hspi1, buffer_tx, &chipId, 1, 100);
 
-  	status |= HAL_SPI_Receive(&hspi1, buffer_rx, 1, 100);
+  	// configure
+//    status |= HAL_SPI_Transmit(&hspi1, &buffer_cfg_tx[0], 4, 100);
+//    status |= HAL_SPI_Receive(&hspi1, &buffer_rx[0], 4, 100);
+    HAL_Delay(500);
 
+//    status |= HAL_SPI_Transmit(&hspi1, &buffer_data_tx[0], 1, 100);
 
-
-//    	uint8_t status = 0;
-//    	uint8_t configure[2] = {0x74, 0x03};
-//    	status |= HAL_SPI_Transmit(&hspi1, configure, 2, 100);
-//    	HAL_Delay(500);
-//    	uint8_t temperatureAddr[1] = {0xFD};
-//    	status |= HAL_SPI_Transmit(&hspi1, temperatureAddr, 1, 100);
-//    	status |= HAL_SPI_Receive(&hspi1, buffer_rx, 2, 100);
+    status |= HAL_SPI_Receive(&hspi1, &buffer_rx[0], 200, 100);
+//    HAL_SPI_TransmitReceive(&hspi1, buffer_data_tx, buffer_rx, 20, 100);
 
   /* USER CODE END 2 */
 

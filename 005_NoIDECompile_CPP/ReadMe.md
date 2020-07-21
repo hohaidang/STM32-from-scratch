@@ -1,4 +1,4 @@
-#Build linker file, startup code and makefile from scratch for CPP, flash using openOCD without using KeilC or STM32Cube
+#Build command
 #Reference: https://www.youtube.com/watch?v=4RjEmcT6JpM
 // -c just compile not to link
 arm-none-eabi-gcc -c -mcpu=cortex-m4 -mthumb main.c -o main.o

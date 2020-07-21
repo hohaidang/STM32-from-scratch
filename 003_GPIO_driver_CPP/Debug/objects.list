@@ -1,0 +1,5 @@
+"Src/000_blinkLED.o"
+"Src/syscalls.o"
+"Src/sysmem.o"
+"Startup/startup_stm32f446retx.o"
+"driver/src/stm32f446re_gpio_driver.o"

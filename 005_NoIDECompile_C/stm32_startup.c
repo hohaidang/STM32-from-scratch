@@ -12,8 +12,10 @@ extern uint32_t _sdata;
 extern uint32_t _edata;
 extern uint32_t _sbss;
 extern uint32_t _ebss;
+extern uint32_t _la_data;
 
 int main(void);
+void __libc_init_array(void);
 
 void Reset_Handler(void);
 // create Default_Handler alas, every time exemption is call, Default_Handler function will be called
@@ -219,7 +221,7 @@ void Reset_Handler(void) {
 	uint32_t size = (uint32_t)&_edata - (uint32_t)&_sdata; // "&" get the address instead of data
 	
 	uint8_t *pDst = (uint8_t *)&_sdata; // sram
-	uint8_t *pSrc = (uint8_t *)&_etext; // flash
+	uint8_t *pSrc = (uint8_t *)&_la_data; // flash
 	
 	for(uint32_t i = 0; i < size; ++i) {
 		*pDst++ = *pSrc++;
@@ -231,6 +233,7 @@ void Reset_Handler(void) {
 		*pDst++ = 0; // initialize bss = 0
 	}
 	
+	__libc_init_array();
 	// call main()
 	main();
 }

@@ -14,8 +14,12 @@ SECTIONS
   .text : 
   {
     *(.isr_vector)		
-    *(.text) 			
+    *(.text) 		
+	*(.text.*)
+	*(.init)
+	*(.fini)
     *(.rodata)		
+	*(.rodata.*)
 	. = ALIGN(4); /*the current address align for 4 bytes*/
     _etext = .; /* compute 'end_of_text' size*/
   } > FLASH	
@@ -25,6 +29,7 @@ SECTIONS
   {
     _sdata = .;
 	*(.data)
+	*(.data.*)
 	. = ALIGN(4);
 	_edata = .;
   }> SRAM AT> FLASH
@@ -32,9 +37,14 @@ SECTIONS
     .bss :
   {
     _sbss = .;
+	__bss_start__ = _sbss;
 	*(.bss)
+	*(.bss.*)
 	*(COMMON) /*Store the COMMON section into bss section for global variable without initialize*/
 	. = ALIGN(4);
     _ebss = .;
+	__bss_end__ = _ebss;
+	. = ALIGN(4);
+	end = .;	
   } > SRAM
 }

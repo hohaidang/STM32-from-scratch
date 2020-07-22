@@ -6,6 +6,7 @@
  */
 
 #include "stm32f407xx.h"
+#include <stdio.h>
 
 void delay(void)
 {
@@ -35,5 +36,7 @@ int main(void)
         GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);
         delay();
     }
+	int a = 5;
+	printf("a = %d", a);
     return 0;
 }

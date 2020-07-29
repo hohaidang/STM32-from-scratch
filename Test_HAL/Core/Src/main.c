@@ -116,7 +116,7 @@ int main(void)
 
 //    status |= HAL_SPI_Transmit(&hspi1, &buffer_data_tx[0], 1, 100);
 
-    status |= HAL_SPI_Receive(&hspi1, &buffer_rx[0], 200, 100);
+    //status |= HAL_SPI_Receive(&hspi1, &buffer_rx[0], 200, 100);
 //    HAL_SPI_TransmitReceive(&hspi1, buffer_data_tx, buffer_rx, 20, 100);
 
   /* USER CODE END 2 */
@@ -198,8 +198,8 @@ static void MX_SPI1_Init(void)
   hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
+  hspi1.Init.NSS = SPI_NSS_HARD_OUTPUT;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;

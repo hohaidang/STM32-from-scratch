@@ -50,6 +50,8 @@
 #define SPI_RXNE_FLAG   (1u << SPI_SR_RXNE)
 #define SPI_BSY_FLAG    (1u << SPI_SR_BSY)
 
+class GPIO_Handler;
+
 /*********************************************************************
  * @class      		  - SPI_Handler
  *
@@ -79,6 +81,10 @@ class SPI_Handler{
 
 protected:
 	SPI_Handle_t SPIx_ = {};
+	GPIO_Handler *SPI_Sck;
+	GPIO_Handler *SPI_MOSI;
+	GPIO_Handler *SPI_MISO;
+	GPIO_Handler *SPI_NSS;
 
 public:
 	SPI_Handler(SPI_RegDef_t *SPIx_ADDR,
@@ -109,7 +115,8 @@ public:
 	void SPI_ReceiveData(uint8_t *pRxBuffer, uint32_t Len);
 private:
 
-
+	void SPI_GPIOs_Init();
+	void SPI_GPIOs_DeInit();
 	void SPI_SSIConfig(uint8_t EnOrDi);
 	void SPI_SSOEConfig(uint8_t EnOrDi);
 };

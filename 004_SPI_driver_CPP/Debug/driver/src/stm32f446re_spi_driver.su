@@ -1,11 +1,13 @@
 stm32f446re_spi_driver.cpp:16:1:SPI_Handler::SPI_Handler(SPI_RegDef_t*, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t)	24	static
-stm32f446re_spi_driver.cpp:51:1:SPI_Handler::~SPI_Handler()	16	static
-stm32f446re_spi_driver.cpp:56:6:void SPI_Handler::SPI_PeriClockControl()	16	static
-stm32f446re_spi_driver.cpp:81:6:void SPI_Handler::SPI_Init()	24	static
-stm32f446re_spi_driver.cpp:131:6:void SPI_Handler::SPI_DeInit()	16	static
-stm32f446re_spi_driver.cpp:155:6:void SPI_Handler::SPI_PeripheralControl(uint8_t)	16	static
-stm32f446re_spi_driver.cpp:173:9:uint8_t SPI_Handler::SPI_GetFlagStatus(uint8_t)	16	static
-stm32f446re_spi_driver.cpp:190:6:void SPI_Handler::SPI_SendData(uint8_t*, uint32_t)	24	static
-stm32f446re_spi_driver.cpp:219:6:void SPI_Handler::SPI_SSOEConfig(uint8_t)	16	static
-stm32f446re_spi_driver.cpp:242:6:void SPI_Handler::SPI_SSIConfig(uint8_t)	16	static
-stm32f446re_spi_driver.cpp:254:6:void SPI_Handler::SPI_ReceiveData(uint8_t*, uint32_t)	24	static
+stm32f446re_spi_driver.cpp:55:1:SPI_Handler::~SPI_Handler()	16	static
+stm32f446re_spi_driver.cpp:61:6:void SPI_Handler::SPI_PeriClockControl()	16	static
+stm32f446re_spi_driver.cpp:86:6:void SPI_Handler::SPI_GPIOs_Init()	48	static
+stm32f446re_spi_driver.cpp:135:6:void SPI_Handler::SPI_GPIOs_DeInit()	24	static
+stm32f446re_spi_driver.cpp:151:6:void SPI_Handler::SPI_Init()	24	static
+stm32f446re_spi_driver.cpp:201:6:void SPI_Handler::SPI_DeInit()	16	static
+stm32f446re_spi_driver.cpp:225:6:void SPI_Handler::SPI_PeripheralControl(uint8_t)	16	static
+stm32f446re_spi_driver.cpp:243:9:uint8_t SPI_Handler::SPI_GetFlagStatus(uint8_t)	16	static
+stm32f446re_spi_driver.cpp:260:6:void SPI_Handler::SPI_SendData(uint8_t*, uint32_t)	24	static
+stm32f446re_spi_driver.cpp:290:6:void SPI_Handler::SPI_SSOEConfig(uint8_t)	16	static
+stm32f446re_spi_driver.cpp:313:6:void SPI_Handler::SPI_SSIConfig(uint8_t)	16	static
+stm32f446re_spi_driver.cpp:325:6:void SPI_Handler::SPI_ReceiveData(uint8_t*, uint32_t)	24	static

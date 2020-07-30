@@ -149,5 +149,4 @@ private:
 };
 
 
-
 #endif /* INC_STM32F446RE_SPI_DRIVER_H_ */

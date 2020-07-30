@@ -244,7 +244,7 @@ uint8_t SPI_Handler::SPI_GetFlagStatus(uint8_t FlagName) {
  * @return None
  **********************************************************************/
 void SPI_Handler::SPI_SendData(const uint8_t *pTxBuffer, uint32_t Len) {
-	if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE) != SPI_CR1_SPE) {
+	if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
 		SPI_PeripheralControl(ENABLE);
 	}
 
@@ -312,7 +312,7 @@ void SPI_Handler::SPI_SSIConfig(uint8_t EnOrDi)
  **********************************************************************/
 void SPI_Handler::SPI_ReceiveData(uint8_t *pRxBuffer, uint32_t Len)
 {
-	if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE) != SPI_CR1_SPE) {
+	if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
 		SPI_PeripheralControl(ENABLE);
 	}
 
@@ -459,7 +459,7 @@ void SPI_Handler::SPI_IRQHandling() {
 }
 
 void SPI_Handler::spi_txe_interrupt_handle() {
-    if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE) != SPI_CR1_SPE) {
+	if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
         SPI_PeripheralControl(ENABLE);
     }
 
@@ -485,7 +485,7 @@ void SPI_Handler::spi_txe_interrupt_handle() {
 }
 
 void SPI_Handler::spi_rxne_interrupt_handle() {
-    if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE) != SPI_CR1_SPE) {
+	if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
         SPI_PeripheralControl(ENABLE);
     }
 

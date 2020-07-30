@@ -240,6 +240,8 @@ typedef struct {
 #define SPI_CR1_BIDIOE      14u
 #define SPI_CR1_BIDIMODE    15u
 
+#define SPI_CR1_SPE_MSK		(1U << SPI_CR1_SPE)
+
 /*
  * Bit position definitions SPI_CR2
  */

@@ -204,6 +204,10 @@ typedef struct {
 #define IRQ_NO_EXTI9_5			23
 #define IRQ_NO_EXTI15_10		40
 
+// SPI IRQ
+#define IRQ_NO_SPI1             35
+#define IRQ_NO_SPI2             36
+
 // @GPIO_IRQ_Priority
 #define IRQ_Prio_NO_14          14
 #define IRQ_Prio_NO_15			15
@@ -273,6 +277,8 @@ inline uint8_t gpio_baseAddr_to_code(GPIO_RegDef_t *Port) {
 			 (Port == GPIOG) ? 0x06 : \
 			 (Port == GPIOH) ? 0x07 : 0x00 );
 }
+
+
 
 #include "stm32f446re_spi_driver.h"
 #include "stm32f446re_gpio_driver.h"

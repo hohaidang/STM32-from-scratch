@@ -329,8 +329,3 @@ void GPIO_IRQHandling(uint8_t PinNumber)
 }
 
 
-static inline uint8_t get_irq_pinNum(uint8_t PinNumber) {
-	return (PinNumber < 5) 	? PinNumber + 6 : \
-		   (PinNumber < 10)	? IRQ_NO_EXTI9_5 : \
-		   (PinNumber < 16) ? IRQ_NO_EXTI15_10 : 0;
-}

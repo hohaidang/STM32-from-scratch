@@ -28,18 +28,25 @@ using namespace std;
 //PA4 - slave select
 // Alternate function 5
 
+uint8_t rx_buffer[3];
+unique_ptr<SPI_Handler> SPI1_Handler;
 
 int main(void)
 {
     // HSI Clock 16 Mhz
-	unique_ptr<SPI_Handler> SPI1_Handler(new SPI_Handler(SPI1,
+	SPI1_Handler.reset( (new SPI_Handler(SPI1,
 														SPI_DEVICE_MODE_MASTER,
 														SPI_BUS_CONFIG_FD,
 														SPI_SCLK_SPEED_DIV32,
 														SPI_DFF_8BITS,
 														SPI_CPOL_LOW,
 														SPI_CPHA_LOW,
-														SPI_SSM_DI));
+														SPI_SSM_DI)) );
+//	uint8_t IRQ_number = get_irq_pinNum(GPIO_PIN_NO_6);
+	SPI1_Handler->SPI_IRQInterruptConfig(IRQ_NO_SPI1, ENABLE);
+	SPI1_Handler->SPI_IRQPriorityConfig(IRQ_NO_SPI1, IRQ_Prio_NO_15);
+
+//	SPI1_Handler->SPI_ReceiveDataIT(&rx_buffer[0], Len)
 
     uint8_t tx_buffer[1] = {0xD0};
     uint8_t dummyRead = 0x00;
@@ -53,3 +60,9 @@ int main(void)
     return 0;
 }
 
+extern "C" {
+    void SPI2_IRQHandler(void) {
+        // handle the interrupt
+        SPI1_Handler->SPI_IRQHandling();
+    }
+}

@@ -1,29 +1,29 @@
 gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
-spi_readSensordata.cpp:32:5:int main()	56	static
-unique_ptr.h:201:2:std::unique_ptr<_Tp, _Dp>::unique_ptr(std::unique_ptr<_Tp, _Dp>::pointer) [with _Up = std::default_delete<SPI_Handler>; <template-parameter-2-2> = void; _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
+spi_readSensordata.cpp:34:5:int main()	48	static
+spi_readSensordata.cpp:64:10:void SPI2_IRQHandler()	8	static
 unique_ptr.h:264:7:std::unique_ptr<_Tp, _Dp>::~unique_ptr() [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	24	static
+unique_ptr.h:371:7:void std::unique_ptr<_Tp, _Dp>::reset(std::unique_ptr<_Tp, _Dp>::pointer) [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
 unique_ptr.h:328:7:std::unique_ptr<_Tp, _Dp>::pointer std::unique_ptr<_Tp, _Dp>::operator->() const [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
-unique_ptr.h:140:7:std::__uniq_ptr_impl<_Tp, _Dp>::__uniq_ptr_impl(std::__uniq_ptr_impl<_Tp, _Dp>::pointer) [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
 unique_ptr.h:146:18:std::__uniq_ptr_impl<_Tp, _Dp>::pointer& std::__uniq_ptr_impl<_Tp, _Dp>::_M_ptr() [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
 unique_ptr.h:341:7:std::unique_ptr<_Tp, _Dp>::deleter_type& std::unique_ptr<_Tp, _Dp>::get_deleter() [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
 unique_ptr.h:72:7:void std::default_delete<_Tp>::operator()(_Tp*) const [with _Tp = SPI_Handler]	24	static
+move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = SPI_Handler*&]	16	static
+move.h:187:5:typename std::enable_if<std::__and_<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> >::value>::type std::swap(_Tp&, _Tp&) [with _Tp = SPI_Handler*]	24	static
 unique_ptr.h:336:7:std::unique_ptr<_Tp, _Dp>::pointer std::unique_ptr<_Tp, _Dp>::get() const [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
-tuple:919:17:constexpr std::tuple<_T1, _T2>::tuple() [with _U1 = SPI_Handler*; _U2 = std::default_delete<SPI_Handler>; typename std::enable_if<std::__and_<std::__is_implicitly_default_constructible<_U1>, std::__is_implicitly_default_constructible<_U2> >::value, bool>::type <anonymous> = 1; _T1 = SPI_Handler*; _T2 = std::default_delete<SPI_Handler>]	16	static
 tuple:1314:5:>&) [with unsigned int __i = 0; _Elements = {SPI_Handler*, std::default_delete<SPI_Handler>}]	16	static
 unique_ptr.h:148:18:_Dp& std::__uniq_ptr_impl<_Tp, _Dp>::_M_deleter() [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
 unique_ptr.h:147:18:std::__uniq_ptr_impl<_Tp, _Dp>::pointer std::__uniq_ptr_impl<_Tp, _Dp>::_M_ptr() const [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
-tuple:206:17:>::_Tuple_impl() [with unsigned int _Idx = 0; _Head = SPI_Handler*; _Tail = {std::default_delete<SPI_Handler>}]	16	static
 tuple:1303:5:>&) [with unsigned int __i = 0; _Head = SPI_Handler*; _Tail = {std::default_delete<SPI_Handler>}]	16	static
 tuple:1314:5:>&) [with unsigned int __i = 1; _Elements = {SPI_Handler*, std::default_delete<SPI_Handler>}]	16	static
 tuple:1320:5:>&) [with unsigned int __i = 0; _Elements = {SPI_Handler*, std::default_delete<SPI_Handler>}]	16	static
-tuple:356:17:constexpr std::_Tuple_impl<_Idx, _Head>::_Tuple_impl() [with unsigned int _Idx = 1; _Head = std::default_delete<SPI_Handler>]	16	static
-tuple:122:17:constexpr std::_Head_base<_Idx, _Head, false>::_Head_base() [with unsigned int _Idx = 0; _Head = SPI_Handler*]	16	static
 tuple:195:7:>&) [with unsigned int _Idx = 0; _Head = SPI_Handler*; _Tail = {std::default_delete<SPI_Handler>}]	16	static
 tuple:1303:5:>&) [with unsigned int __i = 1; _Head = std::default_delete<SPI_Handler>; _Tail = {}]	16	static
 tuple:1308:5:>&) [with unsigned int __i = 0; _Head = SPI_Handler*; _Tail = {std::default_delete<SPI_Handler>}]	16	static
-tuple:76:17:constexpr std::_Head_base<_Idx, _Head, true>::_Head_base() [with unsigned int _Idx = 1; _Head = std::default_delete<SPI_Handler>]	16	static
 tuple:160:7:static constexpr _Head& std::_Head_base<_Idx, _Head, false>::_M_head(std::_Head_base<_Idx, _Head, false>&) [with unsigned int _Idx = 0; _Head = SPI_Handler*]	16	static
 tuple:351:7:static constexpr _Head& std::_Tuple_impl<_Idx, _Head>::_M_head(std::_Tuple_impl<_Idx, _Head>&) [with unsigned int _Idx = 1; _Head = std::default_delete<SPI_Handler>]	16	static
 tuple:198:7:>&) [with unsigned int _Idx = 0; _Head = SPI_Handler*; _Tail = {std::default_delete<SPI_Handler>}]	16	static
 tuple:113:7:static constexpr _Head& std::_Head_base<_Idx, _Head, true>::_M_head(std::_Head_base<_Idx, _Head, true>&) [with unsigned int _Idx = 1; _Head = std::default_delete<SPI_Handler>]	16	static
 tuple:163:7:static constexpr const _Head& std::_Head_base<_Idx, _Head, false>::_M_head(const std::_Head_base<_Idx, _Head, false>&) [with unsigned int _Idx = 0; _Head = SPI_Handler*]	16	static
+spi_readSensordata.cpp:68:1:void __static_initialization_and_destruction_0(int, int)	16	static
+spi_readSensordata.cpp:68:1:cpp)	8	static
+spi_readSensordata.cpp:68:1:cpp)	8	static

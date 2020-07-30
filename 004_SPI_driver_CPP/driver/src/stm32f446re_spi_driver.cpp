@@ -54,7 +54,6 @@ SPI_Handler::SPI_Handler(SPI_RegDef_t *SPIx_ADDR,
  **********************************************************************/
 SPI_Handler::~SPI_Handler(){
 	SPI_DeInit();
-	SPI_GPIOs_DeInit();
 }
 
 // peripheral clock setup
@@ -84,43 +83,43 @@ void SPI_Handler::SPI_PeriClockControl() {
  * @return None
  **********************************************************************/
 void SPI_Handler::SPI_GPIOs_Init() {
-	SPI_Sck = new GPIO_Handler(GPIOA,
-							GPIO_PIN_NO_5,
-							GPIO_MODE_ALTFN,
-							GPIO_SPEED_HIGH,
-							IRQ_Prio_NO_15,
-							GPIO_OP_TYPE_PP,
-							GPIO_NO_PUPD,
-							5);
+	SPI_Sck.reset( new GPIO_Handler(GPIOA,
+									GPIO_PIN_NO_5,
+									GPIO_MODE_ALTFN,
+									GPIO_SPEED_HIGH,
+									IRQ_Prio_NO_15,
+									GPIO_OP_TYPE_PP,
+									GPIO_NO_PUPD,
+									5) );
 
-	SPI_MOSI = new GPIO_Handler(GPIOA,
-							GPIO_PIN_NO_7,
-							GPIO_MODE_ALTFN,
-							GPIO_SPEED_HIGH,
-							IRQ_Prio_NO_15,
-							GPIO_OP_TYPE_PP,
-							GPIO_NO_PUPD,
-							5);
+	SPI_MOSI.reset( new GPIO_Handler(GPIOA,
+									GPIO_PIN_NO_7,
+									GPIO_MODE_ALTFN,
+									GPIO_SPEED_HIGH,
+									IRQ_Prio_NO_15,
+									GPIO_OP_TYPE_PP,
+									GPIO_NO_PUPD,
+									5) );
 
-	SPI_MISO = new GPIO_Handler(GPIOA,
-							GPIO_PIN_NO_6,
-							GPIO_MODE_ALTFN,
-							GPIO_SPEED_HIGH,
-							IRQ_Prio_NO_15,
-							GPIO_OP_TYPE_PP,
-							GPIO_NO_PUPD,
-							5);
+	SPI_MISO.reset( new GPIO_Handler(GPIOA,
+									GPIO_PIN_NO_6,
+									GPIO_MODE_ALTFN,
+									GPIO_SPEED_HIGH,
+									IRQ_Prio_NO_15,
+									GPIO_OP_TYPE_PP,
+									GPIO_NO_PUPD,
+									5) );
 
 
 
-	SPI_NSS = new GPIO_Handler(GPIOA,
-							GPIO_PIN_NO_4,
-							GPIO_MODE_ALTFN,
-							GPIO_SPEED_HIGH,
-							IRQ_Prio_NO_15,
-							GPIO_OP_TYPE_PP,
-							GPIO_NO_PUPD,
-							5);
+	SPI_NSS.reset( new GPIO_Handler(GPIOA,
+									GPIO_PIN_NO_4,
+									GPIO_MODE_ALTFN,
+									GPIO_SPEED_HIGH,
+									IRQ_Prio_NO_15,
+									GPIO_OP_TYPE_PP,
+									GPIO_NO_PUPD,
+									5) );
 }
 
 /*********************************************************************
@@ -132,12 +131,12 @@ void SPI_Handler::SPI_GPIOs_Init() {
  *
  * @return None
  **********************************************************************/
-void SPI_Handler::SPI_GPIOs_DeInit() {
-	delete SPI_Sck;
-	delete SPI_MISO;
-	delete SPI_MOSI;
-	delete SPI_NSS;
-}
+//void SPI_Handler::SPI_GPIOs_DeInit() {
+//	delete SPI_Sck;
+//	delete SPI_MISO;
+//	delete SPI_MOSI;
+//	delete SPI_NSS;
+//}
 
 /*********************************************************************
  * @fn      		  -
@@ -258,7 +257,10 @@ uint8_t SPI_Handler::SPI_GetFlagStatus(uint8_t FlagName) {
  * @return None
  **********************************************************************/
 void SPI_Handler::SPI_SendData(uint8_t *pTxBuffer, uint32_t Len) {
-	SPI_PeripheralControl(ENABLE);
+	if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE) != SPI_CR1_SPE) {
+		SPI_PeripheralControl(ENABLE);
+	}
+
     while(Len > 0) {
         // 1. wait util tx buffer empty
         while(SPI_GetFlagStatus(SPI_TXE_FLAG) == FLAG_RESET);
@@ -267,7 +269,7 @@ void SPI_Handler::SPI_SendData(uint8_t *pTxBuffer, uint32_t Len) {
         if(SPIx_.pSPIx->CR1 & (1 << SPI_CR1_DFF)) {
             // 16 BIT DFF
             // 1. load the data into the DR
-            SPIx_.pSPIx->DR = *((uint16_t *) pTxBuffer);
+            SPIx_.pSPIx->DR = *((uint16_t *)pTxBuffer);
             Len -= 2;
             (uint16_t *)pTxBuffer++;
         }
@@ -324,6 +326,10 @@ void SPI_Handler::SPI_SSIConfig(uint8_t EnOrDi)
 
 void SPI_Handler::SPI_ReceiveData(uint8_t *pRxBuffer, uint32_t Len)
 {
+	if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE) != SPI_CR1_SPE) {
+		SPI_PeripheralControl(ENABLE);
+	}
+
 	while(Len > 0)
 		{
 			//1. wait until RXNE is set

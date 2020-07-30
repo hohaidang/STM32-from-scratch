@@ -28,24 +28,18 @@ using namespace std;
 //PA4 - slave select
 // Alternate function 5
 
-unique_ptr<SPI_Handler> SPI1_Handler;
-//SPI_Handler *SPI1_Handler;
-std::unique_ptr<int> valuePtr;
-
 
 int main(void)
 {
     // HSI Clock 16 Mhz
-	{
-	SPI1_Handler.reset(new SPI_Handler(SPI1,
-										SPI_DEVICE_MODE_MASTER,
-										SPI_BUS_CONFIG_FD,
-										SPI_SCLK_SPEED_DIV32,
-										SPI_DFF_8BITS,
-										SPI_CPOL_LOW,
-										SPI_CPHA_LOW,
-										SPI_SSM_DI));
-	}
+	unique_ptr<SPI_Handler> SPI1_Handler(new SPI_Handler(SPI1,
+														SPI_DEVICE_MODE_MASTER,
+														SPI_BUS_CONFIG_FD,
+														SPI_SCLK_SPEED_DIV32,
+														SPI_DFF_8BITS,
+														SPI_CPOL_LOW,
+														SPI_CPHA_LOW,
+														SPI_SSM_DI));
 
     uint8_t tx_buffer[1] = {0xD0};
     uint8_t dummyRead = 0x00;

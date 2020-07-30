@@ -9,6 +9,7 @@
 #define INC_STM32F446RE_SPI_DRIVER_H_
 
 #include "stm32f4xx.h"
+#include <memory>
 
 // @SPI_DeviceMode
 #define SPI_DEVICE_MODE_MASTER					1   // choose SPI as Master
@@ -81,10 +82,10 @@ class SPI_Handler{
 
 protected:
 	SPI_Handle_t SPIx_ = {};
-	GPIO_Handler *SPI_Sck;
-	GPIO_Handler *SPI_MOSI;
-	GPIO_Handler *SPI_MISO;
-	GPIO_Handler *SPI_NSS;
+	std::unique_ptr<GPIO_Handler> SPI_Sck;
+	std::unique_ptr<GPIO_Handler> SPI_MOSI;
+	std::unique_ptr<GPIO_Handler> SPI_MISO;
+	std::unique_ptr<GPIO_Handler> SPI_NSS;
 
 public:
 	SPI_Handler(SPI_RegDef_t *SPIx_ADDR,

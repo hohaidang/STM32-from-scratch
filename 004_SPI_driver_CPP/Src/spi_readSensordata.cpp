@@ -29,34 +29,42 @@ using namespace std;
 // Alternate function 5
 
 uint8_t rx_buffer[3];
-unique_ptr<SPI_Handler> SPI1_Handler;
+SPI_Handler *SPI1_Handler;
+
+void delay() {
+	for(int i = 0; i < 2500000; ++i) {
+
+	}
+}
 
 int main(void)
 {
     // HSI Clock 16 Mhz
-	SPI1_Handler.reset((new SPI_Handler(SPI1,
+	SPI1_Handler = new SPI_Handler(SPI1,
 										SPI_DEVICE_MODE_MASTER,
 										SPI_BUS_CONFIG_FD,
 										SPI_SCLK_SPEED_DIV32,
 										SPI_DFF_8BITS,
 										SPI_CPOL_LOW,
 										SPI_CPHA_LOW,
-										SPI_SSM_DI)));
+										SPI_SSM_DI);
 
 	SPI1_Handler->SPI_IRQInterruptConfig(IRQ_NO_SPI1, ENABLE);
 	SPI1_Handler->SPI_IRQPriorityConfig(IRQ_NO_SPI1, IRQ_Prio_NO_15);
 
-	SPI1_Handler->SPI_ReceiveDataIT(&rx_buffer[0], 1);
+
 
     uint8_t tx_buffer[1] = {0xD0};
-    uint8_t dummyRead = 0x00;
-    uint8_t dummyWrite = 0x00;
     uint8_t chipID = 0;
-    SPI1_Handler->SPI_SendData(tx_buffer, 1);
-    SPI1_Handler->SPI_ReceiveData(&dummyRead, 1);
-    SPI1_Handler->SPI_SendData(&dummyWrite, 1);
-    SPI1_Handler->SPI_ReceiveData(&chipID, 1);
 
+
+    SPI1_Handler->SPI_SendDataIT(tx_buffer, 1);
+
+    SPI1_Handler->SPI_ReceiveDataIT(&chipID, 1);
+
+    while(SPI1_Handler->SPI_GetFlagStatus(SPI_BSY_FLAG));
+    SPI1_Handler->SPI_PeripheralControl(DISABLE);
+    while(1);
     return 0;
 }
 

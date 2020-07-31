@@ -123,10 +123,12 @@ public:
 	// Data Send and Receive
 	void SPI_SendData(const uint8_t *pTxBuffer, uint32_t Len);
 	void SPI_ReceiveData(uint8_t *pRxBuffer, uint32_t Len);
+	void SPI_SendAndReceiveIT(uint8_t *pTxBuffer, uint8_t *pRxBuffer, uint32_t Len);
 
     // Data Send and Receive in interrupt mode
     uint8_t SPI_SendDataIT(const uint8_t *pTxBuffer, uint32_t Len);
-    uint8_t SPI_ReceiveDataIT(const uint8_t *pRxBuffer, uint32_t Len);
+    uint8_t SPI_ReceiveDataIT(uint8_t *pRxBuffer, uint32_t Len);
+
 
     // IRQ Configuration and ISR Handling
     void SPI_IRQInterruptConfig(const uint8_t IRQNumber, const uint8_t EnorDi);

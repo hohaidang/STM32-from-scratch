@@ -19,6 +19,8 @@
 
 #include "../driver/inc/stm32f4xx.h"
 #include <memory>
+
+#include "temp.h"
 using namespace std;
 
 //SPI1, AHB/APB2
@@ -37,6 +39,12 @@ void delay() {
 	}
 }
 
+int8_t user_spi_read (uint8_t reg_addr, uint8_t *reg_data, uint32_t len, void *intf_ptr) {
+    SPI1_Handler->SPI_SendDataIT((const uint8_t *)&reg_addr, len);
+    SPI1_Handler->SPI_ReceiveDataIT(reg_data, len);
+    return 0;
+}
+
 int main(void)
 {
     // HSI Clock 16 Mhz
@@ -53,6 +61,21 @@ int main(void)
 	SPI1_Handler->SPI_IRQPriorityConfig(IRQ_NO_SPI1, IRQ_Prio_NO_15);
 
 
+	struct bme280_dev dev;
+	int8_t rslt = BME280_OK;
+
+	/* Sensor_0 interface over SPI with native chip select line */
+	uint8_t dev_addr = 0;
+
+	dev.intf_ptr = &dev_addr;
+	dev.intf = BME280_SPI_INTF;
+	dev.read = user_spi_read;
+//	dev.write = &user_spi_write;
+//	dev.delay_ms = user_delay_ms;
+
+
+	rslt = bme280_init(&dev);
+	static_cast<void>(rslt);
 
     uint8_t tx_buffer[1] = {0xD0};
     uint8_t chipID = 0;

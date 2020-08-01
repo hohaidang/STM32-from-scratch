@@ -19,7 +19,6 @@
 
 #include "../driver/inc/stm32f4xx.h"
 #include <memory>
-
 #include "temp.h"
 using namespace std;
 
@@ -29,20 +28,25 @@ using namespace std;
 //PA7 - SPI1_MOSI
 //PA4 - slave select
 // Alternate function 5
-
-uint8_t rx_buffer[3];
 SPI_Handler *SPI1_Handler;
 
-void delay() {
-	for(int i = 0; i < 2500000; ++i) {
+void user_delay_us(uint32_t period, void *intf_ptr)
+{
+	for(int i = 0; i < 250000; ++i) {
 
 	}
 }
 
 int8_t user_spi_read (uint8_t reg_addr, uint8_t *reg_data, uint32_t len, void *intf_ptr) {
-    SPI1_Handler->SPI_SendDataIT((const uint8_t *)&reg_addr, len);
+    SPI1_Handler->SPI_SendDataIT(static_cast<const uint8_t *>(&reg_addr), 1);
     SPI1_Handler->SPI_ReceiveDataIT(reg_data, len);
     return 0;
+}
+
+int8_t user_spi_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t len, void *intf_ptr) {
+	SPI1_Handler->SPI_SendDataIT(static_cast<const uint8_t *>(&reg_addr), 1);
+	SPI1_Handler->SPI_SendDataIT(reg_data, len);
+	return 0;
 }
 
 int main(void)
@@ -61,29 +65,46 @@ int main(void)
 	SPI1_Handler->SPI_IRQPriorityConfig(IRQ_NO_SPI1, IRQ_Prio_NO_15);
 
 
-	struct bme280_dev dev;
-	int8_t rslt = BME280_OK;
+	// read chip ID
+	uint8_t chipIdAddr = 0xD0;
+	uint8_t chipID = 0;
+	SPI1_Handler->SPI_SendDataIT(&chipIdAddr, 1);
+	SPI1_Handler->SPI_ReceiveDataIT(&chipID, 1);
 
-	/* Sensor_0 interface over SPI with native chip select line */
-	uint8_t dev_addr = 0;
+	// configure normal mode and oversampling
+//	uint8_t ctrl_means = 0x93;
+	uint8_t ctrl_means_reg_W[2] = {0x74, 0x93};
+	uint8_t ctrl_means_reg_R = 0xF4;
+	uint8_t ctrl_read = 0;
+	// write
+//	SPI1_Handler->SPI_SendDataIT(&ctrl_means_reg_W, 1);
+//	SPI1_Handler->SPI_SendDataIT(&ctrl_means, 1);
+	SPI1_Handler->SPI_SendDataIT(&ctrl_means_reg_W[0], 2);
 
-	dev.intf_ptr = &dev_addr;
-	dev.intf = BME280_SPI_INTF;
-	dev.read = user_spi_read;
-//	dev.write = &user_spi_write;
-//	dev.delay_ms = user_delay_ms;
+	// read
+	SPI1_Handler->SPI_SendDataIT(&ctrl_means_reg_R, 1);
+	SPI1_Handler->SPI_ReceiveDataIT(&ctrl_read, 1);
+
+	// read status
+	uint8_t status_addr = 0xF3;
+	uint8_t statusData = 0x00;
+	SPI1_Handler->SPI_SendDataIT(&status_addr, 1);
+	SPI1_Handler->SPI_ReceiveDataIT(&statusData, 1);
+
+	user_delay_us(1, 0);
 
 
-	rslt = bme280_init(&dev);
+	// read sensordata
+	uint8_t sensor_addr = 0xF7;
+	uint8_t sensorData[8] = {};
+	SPI1_Handler->SPI_SendDataIT(&sensor_addr, 1);
+	SPI1_Handler->SPI_ReceiveDataIT(&sensorData[0], 8);
+	// Test thu thanh ghi ctl_mean, configure truoc sau do moi configure sensor mode
+
+//	struct bme280_data testSensorData = {};
+//	rslt = bme280_get_sensor_data(BME280_ALL, &testSensorData, &dev);
 	static_cast<void>(rslt);
 
-    uint8_t tx_buffer[1] = {0xD0};
-    uint8_t chipID = 0;
-
-
-    SPI1_Handler->SPI_SendDataIT(tx_buffer, 1);
-
-    SPI1_Handler->SPI_ReceiveDataIT(&chipID, 1);
 
     while(SPI1_Handler->SPI_GetFlagStatus(SPI_BSY_FLAG));
     SPI1_Handler->SPI_PeripheralControl(DISABLE);

@@ -6,7 +6,6 @@
  */
 
 #include "../inc/stm32f446re_spi_driver.h"
-extern int count = 0;
 
 /*********************************************************************
  * @class      		  - GPIO_Handler Constructor
@@ -417,34 +416,44 @@ uint8_t SPI_Handler::SPI_SendDataIT(const uint8_t *pTxBuffer, uint32_t Len) {
         SPIx_.TxState = SPI_BUSY_IN_TX;
 
         // 3. Enable TXEIE control bit to get interrupt whenever TXE flag is set in SR
-        SPIx_.pSPIx->CR2 |= (1 << SPI_CR2_TXEIE);
+        SPIx_.pSPIx->CR2 |= (1 << SPI_CR2_TXEIE | 1 << SPI_CR2_ERRIE);
     }
 
     return SPIx_.TxState;
 }
 
 uint8_t SPI_Handler::SPI_ReceiveDataIT(uint8_t *pRxBuffer, uint32_t Len) {
-	SPI_ClearOVRFlag();
-	if(SPIx_.RxState != SPI_BUSY_IN_RX) {
+	if(SPIx_.RxState != SPI_BUSY_IN_RX && SPIx_.TxState != SPI_BUSY_IN_TX) {
+		SPI_ClearOVRFlag();
         // 1. Save the Tx buffer address and Len information in some global variables
-        SPIx_.pRxBuffer = pRxBuffer;
+        SPIx_.pTxBuffer = pRxBuffer; // transmit dummy
+        SPIx_.TxLen = Len;
+
+		SPIx_.pRxBuffer = pRxBuffer;
         SPIx_.RxLen = Len;
 
         // 2. Mark the SPI state as busy in transmission so that no other code
         // can take over same SPI peripheral until transmission is over
         SPIx_.RxState = SPI_BUSY_IN_RX;
+        SPIx_.TxState = SPI_BUSY_IN_TX;
 
         // 3. Enable TXEIE control bit to get interrupt whenever TXE flag is set in SR
-        SPIx_.pSPIx->CR2 |= (1 << SPI_CR2_RXNEIE);
+        SPIx_.pSPIx->CR2 |= (1 << SPI_CR2_RXNEIE | 1 << SPI_CR2_ERRIE | 1 << SPI_CR2_TXEIE);
     }
-	SPI_SendDataIT(pRxBuffer, Len); // send dummy byte - then interrupt will trigger for read and write data from SPI
 
     return SPIx_.TxState;
 }
 
 void SPI_Handler::SPI_IRQHandling() {
-	++count;
     uint8_t temp1 = 0, temp2 = 0;
+	// check for RXNE
+	temp1 = SPIx_.pSPIx->SR & (1 << SPI_SR_RXNE);
+	temp2 = SPIx_.pSPIx->CR2 & (1 << SPI_CR2_RXNEIE);
+	if (temp1 && temp2) {
+		spi_rxne_interrupt_handle();
+		return;
+	}
+
     // First lets check for TXE
     temp1 = SPIx_.pSPIx->SR & (1 << SPI_SR_TXE);
     temp2 = SPIx_.pSPIx->CR2 & (1 << SPI_CR2_TXEIE);
@@ -454,22 +463,17 @@ void SPI_Handler::SPI_IRQHandling() {
         return;
     }
 
-    // check for RXNE
-    temp1 = SPIx_.pSPIx->SR & (1 << SPI_SR_RXNE);
-    temp2 = SPIx_.pSPIx->CR2 & (1 << SPI_CR2_RXNEIE);
-    if(temp1 && temp2) {
-//    	while(SPIx_.TxState == SPI_BUSY_IN_TX);
-        spi_rxne_interrupt_handle();
-        return;
-    }
+	// check for ovr flag
+	temp1 = SPIx_.pSPIx->SR & (1 << SPI_SR_OVR);
+	temp2 = SPIx_.pSPIx->CR2 & (1 << SPI_CR2_ERRIE);
+	if (temp1 && temp2) {
+		spi_ovr_err_interrupt_handle();
+		return;
+	}
 
-    // check for ovr flag
-    temp1 = SPIx_.pSPIx->SR & (1 << SPI_SR_OVR);
-    temp2 = SPIx_.pSPIx->CR2 & (1 << SPI_CR2_ERRIE);
-    if(temp1 && temp2) {
-        spi_ovr_err_interrupt_handle();
-        return;
-    }
+
+
+
 }
 
 void SPI_Handler::spi_txe_interrupt_handle() {
@@ -527,15 +531,10 @@ void SPI_Handler::spi_rxne_interrupt_handle() {
 }
 
 void SPI_Handler::spi_ovr_err_interrupt_handle() {
-    uint8_t temp = 0;
     // 1. Clear the ovr flag
-    if(SPIx_.TxState != SPI_BUSY_IN_TX) {
-        temp = SPIx_.pSPIx->DR;
-        temp = SPIx_.pSPIx->SR;
-    }
+    SPI_ClearOVRFlag();
     // 2. Inform the application
     SPI_ApplicationEventCallback(&SPIx_, SPI_EVENT_OVR_ERR);
-    static_cast<void>(temp);
 }
 
 
@@ -547,14 +546,19 @@ void SPI_Handler::SPI_ClearOVRFlag() {
 }
 
 void SPI_Handler::SPI_CloseTransmission() {
-    SPIx_.pSPIx->CR2 &= ~(1 << SPI_CR2_TXEIE);
+	uint8_t temp = 0;
+	temp = SPIx_.pSPIx->SR;
+	// TODO: wait for SR txe is empty
+	while(temp & (1 << SPI_SR_TXE));
+    SPIx_.pSPIx->CR2 &= ~(1 << SPI_CR2_TXEIE | 1 << SPI_CR2_ERRIE);
     SPIx_.pTxBuffer = nullptr;
     SPIx_.TxLen = 0;
     SPIx_.TxState = SPI_READY;
+    SPI_ClearOVRFlag();
 }
 
 void SPI_Handler::SPI_CloseReception() {
-    SPIx_.pSPIx->CR2 &= ~(1 << SPI_CR2_RXNEIE);
+    SPIx_.pSPIx->CR2 &= ~(1 << SPI_CR2_RXNEIE | 1 << SPI_CR2_ERRIE);
     SPIx_.pRxBuffer = nullptr;
     SPIx_.RxLen = 0;
     SPIx_.RxState = SPI_READY;

@@ -1,5 +1,6 @@
 gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
-spi_readSensordata.cpp:36:6:void delay()	16	static
+spi_readSensordata.cpp:35:6:void user_delay_us(uint32_t, void*)	24	static
 spi_readSensordata.cpp:42:8:int8_t user_spi_read(uint8_t, uint8_t*, uint32_t, void*)	24	static
-spi_readSensordata.cpp:48:5:int main()	128	static
-spi_readSensordata.cpp:95:10:void SPI1_IRQHandler()	8	static
+spi_readSensordata.cpp:48:8:int8_t user_spi_write(uint8_t, const uint8_t*, uint32_t, void*)	24	static
+spi_readSensordata.cpp:54:5:int main()	144	static
+spi_readSensordata.cpp:147:10:void SPI1_IRQHandler()	8	static

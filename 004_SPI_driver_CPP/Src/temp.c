@@ -432,6 +432,7 @@ int8_t bme280_init(struct bme280_dev *dev)
                 {
                     /* Read the calibration data */
                     rslt = get_calib_data(dev);
+                    dev->delay_us(1000, dev->intf_ptr); // TODO: Fix wait until SPI tranfer done. becuase Sck is low
                 }
 
                 break;

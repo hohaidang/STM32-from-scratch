@@ -10,13 +10,13 @@ CPP_SRCS += \
 ../driver/src/stm32f446re_gpio_driver.cpp \
 ../driver/src/stm32f446re_spi_driver.cpp 
 
+C_DEPS += \
+./driver/src/bme280.d 
+
 OBJS += \
 ./driver/src/bme280.o \
 ./driver/src/stm32f446re_gpio_driver.o \
 ./driver/src/stm32f446re_spi_driver.o 
-
-C_DEPS += \
-./driver/src/bme280.d 
 
 CPP_DEPS += \
 ./driver/src/stm32f446re_gpio_driver.d \

@@ -11,16 +11,16 @@ C_SRCS += \
 CPP_SRCS += \
 ../Src/spi_readSensordata.cpp 
 
+C_DEPS += \
+./Src/syscalls.d \
+./Src/sysmem.d \
+./Src/temp.d 
+
 OBJS += \
 ./Src/spi_readSensordata.o \
 ./Src/syscalls.o \
 ./Src/sysmem.o \
 ./Src/temp.o 
-
-C_DEPS += \
-./Src/syscalls.d \
-./Src/sysmem.d \
-./Src/temp.d 
 
 CPP_DEPS += \
 ./Src/spi_readSensordata.d 

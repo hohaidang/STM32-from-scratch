@@ -1,5 +1,10 @@
-main.c:78:5:main	16	static
-main.c:139:6:SystemClock_Config	88	static
-main.c:184:13:MX_SPI1_Init	8	static
-main.c:222:13:MX_GPIO_Init	40	static
-main.c:250:6:Error_Handler	4	static
+main.c:70:8:user_spi_read	48	static
+main.c:92:8:user_spi_write	32	static
+main.c:109:6:user_delay_us	16	static
+main.c:116:6:print_sensor_data	24	static
+main.c:141:8:stream_sensor_data_forced_mode	48	static
+main.c:199:5:main	16	static
+main.c:292:6:SystemClock_Config	88	static
+main.c:338:13:MX_SPI1_Init	8	static
+main.c:376:13:MX_GPIO_Init	40	static
+main.c:404:6:Error_Handler	4	static

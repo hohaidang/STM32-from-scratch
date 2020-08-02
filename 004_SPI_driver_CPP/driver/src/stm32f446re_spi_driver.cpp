@@ -406,46 +406,44 @@ uint8_t SPI_Handler::SPI_SendDataIT(const uint8_t *pTxBuffer, uint32_t Len) {
 	if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
 		SPI_PeripheralControl(ENABLE);
 	}
-    if(SPIx_.TxState != SPI_BUSY_IN_TX) {
-        // 1. Save the Tx buffer address and Len information in some global variables
-        SPIx_.pTxBuffer = const_cast<uint8_t *>(pTxBuffer);
-        SPIx_.TxLen = Len;
 
-        // 2. Mark the SPI state as busy in transmission so that no other code
-        // can take over same SPI peripheral until transmission is over
-        SPIx_.TxState = SPI_BUSY_IN_TX;
+	while(SPIx_.TxState != SPI_READY || SPIx_.RxState != SPI_READY);
+	// 1. Save the Tx buffer address and Len information in some global variables
+	SPIx_.pTxBuffer = const_cast<uint8_t*>(pTxBuffer);
+	SPIx_.TxLen = Len;
 
-        // 3. Enable TXEIE control bit to get interrupt whenever TXE flag is set in SR
-        SPIx_.pSPIx->CR2 |= (1 << SPI_CR2_TXEIE | 1 << SPI_CR2_ERRIE);
-    }
+	// 2. Mark the SPI state as busy in transmission so that no other code
+	// can take over same SPI peripheral until transmission is over
+	SPIx_.TxState = SPI_BUSY_IN_TX;
+
+	SPIx_.pSPIx->CR2 |= (1 << SPI_CR2_TXEIE | 1 << SPI_CR2_ERRIE);
 
     return SPIx_.TxState;
 }
 
 uint8_t SPI_Handler::SPI_ReceiveDataIT(uint8_t *pRxBuffer, uint32_t Len) {
-	if(SPIx_.RxState != SPI_BUSY_IN_RX && SPIx_.TxState != SPI_BUSY_IN_TX) {
-		SPI_ClearOVRFlag();
-        // 1. Save the Tx buffer address and Len information in some global variables
-        SPIx_.pTxBuffer = pRxBuffer; // transmit dummy
-        SPIx_.TxLen = Len;
+	while (SPIx_.TxState != SPI_READY || SPIx_.RxState != SPI_READY);
+	SPI_ClearOVRFlag();
+	// 1. Save the Tx buffer address and Len information in some global variables
+	SPIx_.pTxBuffer = pRxBuffer; // transmit dummy
+	SPIx_.TxLen = Len;
 
-		SPIx_.pRxBuffer = pRxBuffer;
-        SPIx_.RxLen = Len;
+	SPIx_.pRxBuffer = pRxBuffer;
+	SPIx_.RxLen = Len;
 
-        // 2. Mark the SPI state as busy in transmission so that no other code
-        // can take over same SPI peripheral until transmission is over
-        SPIx_.RxState = SPI_BUSY_IN_RX;
-        SPIx_.TxState = SPI_BUSY_IN_TX;
+	// 2. Mark the SPI state as busy in transmission so that no other code
+	// can take over same SPI peripheral until transmission is over
+	SPIx_.RxState = SPI_BUSY_IN_RX;
+	SPIx_.TxState = SPI_BUSY_IN_TX;
 
-        // 3. Enable TXEIE control bit to get interrupt whenever TXE flag is set in SR
-        SPIx_.pSPIx->CR2 |= (1 << SPI_CR2_RXNEIE | 1 << SPI_CR2_ERRIE | 1 << SPI_CR2_TXEIE);
-    }
+	// 3. Enable TXEIE control bit to get interrupt whenever TXE flag is set in SR
+	SPIx_.pSPIx->CR2 |= (1 << SPI_CR2_RXNEIE | 1 << SPI_CR2_ERRIE | 1 << SPI_CR2_TXEIE);
 
     return SPIx_.TxState;
 }
 
 void SPI_Handler::SPI_IRQHandling() {
-    uint8_t temp1 = 0, temp2 = 0;
+    volatile uint8_t temp1 = 0, temp2 = 0;
 	// check for RXNE
 	temp1 = SPIx_.pSPIx->SR & (1 << SPI_SR_RXNE);
 	temp2 = SPIx_.pSPIx->CR2 & (1 << SPI_CR2_RXNEIE);
@@ -539,22 +537,19 @@ void SPI_Handler::spi_ovr_err_interrupt_handle() {
 
 
 void SPI_Handler::SPI_ClearOVRFlag() {
-    uint8_t temp = 0;
+    volatile uint8_t temp = 0;
     temp = SPIx_.pSPIx->DR;
     temp = SPIx_.pSPIx->SR;
     static_cast<void>(temp);
 }
 
 void SPI_Handler::SPI_CloseTransmission() {
-	uint8_t temp = 0;
-	temp = SPIx_.pSPIx->SR;
-	// TODO: wait for SR txe is empty
-	while(temp & (1 << SPI_SR_TXE));
+	while((SPIx_.pSPIx->SR & (1 << SPI_SR_TXE)) == RESET);
     SPIx_.pSPIx->CR2 &= ~(1 << SPI_CR2_TXEIE | 1 << SPI_CR2_ERRIE);
     SPIx_.pTxBuffer = nullptr;
     SPIx_.TxLen = 0;
     SPIx_.TxState = SPI_READY;
-    SPI_ClearOVRFlag();
+    SPI_ClearOVRFlag(); // TODO: loi o day vi clear sau khi goi dummy
 }
 
 void SPI_Handler::SPI_CloseReception() {

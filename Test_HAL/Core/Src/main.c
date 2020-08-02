@@ -17,20 +17,17 @@
   ******************************************************************************
   */
 /* USER CODE END Header */
-
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-uint8_t buffer_tx[1] = {0xD0};
-uint8_t chipId = 0;
+#include <stdlib.h>
+#include <string.h> /* memset */
+#include <unistd.h> /* close */
+#include "bme280.h"
+#include "stm32f4xx_hal_spi.h"
 
-uint8_t buffer_cfg_tx[4] = {0x74, 0x27, 0x75, 0x02};
-//uint8_t buffer_cfg_tx[2] = {0x74, 0x27};
-uint8_t buffer_data_tx[1] = {0xF6};
-//uint8_t buffer_temp_rx[3] = {0, 0, 0};
-uint8_t buffer_rx[500];
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,10 +62,134 @@ static void MX_SPI1_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-float pressure, temperature, humidity;
-
+float temp, press, hum;
 uint16_t size;
 uint8_t Data[256];
+struct bme280_dev dev;
+
+int8_t user_spi_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t len, void *intf_ptr) {
+//	HAL_SPI_Transmit_IT(&hspi1, &reg_addr, 1);
+//	HAL_SPI_Receive_IT(&hspi1, reg_data, len);
+
+//	HAL_SPI_Transmit(&hspi1, &reg_addr, 1, 500);
+//	HAL_SPI_Receive(&hspi1, reg_data, len, 500);
+	uint8_t *buf = malloc((1 + len));
+	memset(buf, 0, 1 + len);
+	buf[0] = reg_addr;
+	uint8_t *receiveBuff = malloc(1 + len);
+	HAL_SPI_TransmitReceive(&hspi1, buf, receiveBuff, len + 1, 500);
+
+	for(int i = 0; i < len; ++i) {
+		reg_data[i] = receiveBuff[i + 1];
+	}
+
+    __HAL_SPI_DISABLE(&hspi1);
+
+	return 0;
+
+}
+
+int8_t user_spi_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t len, void *intf_ptr) {
+//	HAL_SPI_Transmit_IT(&hspi1, &reg_addr, 1);
+//	HAL_SPI_Transmit_IT(&hspi1, (uint8_t *)reg_data, len);
+//	HAL_SPI_Transmit(&hspi1, &reg_addr, 1, 500);
+//	HAL_SPI_Transmit(&hspi1, (uint8_t *)reg_data, len, 500);
+
+	uint8_t *buf = malloc((1 + len) * sizeof(uint8_t));
+	buf[0] = reg_addr;
+	for(int i = 0; i < len; ++i) {
+		buf[i + 1] = reg_data[i];
+	}
+
+	HAL_SPI_Transmit(&hspi1, buf, len + 1, 500);
+	__HAL_SPI_DISABLE(&hspi1);
+	return 0;
+}
+
+void user_delay_us(uint32_t period, void *intf_ptr) {
+	HAL_Delay(period);
+}
+
+/*!
+ * @brief This API used to print the sensor temperature, pressure and humidity data.
+ */
+void print_sensor_data(struct bme280_data *comp_data)
+{
+
+
+#ifdef BME280_FLOAT_ENABLE
+    temp = comp_data->temperature;
+    press = 0.01 * comp_data->pressure;
+    hum = comp_data->humidity;
+#else
+#ifdef BME280_64BIT_ENABLE
+    temp = 0.01f * comp_data->temperature;
+    press = 0.0001f * comp_data->pressure;
+    hum = 1.0f / 1024.0f * comp_data->humidity;
+#else
+    temp = 0.01f * comp_data->temperature;
+    press = 0.01f * comp_data->pressure;
+    hum = 1.0f / 1024.0f * comp_data->humidity;
+#endif
+#endif
+//    printf("%0.2lf deg C, %0.2lf hPa, %0.2lf%%\n", temp, press, hum);
+}
+
+/*!
+ * @brief This API reads the sensor temperature, pressure and humidity data in forced mode.
+ */
+int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
+{
+    int8_t rslt;
+    uint8_t settings_sel;
+    struct bme280_data comp_data;
+
+    /* Recommended mode of operation: Indoor navigation */
+    dev->settings.osr_h = BME280_OVERSAMPLING_1X;
+    dev->settings.osr_p = BME280_OVERSAMPLING_16X;
+    dev->settings.osr_t = BME280_OVERSAMPLING_2X;
+    dev->settings.filter = BME280_FILTER_COEFF_16;
+
+    settings_sel = BME280_OSR_PRESS_SEL | BME280_OSR_TEMP_SEL | BME280_OSR_HUM_SEL | BME280_FILTER_SEL;
+
+    rslt = bme280_set_sensor_settings(settings_sel, dev);
+    if (rslt != BME280_OK)
+    {
+//        fprintf(stderr, "Failed to set sensor settings (code %+d).", rslt);
+
+        return rslt;
+    }
+
+//    printf("Temperature, Pressure, Humidity\n");
+
+    /* Continuously stream sensor data */
+    while (1)
+    {
+        rslt = bme280_set_sensor_mode(BME280_FORCED_MODE, dev);
+        if (rslt != BME280_OK)
+        {
+//            fprintf(stderr, "Failed to set sensor mode (code %+d).", rslt);
+            break;
+        }
+
+        /* Wait for the measurement to complete and print data @25Hz */
+        dev->delay_us(40, dev->intf_ptr);
+        rslt = bme280_get_sensor_data(BME280_ALL, &comp_data, dev);
+        if (rslt != BME280_OK)
+        {
+//            fprintf(stderr, "Failed to get sensor data (code %+d).", rslt);
+            break;
+        }
+
+        print_sensor_data(&comp_data);
+        dev->delay_us(500, dev->intf_ptr);
+    }
+
+    return rslt;
+}
+
+
+
 /* USER CODE END 0 */
 
 /**
@@ -103,26 +224,56 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
 
-  	uint8_t status = 0;
-  	uint8_t dummy = 0xFF;
-  	status |= HAL_SPI_Transmit(&hspi1, buffer_tx, 1, 100);
-  	status |= HAL_SPI_Receive(&hspi1, &chipId, 1, 100);
-//  	HAL_SPI_TransmitReceive(&hspi1, buffer_tx, &chipId, 1, 100);
 
-  	// configure
-//    status |= HAL_SPI_Transmit(&hspi1, &buffer_cfg_tx[0], 4, 100);
-//    status |= HAL_SPI_Receive(&hspi1, &buffer_rx[0], 4, 100);
-    HAL_Delay(500);
 
-//    status |= HAL_SPI_Transmit(&hspi1, &buffer_data_tx[0], 1, 100);
+  int8_t rslt = BME280_OK;
 
-    //status |= HAL_SPI_Receive(&hspi1, &buffer_rx[0], 200, 100);
-//    HAL_SPI_TransmitReceive(&hspi1, buffer_data_tx, buffer_rx, 20, 100);
+  /* Sensor_0 interface over SPI with native chip select line */
+  uint8_t dev_addr = 0;
+  dev.intf_ptr = &dev_addr;
+  dev.intf = BME280_SPI_INTF;
+  dev.read = &user_spi_read;
+  dev.write = &user_spi_write;
+  dev.delay_us = &user_delay_us;
+
+  rslt = bme280_init(&dev);
+
+  // configure sensor data
+  uint8_t sensorMode = 0;
+
+
+//  rslt |= bme280_get_sensor_mode(&sensorMode, &dev);
+//  uint8_t config_ctrl[2] = { 0x74, 0x03 };
+//  HAL_SPI_Transmit(&hspi1, config_ctrl, 2, 500);
+//  __HAL_SPI_DISABLE(&hspi1);
+//
+//
+//  rslt |= bme280_get_sensor_mode(&sensorMode, &dev);
+//  __HAL_SPI_DISABLE(&hspi1);
+
+//  uint8_t sensorData[9] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+//  uint8_t buf[9] = {0xF7, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+//  HAL_SPI_TransmitReceive(&hspi1, buf, sensorData, 9, 500);
+//  __HAL_SPI_DISABLE(&hspi1);
+
+
+  rslt |= bme280_set_sensor_mode(BME280_NORMAL_MODE, &dev);
+
+  rslt |= bme280_get_sensor_mode(&sensorMode, &dev);
+
+
+
+
+
+
+//  rslt |= stream_sensor_data_forced_mode(&dev);
+
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  (void)rslt;
   while (1)
   {
     /* USER CODE END WHILE */
@@ -141,11 +292,12 @@ void SystemClock_Config(void)
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-  /** Configure the main internal regulator output voltage 
+  /** Configure the main internal regulator output voltage
   */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
-  /** Initializes the CPU, AHB and APB busses clocks 
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
@@ -161,7 +313,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  /** Initializes the CPU, AHB and APB busses clocks 
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
@@ -264,7 +416,7 @@ void Error_Handler(void)
   * @retval None
   */
 void assert_failed(uint8_t *file, uint32_t line)
-{ 
+{
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */

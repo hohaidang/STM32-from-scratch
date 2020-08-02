@@ -19,6 +19,8 @@
 
 #include "../driver/inc/stm32f4xx.h"
 #include <memory>
+//#include <stdio.h>
+#include <iostream>
 #include "temp.h"
 using namespace std;
 
@@ -29,10 +31,90 @@ using namespace std;
 //PA4 - slave select
 // Alternate function 5
 SPI_Handler *SPI1_Handler;
+struct bme280_dev dev;
+
+/*!
+ * @brief This API used to print the sensor temperature, pressure and humidity data.
+ */
+void print_sensor_data(struct bme280_data *comp_data)
+{
+    float temp, press, hum;
+
+#ifdef BME280_FLOAT_ENABLE
+    temp = comp_data->temperature;
+    press = 0.01 * comp_data->pressure;
+    hum = comp_data->humidity;
+#else
+#ifdef BME280_64BIT_ENABLE
+    temp = 0.01f * comp_data->temperature;
+    press = 0.0001f * comp_data->pressure;
+    hum = 1.0f / 1024.0f * comp_data->humidity;
+#else
+    temp = 0.01f * comp_data->temperature;
+    press = 0.01f * comp_data->pressure;
+    hum = 1.0f / 1024.0f * comp_data->humidity;
+#endif
+#endif
+//    printf("%0.2lf deg C, %0.2lf hPa, %0.2lf%%\n", temp, press, hum);
+    cout << "temp = " << temp << ", press = " << press << "hum = " << hum << endl;
+}
+
+/*!
+ * @brief This API reads the sensor temperature, pressure and humidity data in forced mode.
+ */
+int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
+{
+    int8_t rslt;
+    uint8_t settings_sel;
+    struct bme280_data comp_data;
+
+    /* Recommended mode of operation: Indoor navigation */
+    dev->settings.osr_h = BME280_OVERSAMPLING_1X;
+    dev->settings.osr_p = BME280_OVERSAMPLING_16X;
+    dev->settings.osr_t = BME280_OVERSAMPLING_2X;
+    dev->settings.filter = BME280_FILTER_COEFF_16;
+
+    settings_sel = BME280_OSR_PRESS_SEL | BME280_OSR_TEMP_SEL | BME280_OSR_HUM_SEL | BME280_FILTER_SEL;
+
+    rslt = bme280_set_sensor_settings(settings_sel, dev);
+    if (rslt != BME280_OK)
+    {
+//        fprintf(stderr, "Failed to set sensor settings (code %+d).", rslt);
+
+        return rslt;
+    }
+
+//    printf("Temperature, Pressure, Humidity\n");
+
+    /* Continuously stream sensor data */
+    while (1)
+    {
+        rslt = bme280_set_sensor_mode(BME280_FORCED_MODE, dev);
+        if (rslt != BME280_OK)
+        {
+//            fprintf(stderr, "Failed to set sensor mode (code %+d).", rslt);
+            break;
+        }
+
+        /* Wait for the measurement to complete and print data @25Hz */
+        dev->delay_us(40, dev->intf_ptr);
+        rslt = bme280_get_sensor_data(BME280_ALL, &comp_data, dev);
+        if (rslt != BME280_OK)
+        {
+//            fprintf(stderr, "Failed to get sensor data (code %+d).", rslt);
+            break;
+        }
+
+        print_sensor_data(&comp_data);
+        dev->delay_us(1000, dev->intf_ptr);
+    }
+
+    return rslt;
+}
 
 void user_delay_us(uint32_t period, void *intf_ptr)
 {
-	for(int i = 0; i < 250000; ++i) {
+	for(int i = 0; i < 5000; ++i) {
 
 	}
 }
@@ -40,12 +122,21 @@ void user_delay_us(uint32_t period, void *intf_ptr)
 int8_t user_spi_read (uint8_t reg_addr, uint8_t *reg_data, uint32_t len, void *intf_ptr) {
     SPI1_Handler->SPI_SendDataIT(static_cast<const uint8_t *>(&reg_addr), 1);
     SPI1_Handler->SPI_ReceiveDataIT(reg_data, len);
+    SPI1_Handler->SPI_PeripheralControl(DISABLE);
     return 0;
 }
 
 int8_t user_spi_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t len, void *intf_ptr) {
-	SPI1_Handler->SPI_SendDataIT(static_cast<const uint8_t *>(&reg_addr), 1);
-	SPI1_Handler->SPI_SendDataIT(reg_data, len);
+//	SPI1_Handler->SPI_SendDataIT(static_cast<const uint8_t *>(&reg_addr), 1);
+//	SPI1_Handler->SPI_SendDataIT(reg_data, len);
+	uint8_t *buf = new uint8_t((1 + len) * sizeof(uint8_t));
+	buf[0] = reg_addr;
+	for(uint32_t i = 0; i < len; ++i) {
+		buf[i + 1] = reg_data[i];
+	}
+
+	SPI1_Handler->SPI_SendDataIT(buf, len + 1);
+	SPI1_Handler->SPI_PeripheralControl(DISABLE);
 	return 0;
 }
 
@@ -66,44 +157,27 @@ int main(void)
 
 
 	// read chip ID
-	uint8_t chipIdAddr = 0xD0;
-	uint8_t chipID = 0;
-	SPI1_Handler->SPI_SendDataIT(&chipIdAddr, 1);
-	SPI1_Handler->SPI_ReceiveDataIT(&chipID, 1);
-
-	// configure normal mode and oversampling
-//	uint8_t ctrl_means = 0x93;
-	uint8_t ctrl_means_reg_W[2] = {0x74, 0x93};
-	uint8_t ctrl_means_reg_R = 0xF4;
-	uint8_t ctrl_read = 0;
-	// write
-//	SPI1_Handler->SPI_SendDataIT(&ctrl_means_reg_W, 1);
-//	SPI1_Handler->SPI_SendDataIT(&ctrl_means, 1);
-	SPI1_Handler->SPI_SendDataIT(&ctrl_means_reg_W[0], 2);
-
-	// read
-	SPI1_Handler->SPI_SendDataIT(&ctrl_means_reg_R, 1);
-	SPI1_Handler->SPI_ReceiveDataIT(&ctrl_read, 1);
-
-	// read status
-	uint8_t status_addr = 0xF3;
-	uint8_t statusData = 0x00;
-	SPI1_Handler->SPI_SendDataIT(&status_addr, 1);
-	SPI1_Handler->SPI_ReceiveDataIT(&statusData, 1);
-
-	user_delay_us(1, 0);
+//	uint8_t chipIdAddr = 0xD0;
+//	uint8_t chipID = 0;
+//	SPI1_Handler->SPI_SendDataIT(&chipIdAddr, 1);
+//	SPI1_Handler->SPI_ReceiveDataIT(&chipID, 1);
 
 
-	// read sensordata
-	uint8_t sensor_addr = 0xF7;
-	uint8_t sensorData[8] = {};
-	SPI1_Handler->SPI_SendDataIT(&sensor_addr, 1);
-	SPI1_Handler->SPI_ReceiveDataIT(&sensorData[0], 8);
-	// Test thu thanh ghi ctl_mean, configure truoc sau do moi configure sensor mode
 
-//	struct bme280_data testSensorData = {};
-//	rslt = bme280_get_sensor_data(BME280_ALL, &testSensorData, &dev);
-	static_cast<void>(rslt);
+	  int8_t rslt = BME280_OK;
+	  /* Sensor_0 interface over SPI with native chip select line */
+	  uint8_t dev_addr = 0;
+	  dev.intf_ptr = &dev_addr;
+	  dev.intf = BME280_SPI_INTF;
+	  dev.read = &user_spi_read;
+	  dev.write = &user_spi_write;
+	  dev.delay_us = &user_delay_us;
+
+	  rslt = bme280_init(&dev);
+
+	  rslt |= stream_sensor_data_forced_mode(&dev);
+
+
 
 
     while(SPI1_Handler->SPI_GetFlagStatus(SPI_BSY_FLAG));

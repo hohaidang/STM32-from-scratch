@@ -10,14 +10,14 @@ C_SRCS += \
 CPP_SRCS += \
 ../Src/main.cpp 
 
+C_DEPS += \
+./Src/syscalls.d \
+./Src/sysmem.d 
+
 OBJS += \
 ./Src/main.o \
 ./Src/syscalls.o \
 ./Src/sysmem.o 
-
-C_DEPS += \
-./Src/syscalls.d \
-./Src/sysmem.d 
 
 CPP_DEPS += \
 ./Src/main.d 

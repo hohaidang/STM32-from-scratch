@@ -717,7 +717,7 @@ int8_t bme280_soft_reset(struct bme280_dev *dev)
             do
             {
                 /* As per data sheet - Table 1, startup time is 2 ms. */
-                dev->delay_us(2000, dev->intf_ptr);
+                dev->delay_us(3000, dev->intf_ptr);
                 rslt = bme280_get_regs(BME280_STATUS_REG_ADDR, &status_reg, 1, dev);
 
             } while ((rslt == BME280_OK) && (try_run--) && (status_reg & BME280_STATUS_IM_UPDATE));

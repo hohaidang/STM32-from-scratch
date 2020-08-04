@@ -71,21 +71,24 @@ int8_t user_spi_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t len, void *in
 //	HAL_SPI_Transmit_IT(&hspi1, &reg_addr, 1);
 //	HAL_SPI_Receive_IT(&hspi1, reg_data, len);
 
-//	HAL_SPI_Transmit(&hspi1, &reg_addr, 1, 500);
-//	HAL_SPI_Receive(&hspi1, reg_data, len, 500);
-	uint8_t *buf = malloc((1 + len));
-	memset(buf, 0, 1 + len);
-	buf[0] = reg_addr;
-	uint8_t *receiveBuff = malloc(1 + len);
-	HAL_SPI_TransmitReceive(&hspi1, buf, receiveBuff, len + 1, 500);
+	HAL_SPI_Transmit(&hspi1, &reg_addr, 1, 500);
+	HAL_SPI_Receive(&hspi1, reg_data, len, 500);
 
-	for(int i = 0; i < len; ++i) {
-		reg_data[i] = receiveBuff[i + 1];
-	}
+	__HAL_SPI_DISABLE(&hspi1);
 
-    __HAL_SPI_DISABLE(&hspi1);
-
-	return 0;
+//	uint8_t *buf = malloc((1 + len));
+//	memset(buf, 0, 1 + len);
+//	buf[0] = reg_addr;
+//	uint8_t *receiveBuff = malloc(1 + len);
+//	HAL_SPI_TransmitReceive(&hspi1, buf, receiveBuff, len + 1, 500);
+//
+//	for(int i = 0; i < len; ++i) {
+//		reg_data[i] = receiveBuff[i + 1];
+//	}
+//
+//    __HAL_SPI_DISABLE(&hspi1);
+//
+//	return 0;
 
 }
 
@@ -257,17 +260,30 @@ int main(void)
 //  __HAL_SPI_DISABLE(&hspi1);
 
 
-  rslt |= bme280_set_sensor_mode(BME280_NORMAL_MODE, &dev);
-
-  rslt |= bme280_get_sensor_mode(&sensorMode, &dev);
-
+//  rslt |= bme280_set_sensor_mode(BME280_NORMAL_MODE, &dev);
+//  rslt |= bme280_get_sensor_mode(&sensorMode, &dev);
 
 
+
+  uint8_t config_ctrl[1] = {0x03};
+  uint8_t config_ctrl_W = 0x74;
+//  HAL_Delay(200);
+  rslt = user_spi_write(config_ctrl_W, &config_ctrl[0], 1, (void *) 1);
+//    rslt |= bme280_set_sensor_mode(BME280_NORMAL_MODE, &dev);
+//  rslt |= bme280_get_sensor_mode(&sensorMode, &dev);
+    rslt |= user_spi_read(0xF4, &sensorMode, 1, (void *)1);
+
+//    uint8_t ctrl_hum = 0x03;
+//    rslt |= user_spi_write(0x72, &ctrl_hum, 1, (void *) 1);
+//    uint8_t ctrl_hum_data = 0;
+//    rslt |= user_spi_read(0xF2, &ctrl_hum_data, 1, (void *) 1);
 
 
 
 //  rslt |= stream_sensor_data_forced_mode(&dev);
+  while((hspi1.Instance->SR & SPI_SR_BSY) == SET);
 
+  __HAL_SPI_DISABLE(&hspi1);
 
   /* USER CODE END 2 */
 
@@ -352,6 +368,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_HARD_OUTPUT;
   hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+//  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -425,3 +442,4 @@ void assert_failed(uint8_t *file, uint32_t line)
 #endif /* USE_FULL_ASSERT */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+;

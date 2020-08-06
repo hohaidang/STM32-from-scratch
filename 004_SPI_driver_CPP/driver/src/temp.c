@@ -39,7 +39,7 @@
 /*! @file bme280.c
  * @brief Sensor driver for BME280 sensor
  */
-#include "temp.h"
+#include "../inc/temp.h"
 
 /**\name Internal macros */
 /* To identify osr settings selected by user */

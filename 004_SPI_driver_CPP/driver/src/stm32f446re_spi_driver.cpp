@@ -10,7 +10,7 @@
 /*********************************************************************
  * @class      		  - GPIO_Handler Constructor
  *
- * @brief             -
+ * @brief             - Initialize SPI, GPIOs, Interrupt, etc.
  **********************************************************************/
 SPI_Handler::SPI_Handler(SPI_RegDef_t *SPIx_ADDR,
                          uint8_t DeviceMode,
@@ -43,19 +43,29 @@ SPI_Handler::SPI_Handler(SPI_RegDef_t *SPIx_ADDR,
 /*********************************************************************
  * @fn      		  - SPI_Handler De-constructor
  *
- * @brief             -
+ * @brief             - Disable all SPIs feature
  *
  * @param None
  *
  * @return None
  *
- * @Node: Be careful when using many Peripheral device in the same PORT
+ * @Node:
  **********************************************************************/
 SPI_Handler::~SPI_Handler(){
 	SPI_DeInit();
 }
 
-// peripheral clock setup
+/*********************************************************************
+ * @fn                - SPI_Handler peripheral clock setup
+ *
+ * @brief             - peripheral clock setup for SPI
+ *
+ * @param None
+ *
+ * @return None
+ *
+ * @Node:
+ **********************************************************************/
 void SPI_Handler::SPI_PeriClockControl() {
 	if (SPI1 == SPIx_.pSPIx) {
 		SPI1_PCLK_EN();
@@ -111,21 +121,22 @@ void SPI_Handler::SPI_GPIOs_Init() {
                                         5) );
 
 
-
-        SPI_NSS.reset( new GPIO_Handler(GPIOA,
-                                        GPIO_PIN_NO_4,
-                                        GPIO_MODE_ALTFN,
-                                        GPIO_SPEED_HIGH,
-                                        IRQ_Prio_NO_15,
-                                        GPIO_OP_TYPE_PP,
-                                        GPIO_NO_PUPD,
-                                        5) );
+        if(SPIx_.SPIConfig.SPI_SSM == SPI_SSM_DI) {
+            // Hardware NSS enable, configure for PA4
+            SPI_NSS.reset( new GPIO_Handler(GPIOA,
+                                            GPIO_PIN_NO_4,
+                                            GPIO_MODE_ALTFN,
+                                            GPIO_SPEED_HIGH,
+                                            IRQ_Prio_NO_15,
+                                            GPIO_OP_TYPE_PP,
+                                            GPIO_NO_PUPD,
+                                            5) );
+        }
     }
-
 }
 
 /*********************************************************************
- * @fn      		  -
+ * @fn      		  - Initialize SPI
  *
  * @brief             -
  *
@@ -199,7 +210,7 @@ void SPI_Handler::SPI_DeInit() {
 }
 
 /*********************************************************************
- * @fn                -
+ * @fn                - Enable or Disable SPI
  *
  * @brief             -
  *
@@ -217,19 +228,16 @@ void SPI_Handler::SPI_PeripheralControl(uint8_t EnOrDi) {
 }
 
 /*********************************************************************
- * @fn                -
+ * @fn                - Get Flag register status
  *
  * @brief             -
  *
- * @param None
+ * @param[in]         - FlagName: check @FLAG_NAME_STATUS
  *
  * @return None
  **********************************************************************/
-uint8_t SPI_Handler::SPI_GetFlagStatus(uint8_t FlagName) {
-    if(SPIx_.pSPIx->SR & FlagName) {
-        return FLAG_SET;
-    }
-    return FLAG_RESET;
+inline uint8_t SPI_Handler::SPI_GetFlagStatus(const uint8_t FlagName) {
+    return (SPIx_.pSPIx->SR & FlagName) ? FLAG_SET : FLAG_RESET;
 }
 
 /*********************************************************************

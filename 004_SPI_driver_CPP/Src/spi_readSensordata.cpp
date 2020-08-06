@@ -19,9 +19,9 @@
 
 #include "../driver/inc/stm32f4xx.h"
 #include <memory>
-//#include <stdio.h>
 #include <iostream>
-#include "temp.h"
+#include "../driver/inc/temp.h"
+#include <iostream>
 using namespace std;
 
 void InitilizePeripheral(void);
@@ -76,11 +76,19 @@ int8_t user_spi_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t len, v
     return 0;
 }
 
+void printSensorData(const struct bme280_data &comp_data) {
+    int temp, hum, pres;
+    temp = (int)comp_data.temperature;
+    hum = (int)comp_data.humidity;
+    pres = (int)comp_data.pressure;
+    cout << "Temperature = " << temp << " deg C" << "\tHuminity = " << hum << " hPa" << "\tPressure = " << pres << " Pascal " << endl;
+}
+
 
 int main(void)
 {
     InitilizePeripheral();
-
+    cout << "HelloWorld" << endl;
     int8_t rslt = BME280_OK;
 
     /* Sensor_0 interface over SPI with native chip select line */
@@ -105,9 +113,16 @@ int main(void)
     user_spi_read(0xF4, &ctrl_means, 1, dev.intf_ptr);
 
     user_delay_us(5, dev.intf_ptr);
-    // get sensor data
     struct bme280_data comp_data;
-    rslt = bme280_get_sensor_data(BME280_ALL, &comp_data, &dev);
+    while(1) {
+        // get sensor data
+        rslt = bme280_get_sensor_data(BME280_ALL, &comp_data, &dev);
+        printSensorData(comp_data);
+        for(int i = 0; i < 500000; ++i) {};
+    }
+
+
+
 
     SPI1_Handler->SPI_PeripheralControl(DISABLE);
     while(1);
@@ -117,13 +132,13 @@ int main(void)
 void InitilizePeripheral(void) {
     // HSI Clock 16 Mhz
     SPI1_Handler = new SPI_Handler(SPI1,
-                                        SPI_DEVICE_MODE_MASTER,
-                                        SPI_BUS_CONFIG_FD,
-                                        SPI_SCLK_SPEED_DIV32,
-                                        SPI_DFF_8BITS,
-                                        SPI_CPOL_LOW,
-                                        SPI_CPHA_LOW,
-                                        SPI_SSM_EN);
+                                    SPI_DEVICE_MODE_MASTER,
+                                    SPI_BUS_CONFIG_FD,
+                                    SPI_SCLK_SPEED_DIV32,
+                                    SPI_DFF_8BITS,
+                                    SPI_CPOL_LOW,
+                                    SPI_CPHA_LOW,
+                                    SPI_SSM_EN);
 
     // TODO: design interrupt for SPI connect with sensor
 //  SPI1_Handler->SPI_IRQInterruptConfig(IRQ_NO_SPI1, ENABLE);

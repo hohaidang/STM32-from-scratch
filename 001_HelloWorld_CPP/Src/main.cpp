@@ -22,5 +22,7 @@ using namespace std;
 int main(void)
 {
 	cout << "Hello World CPP" << endl;
+	int a = 5;
+	cout << "a = " << a << endl;
 	for(;;);
 }

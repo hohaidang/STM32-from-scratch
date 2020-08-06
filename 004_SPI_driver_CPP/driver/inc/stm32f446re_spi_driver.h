@@ -46,7 +46,7 @@
 #define SPI_SSM_EN                              1   // sw slave management free slave select pin, 1 master 1 slave
 #define SPI_SSM_DI                              0   // hw slave management use multiple slave and multiple slave select
 
-// SPI related status flags definitions
+// @FLAG_NAME_STATUS SPI related status flags definitions
 #define SPI_TXE_FLAG    (1u << SPI_SR_TXE)
 #define SPI_RXNE_FLAG   (1u << SPI_SR_RXNE)
 #define SPI_BSY_FLAG    (1u << SPI_SR_BSY)
@@ -117,7 +117,7 @@ public:
 	void SPI_Init();
 	void SPI_DeInit();
 
-	uint8_t SPI_GetFlagStatus(uint8_t FlagName);
+	inline uint8_t SPI_GetFlagStatus(const uint8_t FlagName);
 	void SPI_PeripheralControl(uint8_t EnOrDi);
 
 	// Data Send and Receive

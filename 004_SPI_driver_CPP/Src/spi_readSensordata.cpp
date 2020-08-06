@@ -18,11 +18,17 @@
  */
 
 #include "../driver/inc/stm32f4xx.h"
-#include <memory>
-#include <iostream>
+
 #include "../driver/inc/temp.h"
-#include <iostream>
+
 using namespace std;
+
+#define DEBUG_EN
+
+#ifdef DEBUG_EN
+#include <iostream>
+#include <iomanip>
+#endif
 
 void InitilizePeripheral(void);
 
@@ -77,18 +83,20 @@ int8_t user_spi_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t len, v
 }
 
 void printSensorData(const struct bme280_data &comp_data) {
-    int temp, hum, pres;
-    temp = (int)comp_data.temperature;
-    hum = (int)comp_data.humidity;
-    pres = (int)comp_data.pressure;
-    cout << "Temperature = " << temp << " deg C" << "\tHuminity = " << hum << " hPa" << "\tPressure = " << pres << " Pascal " << endl;
+    float  temp, hum, pres;
+    temp = comp_data.temperature;
+    pres = 0.01 * comp_data.pressure;
+    hum = comp_data.humidity;
+
+#ifdef DEBUG_EN
+    cout << fixed << setprecision(2) << temp << " deg C, " <<  pres << " hPa, " <<  hum << " % " << endl;
+#endif
 }
 
 
 int main(void)
 {
     InitilizePeripheral();
-    cout << "HelloWorld" << endl;
     int8_t rslt = BME280_OK;
 
     /* Sensor_0 interface over SPI with native chip select line */
@@ -118,13 +126,14 @@ int main(void)
         // get sensor data
         rslt = bme280_get_sensor_data(BME280_ALL, &comp_data, &dev);
         printSensorData(comp_data);
-        for(int i = 0; i < 500000; ++i) {};
+        for(int i = 0; i < 1000000; ++i) {};
     }
 
 
 
 
     SPI1_Handler->SPI_PeripheralControl(DISABLE);
+    static_cast<void>(rslt);
     while(1);
     return 0;
 }

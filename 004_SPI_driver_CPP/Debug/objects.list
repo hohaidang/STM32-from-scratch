@@ -2,7 +2,7 @@
 "Src/syscalls.o"
 "Src/sysmem.o"
 "Startup/startup_stm32f446retx.o"
-"driver/src/bme280.o"
+"driver/src/bme280_driver.o"
 "driver/src/stm32f446re_gpio_driver.o"
 "driver/src/stm32f446re_spi_driver.o"
 "driver/src/temp.o"

@@ -14,6 +14,9 @@
 #define __vo volatile
 #define __weak __attribute__((weak))
 
+using u8 = uint8_t;
+using u32 = uint32_t;
+
 // Check ARM Cortex - M4 device generic User Guide
 // ARM Cortex Mx Processor NVIC ISERx Register Address
 #define NVIC_ISER0			((__vo uint32_t *) 0xE000E100)

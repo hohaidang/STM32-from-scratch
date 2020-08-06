@@ -123,7 +123,7 @@ public:
 	// Data Send and Receive
 	void SPI_SendData(const uint8_t *pTxBuffer, uint32_t Len);
 	void SPI_ReceiveData(uint8_t *pRxBuffer, uint32_t Len);
-	void SPI_SendAndReceiveIT(uint8_t *pTxBuffer, uint8_t *pRxBuffer, uint32_t Len);
+	void SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer, uint32_t len);
 
     // Data Send and Receive in interrupt mode
     uint8_t SPI_SendDataIT(const uint8_t *pTxBuffer, uint32_t Len);

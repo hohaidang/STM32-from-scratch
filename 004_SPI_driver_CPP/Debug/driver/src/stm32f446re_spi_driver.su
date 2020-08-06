@@ -8,22 +8,22 @@ stm32f446re_spi_driver.cpp:186:6:void SPI_Handler::SPI_DeInit()	16	static
 stm32f446re_spi_driver.cpp:210:6:void SPI_Handler::SPI_PeripheralControl(uint8_t)	16	static
 stm32f446re_spi_driver.cpp:228:9:uint8_t SPI_Handler::SPI_GetFlagStatus(uint8_t)	16	static
 stm32f446re_spi_driver.cpp:245:6:void SPI_Handler::SPI_SendData(const uint8_t*, uint32_t)	24	static
-stm32f446re_spi_driver.cpp:271:6:void SPI_Handler::SPI_SendAndReceiveIT(uint8_t*, uint8_t*, uint32_t)	24	static
-stm32f446re_spi_driver.cpp:276:6:void SPI_Handler::SPI_SSOEConfig(uint8_t)	16	static
-stm32f446re_spi_driver.cpp:295:6:void SPI_Handler::SPI_SSIConfig(uint8_t)	16	static
-stm32f446re_spi_driver.cpp:316:6:void SPI_Handler::SPI_ReceiveData(uint8_t*, uint32_t)	24	static
-stm32f446re_spi_driver.cpp:357:6:void SPI_Handler::SPI_IRQInterruptConfig(uint8_t, uint8_t)	16	static
-stm32f446re_spi_driver.cpp:395:6:void SPI_Handler::SPI_IRQPriorityConfig(uint8_t, uint8_t)	24	static
-stm32f446re_spi_driver.cpp:405:9:uint8_t SPI_Handler::SPI_SendDataIT(const uint8_t*, uint32_t)	24	static
-stm32f446re_spi_driver.cpp:424:9:uint8_t SPI_Handler::SPI_ReceiveDataIT(uint8_t*, uint32_t)	24	static
-stm32f446re_spi_driver.cpp:445:6:void SPI_Handler::SPI_IRQHandling()	24	static
-stm32f446re_spi_driver.cpp:477:6:void SPI_Handler::spi_txe_interrupt_handle()	16	static
-stm32f446re_spi_driver.cpp:503:6:void SPI_Handler::spi_rxne_interrupt_handle()	16	static
-stm32f446re_spi_driver.cpp:531:6:void SPI_Handler::spi_ovr_err_interrupt_handle()	16	static
-stm32f446re_spi_driver.cpp:539:6:void SPI_Handler::SPI_ClearOVRFlag()	24	static
-stm32f446re_spi_driver.cpp:546:6:void SPI_Handler::SPI_CloseTransmission()	16	static
-stm32f446re_spi_driver.cpp:555:6:void SPI_Handler::SPI_CloseReception()	16	static
-stm32f446re_spi_driver.cpp:562:13:void SPI_ApplicationEventCallback(SPI_Handle_t*, uint8_t)	16	static
+stm32f446re_spi_driver.cpp:282:6:void SPI_Handler::SPI_ReceiveData(uint8_t*, uint32_t)	24	static
+stm32f446re_spi_driver.cpp:312:6:void SPI_Handler::SPI_SendAndReceiveData(uint8_t*, uint8_t*, uint32_t)	24	static
+stm32f446re_spi_driver.cpp:354:6:void SPI_Handler::SPI_SSOEConfig(uint8_t)	16	static
+stm32f446re_spi_driver.cpp:373:6:void SPI_Handler::SPI_SSIConfig(uint8_t)	16	static
+stm32f446re_spi_driver.cpp:396:6:void SPI_Handler::SPI_IRQInterruptConfig(uint8_t, uint8_t)	16	static
+stm32f446re_spi_driver.cpp:434:6:void SPI_Handler::SPI_IRQPriorityConfig(uint8_t, uint8_t)	24	static
+stm32f446re_spi_driver.cpp:444:9:uint8_t SPI_Handler::SPI_SendDataIT(const uint8_t*, uint32_t)	24	static
+stm32f446re_spi_driver.cpp:463:9:uint8_t SPI_Handler::SPI_ReceiveDataIT(uint8_t*, uint32_t)	24	static
+stm32f446re_spi_driver.cpp:484:6:void SPI_Handler::SPI_IRQHandling()	24	static
+stm32f446re_spi_driver.cpp:516:6:void SPI_Handler::spi_txe_interrupt_handle()	16	static
+stm32f446re_spi_driver.cpp:542:6:void SPI_Handler::spi_rxne_interrupt_handle()	16	static
+stm32f446re_spi_driver.cpp:570:6:void SPI_Handler::spi_ovr_err_interrupt_handle()	16	static
+stm32f446re_spi_driver.cpp:578:6:void SPI_Handler::SPI_ClearOVRFlag()	24	static
+stm32f446re_spi_driver.cpp:585:6:void SPI_Handler::SPI_CloseTransmission()	16	static
+stm32f446re_spi_driver.cpp:594:6:void SPI_Handler::SPI_CloseReception()	16	static
+stm32f446re_spi_driver.cpp:601:13:void SPI_ApplicationEventCallback(SPI_Handle_t*, uint8_t)	16	static
 tuple:919:17:constexpr std::tuple<_T1, _T2>::tuple() [with _U1 = GPIO_Handler*; _U2 = std::default_delete<GPIO_Handler>; typename std::enable_if<std::__and_<std::__is_implicitly_default_constructible<_U1>, std::__is_implicitly_default_constructible<_U2> >::value, bool>::type <anonymous> = 1; _T1 = GPIO_Handler*; _T2 = std::default_delete<GPIO_Handler>]	16	static
 unique_ptr.h:139:7:constexpr std::__uniq_ptr_impl<_Tp, _Dp>::__uniq_ptr_impl() [with _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	16	static
 unique_ptr.h:188:12:constexpr std::unique_ptr<_Tp, _Dp>::unique_ptr() [with _Up = std::default_delete<GPIO_Handler>; <template-parameter-2-2> = void; _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	16	static

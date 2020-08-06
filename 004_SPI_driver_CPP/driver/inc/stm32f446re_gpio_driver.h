@@ -80,9 +80,9 @@ public:
 			uint8_t GPIO_PinNumber, 						/*!<possible values from @GPIO_PIN_NUMS>*/
 			uint8_t GPIO_PinMode, 							/*!<possible values from @GPIO_PIN_MODES>*/
 			uint8_t GPIO_PinSpeed = GPIO_SPEED_LOW,			/*!<possible values from @GPIO_PIN_SPEEDS>*/
-			uint8_t GPIO_IRQ_Priority = IRQ_Prio_NO_15, 	/*!<possible values from @GPIO_IRQ_Priority>*/
 			uint8_t GPIO_PinOPType = GPIO_OP_TYPE_PP, 		/*!<possible values from @GPIO_PIN_OUTPUTTYPE>*/
 			uint8_t GPIO_PinPuPdControl = GPIO_NO_PUPD, 	/*!<possible values from @GPIO_PIN_PUPD>*/
+			uint8_t GPIO_IRQ_Priority = IRQ_Prio_NO_15,     /*!<possible values from @GPIO_IRQ_Priority>*/
 			uint8_t GPIO_PinAltFunMode = DISABLE);
 
 	~GPIO_Handler();

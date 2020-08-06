@@ -15,12 +15,6 @@ RM := rm -rf
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
-ifneq ($(strip $(S_DEPS)),)
--include $(S_DEPS)
-endif
-ifneq ($(strip $(S_UPPER_DEPS)),)
--include $(S_UPPER_DEPS)
-endif
 ifneq ($(strip $(C_DEPS)),)
 -include $(C_DEPS)
 endif
@@ -46,8 +40,8 @@ Test_HAL.bin \
 all: Test_HAL.elf secondary-outputs
 
 # Tool invocations
-Test_HAL.elf: $(OBJS) $(USER_OBJS) /Users/hohaidang/Desktop/Coding/STM32-from-scratch/Test_HAL/STM32F446RETX_FLASH.ld
-	arm-none-eabi-gcc -o "Test_HAL.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/Users/hohaidang/Desktop/Coding/STM32-from-scratch/Test_HAL/STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Test_HAL.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Test_HAL.elf: $(OBJS) $(USER_OBJS) E:\Learning_Coding\STM32-from-scratch\Test_HAL\STM32F446RETX_FLASH.ld
+	arm-none-eabi-gcc -o "Test_HAL.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\Learning_Coding\STM32-from-scratch\Test_HAL\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Test_HAL.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

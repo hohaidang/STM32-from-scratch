@@ -1,11 +1,10 @@
 gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
-spi_readSensordata.cpp:39:6:void print_sensor_data(bme280_data*)	40	static
-spi_readSensordata.cpp:65:8:int8_t stream_sensor_data_forced_mode(bme280_dev*)	48	static
-spi_readSensordata.cpp:115:6:void user_delay_us(uint32_t, void*)	24	static
-spi_readSensordata.cpp:122:8:int8_t user_spi_read(uint8_t, uint8_t*, uint32_t, void*)	24	static
-spi_readSensordata.cpp:129:8:int8_t user_spi_write(uint8_t, const uint8_t*, uint32_t, void*)	32	static
-spi_readSensordata.cpp:143:5:int main()	48	static
-spi_readSensordata.cpp:190:10:void SPI1_IRQHandler()	8	static
-spi_readSensordata.cpp:194:1:void __static_initialization_and_destruction_0(int, int)	16	static
-spi_readSensordata.cpp:194:1:cpp)	8	static
-spi_readSensordata.cpp:194:1:cpp)	8	static
+spi_readSensordata.cpp:39:6:void user_delay_us(uint32_t, void*)	24	static
+spi_readSensordata.cpp:47:8:int8_t user_spi_read(uint8_t, uint8_t*, uint32_t, void*)	88	static
+spi_readSensordata.cpp:65:8:int8_t user_spi_write(uint8_t, const uint8_t*, uint32_t, void*)	56	static
+spi_readSensordata.cpp:80:5:int main()	40	static
+spi_readSensordata.cpp:117:6:void InitilizePeripheral()	40	static
+spi_readSensordata.cpp:142:10:void SPI1_IRQHandler()	8	static
+spi_readSensordata.cpp:146:1:void __static_initialization_and_destruction_0(int, int)	16	static
+spi_readSensordata.cpp:146:1:cpp)	8	static
+spi_readSensordata.cpp:146:1:cpp)	8	static

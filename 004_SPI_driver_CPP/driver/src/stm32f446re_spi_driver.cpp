@@ -265,11 +265,89 @@ void SPI_Handler::SPI_SendData(const uint8_t *pTxBuffer, uint32_t Len) {
             pTxBuffer++;
         }
     }
-    //while(SPI_GetFlagStatus(SPI_BSY_FLAG)); // w8 until SPI done
+    while(SPI_GetFlagStatus(SPI_BSY_FLAG)); // w8 until SPI done
+    SPI_ClearOVRFlag(); // because in 2 lines mode, write data does not need to read
 }
 
-void SPI_Handler::SPI_SendAndReceiveIT(uint8_t *pTxBuffer, uint8_t *pRxBuffer, uint32_t Len) {
-	SPI_SendDataIT(pTxBuffer, Len);
+/*********************************************************************
+ * @fn                - SPI_ReceiveData
+ *
+ * @brief             - Receive data via SPI protocol.
+ *
+ * @param[out]: pRxBuffer: pointer to Rx buffer
+ * @param[in]: Len: length of data receive
+ *
+ * @return None
+ **********************************************************************/
+void SPI_Handler::SPI_ReceiveData(uint8_t *pRxBuffer, uint32_t Len)
+{
+    if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
+        SPI_PeripheralControl(ENABLE);
+    }
+
+    while (Len > 0) {
+        //1. wait until RXNE is set
+        while (SPI_GetFlagStatus(SPI_RXNE_FLAG) == (uint8_t) FLAG_RESET);
+
+        //2. check the DFF bit in CR1
+        if ((SPIx_.pSPIx->CR1 & (1 << SPI_CR1_DFF))) {
+            //16 bit DFF
+            //1. load the data from DR to Rxbuffer address
+            *((uint16_t*) pRxBuffer) = SPIx_.pSPIx->DR;
+            Len--;
+            Len--;
+            (uint16_t*) pRxBuffer++;
+        }
+        else {
+            //8 bit DFF
+            *(pRxBuffer) = SPIx_.pSPIx->DR;
+            Len--;
+            pRxBuffer++;
+        }
+    }
+    while(SPI_GetFlagStatus(SPI_BSY_FLAG)); // w8 until SPI done
+}
+
+
+void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer, uint32_t len) {
+    if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
+        SPI_PeripheralControl(ENABLE);
+    }
+    while(len > 0) {
+        // 1. wait util tx buffer empty
+        while(SPI_GetFlagStatus(SPI_TXE_FLAG) == FLAG_RESET);
+
+        // 2. check the DFF bit in CR1
+        if(SPIx_.pSPIx->CR1 & (1 << SPI_CR1_DFF)) {
+            // 16 BIT DFF
+            // 1. load the data into the DR
+            SPIx_.pSPIx->DR = *((uint16_t *)pTxBuffer);
+            len -= 2;
+            (uint16_t *)pTxBuffer++;
+        }
+        else {
+            SPIx_.pSPIx->DR = *pTxBuffer;
+            len -= 1;
+            pTxBuffer++;
+        }
+
+        //1. wait until RXNE is set
+        while (SPI_GetFlagStatus(SPI_RXNE_FLAG) == (uint8_t) FLAG_RESET);
+
+        //2. check the DFF bit in CR1
+        if ((SPIx_.pSPIx->CR1 & (1 << SPI_CR1_DFF))) {
+            //16 bit DFF
+            //1. load the data from DR to Rxbuffer address
+            *((uint16_t*) pRxBuffer) = SPIx_.pSPIx->DR;
+            (uint16_t*) pRxBuffer++;
+        }
+        else {
+            //8 bit DFF
+            *(pRxBuffer) = SPIx_.pSPIx->DR;
+            pRxBuffer++;
+        }
+    }
+    while(SPI_GetFlagStatus(SPI_BSY_FLAG)); // w8 until SPI done
 }
 
 
@@ -303,45 +381,6 @@ void SPI_Handler::SPI_SSIConfig(uint8_t EnOrDi)
     }
 }
 
-/*********************************************************************
- * @fn                - SPI_ReceiveData
- *
- * @brief             - Receive data via SPI protocol.
- *
- * @param[out]: pRxBuffer: pointer to Rx buffer
- * @param[in]: Len: length of data receive
- *
- * @return None
- **********************************************************************/
-void SPI_Handler::SPI_ReceiveData(uint8_t *pRxBuffer, uint32_t Len)
-{
-	if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
-		SPI_PeripheralControl(ENABLE);
-	}
-
-	while (Len > 0) {
-		//1. wait until RXNE is set
-		while (SPI_GetFlagStatus(SPI_RXNE_FLAG) == (uint8_t) FLAG_RESET)
-			;
-
-		//2. check the DFF bit in CR1
-		if ((SPIx_.pSPIx->CR1 & (1 << SPI_CR1_DFF))) {
-			//16 bit DFF
-			//1. load the data from DR to Rxbuffer address
-			*((uint16_t*) pRxBuffer) = SPIx_.pSPIx->DR;
-			Len--;
-			Len--;
-			(uint16_t*) pRxBuffer++;
-		}
-		else {
-			//8 bit DFF
-			*(pRxBuffer) = SPIx_.pSPIx->DR;
-			Len--;
-			pRxBuffer++;
-		}
-	}
-	while(SPI_GetFlagStatus(SPI_BSY_FLAG)); // w8 until SPI done
-}
 
 
 /*********************************************************************

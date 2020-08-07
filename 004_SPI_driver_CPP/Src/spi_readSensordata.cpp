@@ -43,9 +43,9 @@ SPI_Handler *SPI1_Handler;
 GPIO_Handler *PB6;
 BMESensor_Handler *bme280;
 
-struct bme280_dev dev;
+//struct bme280_dev dev;
 
-void user_delay_us(u32 period, void *intf_ptr)
+void user_delay_us(u32 period)
 {
     // TODO: Design system tick in here
 	for(int i = 0; i < 25000; ++i) {
@@ -87,23 +87,24 @@ u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
 
 
 
-void printSensorData(const struct bme280_data &comp_data) {
-    float  temp, hum, pres;
-    temp = comp_data.temperature;
-    pres = 0.01 * comp_data.pressure;
-    hum = comp_data.humidity;
-
-#ifdef DEBUG_EN
-    cout << fixed << setprecision(2) << temp << " deg C, " <<  pres << " hPa, " <<  hum << " % " << endl;
-#endif
-}
+//void printSensorData(const struct bme280_data &comp_data) {
+//    float  temp, hum, pres;
+//    temp = comp_data.temperature;
+//    pres = 0.01 * comp_data.pressure;
+//    hum = comp_data.humidity;
+//
+//#ifdef DEBUG_EN
+//    cout << fixed << setprecision(2) << temp << " deg C, " <<  pres << " hPa, " <<  hum << " % " << endl;
+//#endif
+//}
 
 int main(void)
 {
     InitilizePeripheral();
-    int8_t rslt = BME280_OK;
 
-    bme280->testFunctionPtr();
+//    int8_t rslt = BME280_OK;
+
+
 
     /* Sensor_0 interface over SPI with native chip select line */
 
@@ -140,7 +141,7 @@ int main(void)
 //
 //
 //    SPI1_Handler->SPI_PeripheralControl(DISABLE);
-    static_cast<void>(rslt);
+//    static_cast<void>(rslt);
     while(1);
     return 0;
 }
@@ -169,7 +170,8 @@ void InitilizePeripheral(void) {
     PB6->GPIO_WriteToOutputPin(SET);
 
     bme280 = new BMESensor_Handler(user_spi_read,
-                                   user_spi_write);
+                                   user_spi_write,
+                                   user_delay_us);
 }
 
 extern "C" {

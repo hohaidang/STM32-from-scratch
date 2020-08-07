@@ -5,4 +5,3 @@
 "driver/src/bme280_driver.o"
 "driver/src/stm32f446re_gpio_driver.o"
 "driver/src/stm32f446re_spi_driver.o"
-"driver/src/temp.o"

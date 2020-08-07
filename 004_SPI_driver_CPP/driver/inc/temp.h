@@ -55,7 +55,7 @@ extern "C" {
 #endif
 
 /* Header includes */
-#include "bme280_defs.h"
+//#include "bme280_defs.h"
 
 /**
  * \ingroup bme280

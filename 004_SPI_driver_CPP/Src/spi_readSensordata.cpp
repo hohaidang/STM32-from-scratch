@@ -42,6 +42,7 @@ BMESensor_Handler *bme280;
 
 int main(void)
 {
+    bme280_settings temp = { 0 };
     InitilizePeripheral();
     if (bme280->get_status() == SENSOR_OK) {
         bme280->setSensorMode(BME280_NORMAL_MODE);
@@ -51,6 +52,7 @@ int main(void)
         settings.osr_t = 0x07; // x16
         settings.osr_p = 0x07; // x16
         bme280->set_sensor_settings(settings);
+        bme280->get_sensor_settings(temp);
     }
 
     while(1) {

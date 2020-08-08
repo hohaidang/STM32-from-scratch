@@ -7,12 +7,12 @@ std_function.h:273:5:std::_Function_base::~_Function_base()	16	static
 std_function.h:389:11:std::function<unsigned char(unsigned char, unsigned char*, long unsigned int)>::~function()	16	static
 std_function.h:389:11:std::function<unsigned char(unsigned char, const unsigned char*, long unsigned int)>::~function()	16	static
 std_function.h:389:11:std::function<void(long unsigned int)>::~function()	16	static
-spi_readSensordata.cpp:43:5:int main()	48	static
-spi_readSensordata.cpp:67:6:void InitilizePeripheral()	96	static
-spi_readSensordata.cpp:95:6:void user_delay_us(u32)	24	static
-spi_readSensordata.cpp:103:4:u8 user_spi_read(u8, u8*, u32)	72	static
-spi_readSensordata.cpp:121:4:u8 user_spi_write(u8, const u8*, u32)	56	static
-spi_readSensordata.cpp:136:10:void SPI1_IRQHandler()	8	static
+spi_readSensordata.cpp:43:5:int main()	56	static
+spi_readSensordata.cpp:70:6:void InitilizePeripheral()	96	static
+spi_readSensordata.cpp:98:6:void user_delay_us(u32)	24	static
+spi_readSensordata.cpp:106:4:u8 user_spi_read(u8, u8*, u32)	72	static
+spi_readSensordata.cpp:124:4:u8 user_spi_write(u8, const u8*, u32)	56	static
+spi_readSensordata.cpp:139:10:void SPI1_IRQHandler()	8	static
 move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = unsigned char (*&)(unsigned char, unsigned char*, long unsigned int)]	16	static
 std_function.h:685:7:)>::function(_Functor) [with _Functor = unsigned char (*)(unsigned char, unsigned char*, long unsigned int); <template-parameter-2-2> = void; <template-parameter-2-3> = void; _Res = unsigned char; _ArgTypes = {unsigned char, unsigned char*, long unsigned int}]	24	static
 move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = unsigned char (*&)(unsigned char, const unsigned char*, long unsigned int)]	16	static
@@ -92,6 +92,6 @@ new_allocator.h:129:7:__gnu_cxx::new_allocator<_Tp>::size_type __gnu_cxx::new_al
 stl_algobase.h:277:5:_Iterator std::__niter_base(_Iterator) [with _Iterator = unsigned char*]	16	static
 stl_algobase.h:761:5:typename __gnu_cxx::__enable_if<std::__is_byte<_Tp>::__value, _Tp*>::__type std::__fill_n_a(_Tp*, _Size, const _Tp&) [with _Size = unsigned int; _Tp = unsigned char]	24	static
 stl_algobase.h:703:5:typename __gnu_cxx::__enable_if<std::__is_byte<_Tp>::__value, void>::__type std::__fill_a(_Tp*, _Tp*, const _Tp&) [with _Tp = unsigned char]	32	static
-spi_readSensordata.cpp:140:1:void __static_initialization_and_destruction_0(int, int)	16	static
-spi_readSensordata.cpp:140:1:cpp)	8	static
-spi_readSensordata.cpp:140:1:cpp)	8	static
+spi_readSensordata.cpp:143:1:void __static_initialization_and_destruction_0(int, int)	16	static
+spi_readSensordata.cpp:143:1:cpp)	8	static
+spi_readSensordata.cpp:143:1:cpp)	8	static

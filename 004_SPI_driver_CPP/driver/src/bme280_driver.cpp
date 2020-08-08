@@ -8,7 +8,6 @@
 #ifndef SRC_BME280_C_
 #define SRC_BME280_C_
 #include "../inc/bme280_driver.h"
-#include <vector>
 
 #define BME280_CHIP_ID                  (u8)(0x60)
 
@@ -52,7 +51,16 @@ static inline u8 BME280_SET_BITS(const u8, const u8, const u8, const u8);
 static inline u8 BME280_GET_BITS(const u8, const u8, const u8);
 
 
-
+/*!
+ * @brief This is constructor used for assign function pointer of read, write and delay
+ *
+ * @param[in] user_read : Function pointer read
+ * @param[in] user_write : Function pointer write
+ * @param[in] user_delay: Function pointer delay
+ *
+ * @return None
+ *
+ */
 BMESensor_Handler::BMESensor_Handler(read_fnc user_read,
                                      write_fnc user_write,
                                      delay_ms_fnc user_delay) {
@@ -66,6 +74,14 @@ BMESensor_Handler::BMESensor_Handler(read_fnc user_read,
     dev_.status = init_BME280();
 }
 
+/*!
+ * @brief This function is used for initial sensor data, soft reset and get calibration data
+ *
+ * @param: None
+ *
+ * @return BME280_Stat
+ *
+ */
 BME280_Stat BMESensor_Handler::init_BME280() {
     BME280_Stat ret = SENSOR_OK;
     // read sensor ID
@@ -85,6 +101,14 @@ BME280_Stat BMESensor_Handler::init_BME280() {
     return ret;
 }
 
+/*!
+ * @brief Used for softReset sensor
+ *
+ * @param: None
+ *
+ * @return BME280_Stat
+ *
+ */
 BME280_Stat BMESensor_Handler::softReset() {
     uint8_t regAddr = BME280_SOFT_RST_ADDR;
     uint8_t softRstVal = BME280_RST_COMMAND;
@@ -107,6 +131,14 @@ BME280_Stat BMESensor_Handler::softReset() {
     return retStatus;
 }
 
+/*!
+ * @brief This function is used to read calibration data from sensor
+ *
+ * @param: None
+ *
+ * @return BME280_Stat
+ *
+ */
 BME280_Stat BMESensor_Handler::get_calib_data() {
     u8 calib_data[BME280_TEMP_PRESS_CALIB_DATA_LEN] = { 0 };
     getRegData(BME280_TEMP_PRESS_CALIB_DATA_ADDR, calib_data, BME280_TEMP_PRESS_CALIB_DATA_LEN);
@@ -116,7 +148,15 @@ BME280_Stat BMESensor_Handler::get_calib_data() {
     return SENSOR_OK;
 }
 
-void BMESensor_Handler::parse_temp_calib_data(u8 *reg_data) {
+/*!
+ * @brief This function is used to parse calibration data read from sensor to struct
+ *
+ * @param[in]: reg_data: calibration array data read from sensor
+ *
+ * @return void
+ *
+ */
+void BMESensor_Handler::parse_temp_calib_data(const u8 *reg_data) {
     dev_.calib_data.dig_t1 = BME280_CONCAT_BYTES(reg_data[1], reg_data[0]);
     dev_.calib_data.dig_t2 = (int16_t)BME280_CONCAT_BYTES(reg_data[3], reg_data[2]);
     dev_.calib_data.dig_t3 = (int16_t)BME280_CONCAT_BYTES(reg_data[5], reg_data[4]);
@@ -132,7 +172,15 @@ void BMESensor_Handler::parse_temp_calib_data(u8 *reg_data) {
     dev_.calib_data.dig_h1 = reg_data[25];
 }
 
-void BMESensor_Handler::parse_humidity_calib_data(u8 *reg_data) {
+/*!
+ * @brief This function is used to parse calibration data read from sensor to struct
+ *
+ * @param[in]: reg_data: calibration array data read from sensor
+ *
+ * @return void
+ *
+ */
+void BMESensor_Handler::parse_humidity_calib_data(const u8 *reg_data) {
     int16_t dig_h4_lsb;
     int16_t dig_h4_msb;
     int16_t dig_h5_lsb;
@@ -149,21 +197,35 @@ void BMESensor_Handler::parse_humidity_calib_data(u8 *reg_data) {
     dev_.calib_data.dig_h6 = (int8_t)reg_data[6];
 }
 
+/*!
+ * @brief This function is used to get sensor data, data get will be store at data_
+ *
+ * @param: None
+ *
+ * @return bme280_data: sensor data return
+ *
+ */
 bme280_data BMESensor_Handler::get_sensor_data() {
     bme280_uncomp_data uncomp_data = { 0 };
     u8 reg_data[BME280_P_T_H_DATA_LEN] = { 0 };
     getRegData(BME280_DATA_ADDR, reg_data, BME280_P_T_H_DATA_LEN);
     parse_sensor_data(reg_data, uncomp_data);
-    compensate_data(uncomp_data);
-    return data_;
-}
 
-void BMESensor_Handler::compensate_data(const bme280_uncomp_data &uncomp_data) {
+    /* Compensate sensor data */
     data_.temperature = compensate_temperature(uncomp_data);
     data_.pressure = compensate_pressure(uncomp_data);
     data_.humidity = compensate_humidity(uncomp_data);
+    return data_;
 }
 
+/*!
+ * @brief This function is used to print sensor data
+ *
+ * @param: None
+ *
+ * @return: None
+ *
+ */
 void BMESensor_Handler::print_sensor_data() {
 #ifdef DEBUG_EN
     float temp, hum, pres;
@@ -177,6 +239,14 @@ void BMESensor_Handler::print_sensor_data() {
 #endif
 }
 
+/*!
+ * @brief This function is used to set sensor mode
+ *
+ * @param[in]: sensorMode: will get from @SENSOR_MODE
+ *
+ * @return BME280_Stat
+ *
+ */
 BME280_Stat BMESensor_Handler::setSensorMode(const u8 sensorMode) {
     u8 currentMode = BME280_SLEEP_MODE;
     u8 ctrl_means_reg = 0x00;
@@ -196,6 +266,14 @@ BME280_Stat BMESensor_Handler::setSensorMode(const u8 sensorMode) {
     return ret;
 }
 
+/*!
+ * @brief This function is used to put sensor to sleep mode
+ *
+ * @param[in]: ctrl_means_reg: current ctrl means register
+ *
+ * @return BME280_Stat
+ *
+ */
 BME280_Stat BMESensor_Handler::put_device_to_sleep(u8 &ctrl_means_reg) {
     u8 reg_set = BME280_SET_BITS(ctrl_means_reg,
                                  BME280_SLEEP_MODE,
@@ -208,7 +286,15 @@ BME280_Stat BMESensor_Handler::get_status() {
     return dev_.status;
 }
 
-BME280_Stat BMESensor_Handler::write_power_mode(const u8 mode_set, u8 ctrl_means_reg) {
+/*!
+ * @brief This function is used to write operating mode for sensor
+ *
+ * @param[in]: mode_set: @SENSOR_MODE desired to write
+ * @param[in, out]: ctrl_means_reg: ctrl means register after write new mode
+ * @return BME280_Stat
+ *
+ */
+BME280_Stat BMESensor_Handler::write_power_mode(const u8 mode_set, u8 &ctrl_means_reg) {
     ctrl_means_reg = BME280_SET_BITS(ctrl_means_reg,
                                      mode_set,
                                      BME280_SENSOR_MODE_MSK,
@@ -217,6 +303,13 @@ BME280_Stat BMESensor_Handler::write_power_mode(const u8 mode_set, u8 ctrl_means
     return setRegData(BME280_CTRL_MEAS_ADDR, &ctrl_means_reg, 1);
 }
 
+/*!
+ * @brief This function is used to get current sensor mode
+ *
+ * @param[out]: sensor_mode
+ * @return BME280_Stat
+ *
+ */
 BME280_Stat BMESensor_Handler::getSensorMode(u8 &sensor_mode) {
     u8 ctrl_means_reg = 0x00;
     BME280_Stat ret = SENSOR_OK;
@@ -225,6 +318,13 @@ BME280_Stat BMESensor_Handler::getSensorMode(u8 &sensor_mode) {
     return ret;
 }
 
+/*!
+ * @brief This function is used to set sensor settings. Included osr_t, osr_h, osr_p, stand_by and filter
+ *
+ * @param[in] desired_settings:
+ * @return BME280_Stat
+ *
+ */
 BME280_Stat BMESensor_Handler::set_sensor_settings(const bme280_settings &desired_settings) {
     u8 ctrl_means_reg = 0x00;
     BME280_Stat ret = SENSOR_OK;
@@ -255,12 +355,27 @@ BME280_Stat BMESensor_Handler::set_sensor_settings(const bme280_settings &desire
     return ret;
 }
 
+/*!
+ * @brief This function is used to set osr for temperature and pressure
+ *
+ * @param[in, out] cur_ctrl_means_reg: ctrl mean register
+ * @param[in] settings: desired settings
+ * @return None
+ *
+ */
 void BMESensor_Handler::set_osr_temp_pres_settings(u8 &cur_ctrl_means_reg, const bme280_settings settings) {
     cur_ctrl_means_reg = BME280_SET_BITS(cur_ctrl_means_reg, settings.osr_t, BME280_CTRL_TEMPERATURE_MSK, BME280_CTRL_TEMPERATURE_POS);
     cur_ctrl_means_reg = BME280_SET_BITS(cur_ctrl_means_reg, settings.osr_p, BME280_CTRL_PRESSURE_MSK, BME280_CTRL_PRESSURE_POS);
     setRegData(BME280_CTRL_MEAS_ADDR, &cur_ctrl_means_reg, 1);
 }
 
+/*!
+ * @brief This function is used to set osr for humidity
+ *
+ * @param[in] osr_h: oversampling for humidity
+ * @return None
+ *
+ */
 void BMESensor_Handler::set_osr_humidity_settings(const u8 osr_h) {
     uint8_t ctrl_hum = 0x00, ctrl_means = 0x00;
 
@@ -274,6 +389,13 @@ void BMESensor_Handler::set_osr_humidity_settings(const u8 osr_h) {
     setRegData(BME280_CTRL_MEAS_ADDR, &ctrl_means, 1);
 }
 
+/*!
+ * @brief This function is used to get sensor settings. Included osr, filter and stand_by
+ *
+ * @param[out] settings: current settings of sensor
+ * @return None
+ *
+ */
 BME280_Stat BMESensor_Handler::get_sensor_settings(bme280_settings &settings) {
     u8 reg_data[4] = {};
     BME280_Stat ret = SENSOR_OK;
@@ -311,6 +433,16 @@ void BMESensor_Handler::parse_sensor_data(u8 *reg_data, bme280_uncomp_data &unco
     uncomp_data.humidity = data_msb | data_lsb;
 }
 
+/*!
+ * @brief This internal API parse the oversampling(pressure, temperature
+ * and humidity), filter and standby duration settings and store in the
+ * device structure.
+ *
+ * @param[in] settings : Pointer variable which contains the settings to
+ * be get in the sensor.
+ * @param[in] reg_data : Register data to be parsed.
+ *
+ */
 void BMESensor_Handler::parse_device_settings(const u8 *reg_data, bme280_settings &settings) {
     settings.osr_h = BME280_GET_BITS(reg_data[0], BME280_CTRL_HUM_MSK, BME280_CTRL_HUM_POS);
     settings.osr_p = BME280_GET_BITS(reg_data[2], BME280_CTRL_PRESSURE_MSK, BME280_CTRL_PRESSURE_POS);
@@ -319,12 +451,28 @@ void BMESensor_Handler::parse_device_settings(const u8 *reg_data, bme280_setting
     settings.standby_time = BME280_GET_BITS(reg_data[3], BME280_STANDBY_MSK, BME280_STANDBY_POS);
 }
 
+/*!
+ * @brief This API is used to get register data by reading data from sensor
+ *
+ * @param[in] regAddr : register address of sensor
+ * @param[out] regData: data read from sensor
+ * @param[in] len: len of data read
+ *
+ */
 BME280_Stat BMESensor_Handler::getRegData(u8 regAddr, u8 *regData, const u32 len) {
     regAddr |= BME280_SPI_R;
     dev_.user_read(regAddr, &regData[0], len);
     return SENSOR_OK;
 }
 
+/*!
+ * @brief This API is used to write data to sensor register
+ *
+ * @param[in] regAddr : register address of sensor
+ * @param[in] setData: data register desired to set
+ * @param[in] len: len of data read
+ *
+ */
 BME280_Stat BMESensor_Handler::setRegData(u8 regAddr, const u8 *setData, const u32 len) {
     regAddr &= BME280_SPI_W;
     dev_.user_write(regAddr, &setData[0], len);

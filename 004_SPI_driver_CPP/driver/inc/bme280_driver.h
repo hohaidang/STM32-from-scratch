@@ -12,7 +12,7 @@
 #include <functional>
 using namespace std;
 
-/**\name Sensor power modes */          
+/**@SENSOR_MODE Sensor power modes */
 #define BME280_SLEEP_MODE               (u8)(0x00)
 #define BME280_FORCED_MODE              (u8)(0x01)
 #define BME280_NORMAL_MODE              (u8)(0x03)
@@ -175,15 +175,14 @@ private:
     BME280_Stat init_BME280();
     BME280_Stat getRegData(u8 regAddr, u8 *regData, const u32 len);
     BME280_Stat setRegData(u8 regAddr, const u8 *setData, const u32 len);
-    BME280_Stat write_power_mode(const u8 mode_set, u8 ctrl_means_reg);
+    BME280_Stat write_power_mode(const u8 mode_set, u8 &ctrl_means_reg);
     BME280_Stat put_device_to_sleep(u8 &ctrl_means_reg);
     void set_osr_humidity_settings(const u8 osr_h);
     void set_osr_temp_pres_settings(u8 &cur_ctrl_means_reg, const bme280_settings settings);
     void parse_device_settings(const u8 *reg_data, bme280_settings &settings);
-    void parse_temp_calib_data(u8 *reg_data);
-    void parse_humidity_calib_data(u8 *reg_data);
+    void parse_temp_calib_data(const u8 *reg_data);
+    void parse_humidity_calib_data(const u8 *reg_data);
     void parse_sensor_data(u8 *reg_data, bme280_uncomp_data &uncomp_data);
-    void compensate_data(const bme280_uncomp_data &uncomp_data);
     double compensate_temperature(const bme280_uncomp_data &uncomp_data);
     double compensate_pressure(const bme280_uncomp_data &uncomp_data);
     double compensate_humidity(const bme280_uncomp_data &uncomp_data);

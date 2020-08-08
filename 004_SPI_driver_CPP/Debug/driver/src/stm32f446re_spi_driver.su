@@ -47,3 +47,6 @@ tuple:1303:5:>&) [with unsigned int __i = 1; _Head = std::default_delete<GPIO_Ha
 tuple:160:7:static constexpr _Head& std::_Head_base<_Idx, _Head, false>::_M_head(std::_Head_base<_Idx, _Head, false>&) [with unsigned int _Idx = 0; _Head = GPIO_Handler*]	16	static
 tuple:351:7:static constexpr _Head& std::_Tuple_impl<_Idx, _Head>::_M_head(std::_Tuple_impl<_Idx, _Head>&) [with unsigned int _Idx = 1; _Head = std::default_delete<GPIO_Handler>]	16	static
 tuple:113:7:static constexpr _Head& std::_Head_base<_Idx, _Head, true>::_M_head(std::_Head_base<_Idx, _Head, true>&) [with unsigned int _Idx = 1; _Head = std::default_delete<GPIO_Handler>]	16	static
+stm32f446re_spi_driver.cpp:611:1:void __static_initialization_and_destruction_0(int, int)	16	static
+stm32f446re_spi_driver.cpp:611:1:cpp)	8	static
+stm32f446re_spi_driver.cpp:611:1:cpp)	8	static

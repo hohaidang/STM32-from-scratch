@@ -19,19 +19,15 @@
 
 #include "../driver/inc/stm32f4xx.h"
 #include "../driver/inc/bme280_driver.h"
-#include "../driver/inc/temp.h"
 #include <vector>
 
 using namespace std;
 
-//#define DEBUG_EN
-
-#ifdef DEBUG_EN
-#include <iostream>
-#include <iomanip>
-#endif
 
 void InitilizePeripheral(void);
+void user_delay_us(u32);
+u8 user_spi_read (const u8, u8 *, u32);
+u8 user_spi_write(const u8, const u8 *, u32);
 
 //SPI1, AHB/APB2
 //PA5 - SPI1_SCK
@@ -43,107 +39,30 @@ SPI_Handler *SPI1_Handler;
 GPIO_Handler *PB6;
 BMESensor_Handler *bme280;
 
-//struct bme280_dev dev;
-
-void user_delay_us(u32 period)
-{
-    // TODO: Design system tick in here
-	for(int i = 0; i < 25000; ++i) {
-
-	}
-}
-
-u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
-    vector<u8> txBuffer(len + 1, 0);
-    vector<u8> rxBuffer(len + 1, 0);
-    txBuffer[0] = reg_addr;
-
-    PB6->GPIO_WriteToOutputPin(RESET);
-
-    SPI1_Handler->SPI_SendAndReceiveData(&txBuffer[0], &rxBuffer[0], len + 1);
-
-    PB6->GPIO_WriteToOutputPin(SET);
-
-    // copy to reg_data
-    for(u32 i = 0; i < len; ++i) {
-        reg_data[i] = rxBuffer[i + 1];
-    }
-    return 0;
-}
-
-u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
-    u8 txBuffer[28] = {};
-    txBuffer[0] = reg_addr;
-    for(u32 i = 0; i < len; ++i) {
-        txBuffer[i + 1] = reg_data[i];
-    }
-
-    PB6->GPIO_WriteToOutputPin(RESET);
-    SPI1_Handler->SPI_SendData(&txBuffer[0], len + 1);
-    PB6->GPIO_WriteToOutputPin(SET);
-
-    return 0;
-}
-
-
-
-//void printSensorData(const struct bme280_data &comp_data) {
-//    float  temp, hum, pres;
-//    temp = comp_data.temperature;
-//    pres = 0.01 * comp_data.pressure;
-//    hum = comp_data.humidity;
-//
-//#ifdef DEBUG_EN
-//    cout << fixed << setprecision(2) << temp << " deg C, " <<  pres << " hPa, " <<  hum << " % " << endl;
-//#endif
-//}
 
 int main(void)
 {
     InitilizePeripheral();
+    if (bme280->get_status() == SENSOR_OK) {
+        bme280->setSensorMode(BME280_NORMAL_MODE);
 
-//    int8_t rslt = BME280_OK;
+        bme280_settings settings;
+        settings.osr_h = 0x07; // x16
+        settings.osr_t = 0x07; // x16
+        settings.osr_p = 0x07; // x16
+        bme280->set_sensor_settings(settings);
+    }
 
+    while(1) {
+        // get sensor data
+        bme280->get_sensor_data();
 
-
-    /* Sensor_0 interface over SPI with native chip select line */
-
-//    u8 dev_addr = 0;
-//
-//    dev.intf_ptr = &dev_addr;
-//    dev.intf = BME280_SPI_INTF;
-//    dev.read = &user_spi_read;
-//    dev.write = &user_spi_write;
-//    dev.delay_us = &user_delay_us;
-//
-//    rslt = bme280_init(&dev);
-//
-//    // configure
-//    u8 ctrl_hum = 0x03;
-//    user_spi_write(0x72, &ctrl_hum, 1, dev.intf_ptr);
-//    u8 ctrl_means = 0xFF;
-//    user_spi_write(0x74, &ctrl_means, 1, dev.intf_ptr);
-//
-//    // read configure
-//    user_spi_read(0xF2, &ctrl_hum, 1, dev.intf_ptr);
-//    user_spi_read(0xF4, &ctrl_means, 1, dev.intf_ptr);
-//
-//    user_delay_us(5, dev.intf_ptr);
-//    struct bme280_data comp_data;
-//    while(1) {
-//        // get sensor data
-//        rslt = bme280_get_sensor_data(BME280_ALL, &comp_data, &dev);
-//        printSensorData(comp_data);
-//        for(int i = 0; i < 1000000; ++i) {};
-//    }
-//
-//
-//
-//
-//    SPI1_Handler->SPI_PeripheralControl(DISABLE);
-//    static_cast<void>(rslt);
-    while(1);
-    return 0;
+#ifdef DEBUG_EN
+        bme280->print_sensor_data();
+#endif
+        for(int i = 0; i < 1000000; ++i) {};
+   }
+   return 0;
 }
 
 void InitilizePeripheral(void) {
@@ -172,6 +91,46 @@ void InitilizePeripheral(void) {
     bme280 = new BMESensor_Handler(user_spi_read,
                                    user_spi_write,
                                    user_delay_us);
+}
+
+void user_delay_us(u32 period)
+{
+    // TODO: Design system tick in here
+    for(int i = 0; i < 25000; ++i) {
+
+    }
+}
+
+u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
+    vector<u8> txBuffer(len + 1, 0);
+    vector<u8> rxBuffer(len + 1, 0);
+    txBuffer[0] = reg_addr;
+
+    PB6->GPIO_WriteToOutputPin(RESET);
+
+    SPI1_Handler->SPI_SendAndReceiveData(&txBuffer[0], &rxBuffer[0], len + 1);
+
+    PB6->GPIO_WriteToOutputPin(SET);
+
+    // copy to reg_data
+    for(u32 i = 0; i < len; ++i) {
+        reg_data[i] = rxBuffer[i + 1];
+    }
+    return 0;
+}
+
+u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
+    vector<u8> txBuffer(len + 1, 0);
+    txBuffer[0] = reg_addr;
+    for(u32 i = 0; i < len; ++i) {
+        txBuffer[i + 1] = reg_data[i];
+    }
+
+    PB6->GPIO_WriteToOutputPin(RESET);
+    SPI1_Handler->SPI_SendData(&txBuffer[0], len + 1);
+    PB6->GPIO_WriteToOutputPin(SET);
+
+    return 0;
 }
 
 extern "C" {

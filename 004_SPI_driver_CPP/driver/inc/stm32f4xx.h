@@ -11,6 +11,12 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#define DEBUG_EN
+#ifdef DEBUG_EN
+#include <iostream>
+#include <iomanip>
+#endif
+
 #define __vo volatile
 #define __weak __attribute__((weak))
 

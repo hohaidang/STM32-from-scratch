@@ -7,31 +7,23 @@ std_function.h:273:5:std::_Function_base::~_Function_base()	16	static
 std_function.h:389:11:std::function<unsigned char(unsigned char, unsigned char*, long unsigned int)>::~function()	16	static
 std_function.h:389:11:std::function<unsigned char(unsigned char, const unsigned char*, long unsigned int)>::~function()	16	static
 std_function.h:389:11:std::function<void(long unsigned int)>::~function()	16	static
-spi_readSensordata.cpp:48:6:void user_delay_us(u32)	24	static
-spi_readSensordata.cpp:56:4:u8 user_spi_read(u8, u8*, u32)	72	static
-spi_readSensordata.cpp:74:4:u8 user_spi_write(u8, const u8*, u32)	56	static
-spi_readSensordata.cpp:101:5:int main()	8	static
-spi_readSensordata.cpp:149:6:void InitilizePeripheral()	96	static
-spi_readSensordata.cpp:178:10:void SPI1_IRQHandler()	8	static
-allocator.h:131:7:std::allocator< <template-parameter-1-1> >::allocator() [with _Tp = unsigned char]	16	static
-allocator.h:139:7:std::allocator< <template-parameter-1-1> >::~allocator() [with _Tp = unsigned char]	16	static
-stl_vector.h:295:7:std::vector<_Tp, _Alloc>::vector(std::vector<_Tp, _Alloc>::size_type, const value_type&, const allocator_type&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
-stl_vector.h:433:7:std::vector<_Tp, _Alloc>::~vector() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
-stl_vector.h:795:7:std::vector<_Tp, _Alloc>::reference std::vector<_Tp, _Alloc>::operator[](std::vector<_Tp, _Alloc>::size_type) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+spi_readSensordata.cpp:43:5:int main()	48	static
+spi_readSensordata.cpp:67:6:void InitilizePeripheral()	96	static
+spi_readSensordata.cpp:95:6:void user_delay_us(u32)	24	static
+spi_readSensordata.cpp:103:4:u8 user_spi_read(u8, u8*, u32)	72	static
+spi_readSensordata.cpp:121:4:u8 user_spi_write(u8, const u8*, u32)	56	static
+spi_readSensordata.cpp:136:10:void SPI1_IRQHandler()	8	static
 move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = unsigned char (*&)(unsigned char, unsigned char*, long unsigned int)]	16	static
 std_function.h:685:7:)>::function(_Functor) [with _Functor = unsigned char (*)(unsigned char, unsigned char*, long unsigned int); <template-parameter-2-2> = void; <template-parameter-2-3> = void; _Res = unsigned char; _ArgTypes = {unsigned char, unsigned char*, long unsigned int}]	24	static
 move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = unsigned char (*&)(unsigned char, const unsigned char*, long unsigned int)]	16	static
 std_function.h:685:7:)>::function(_Functor) [with _Functor = unsigned char (*)(unsigned char, const unsigned char*, long unsigned int); <template-parameter-2-2> = void; <template-parameter-2-3> = void; _Res = unsigned char; _ArgTypes = {unsigned char, const unsigned char*, long unsigned int}]	24	static
 move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = void (*&)(long unsigned int)]	16	static
 std_function.h:685:7:)>::function(_Functor) [with _Functor = void (*)(long unsigned int); <template-parameter-2-2> = void; <template-parameter-2-3> = void; _Res = void; _ArgTypes = {long unsigned int}]	24	static
-new_allocator.h:79:7:__gnu_cxx::new_allocator<_Tp>::new_allocator() [with _Tp = unsigned char]	16	static
-new_allocator.h:86:7:__gnu_cxx::new_allocator<_Tp>::~new_allocator() [with _Tp = unsigned char]	16	static
-stl_vector.h:81:14:std::_Vector_base<unsigned char, std::allocator<unsigned char> >::_Vector_impl::~_Vector_impl()	16	static
-stl_vector.h:136:7:std::_Vector_base<_Tp, _Alloc>::_Vector_base(std::size_t, const allocator_type&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
-stl_vector.h:161:7:std::_Vector_base<_Tp, _Alloc>::~_Vector_base() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
-stl_vector.h:1334:7:void std::vector<_Tp, _Alloc>::_M_fill_initialize(std::vector<_Tp, _Alloc>::size_type, const value_type&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	32	static
-stl_vector.h:115:7:std::_Vector_base<_Tp, _Alloc>::_Tp_alloc_type& std::_Vector_base<_Tp, _Alloc>::_M_get_Tp_allocator() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
-stl_construct.h:203:5:void std::_Destroy(_ForwardIterator, _ForwardIterator, std::allocator<_T2>&) [with _ForwardIterator = unsigned char*; _Tp = unsigned char]	24	static
+allocator.h:131:7:std::allocator< <template-parameter-1-1> >::allocator() [with _Tp = unsigned char]	16	static
+allocator.h:139:7:std::allocator< <template-parameter-1-1> >::~allocator() [with _Tp = unsigned char]	16	static
+stl_vector.h:295:7:std::vector<_Tp, _Alloc>::vector(std::vector<_Tp, _Alloc>::size_type, const value_type&, const allocator_type&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+stl_vector.h:433:7:std::vector<_Tp, _Alloc>::~vector() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+stl_vector.h:795:7:std::vector<_Tp, _Alloc>::reference std::vector<_Tp, _Alloc>::operator[](std::vector<_Tp, _Alloc>::size_type) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
 std_function.h:248:4:static bool std::_Function_base::_Base_manager<_Functor>::_M_not_empty_function(_Tp*) [with _Tp = unsigned char(unsigned char, unsigned char*, long unsigned int); _Functor = unsigned char (*)(unsigned char, unsigned char*, long unsigned int)]	16	static
 std_function.h:238:2:static void std::_Function_base::_Base_manager<_Functor>::_M_init_functor(std::_Any_data&, _Functor&&) [with _Functor = unsigned char (*)(unsigned char, unsigned char*, long unsigned int)]	32	static
 std_function.h:299:7:) [with _Res = unsigned char; _Functor = unsigned char (*)(unsigned char, unsigned char*, long unsigned int); _ArgTypes = {unsigned char, unsigned char*, long unsigned int}]	40	static
@@ -44,11 +36,14 @@ std_function.h:248:4:static bool std::_Function_base::_Base_manager<_Functor>::_
 std_function.h:238:2:static void std::_Function_base::_Base_manager<_Functor>::_M_init_functor(std::_Any_data&, _Functor&&) [with _Functor = void (*)(long unsigned int)]	32	static
 std_function.h:314:7:) [with _Functor = void (*)(long unsigned int); _ArgTypes = {long unsigned int}]	24	static
 std_function.h:212:2:static bool std::_Function_base::_Base_manager<_Functor>::_M_manager(std::_Any_data&, const std::_Any_data&, std::_Manager_operation) [with _Functor = void (*)(long unsigned int)]	40	static
-stl_vector.h:92:2:std::_Vector_base<_Tp, _Alloc>::_Vector_impl::_Vector_impl(const _Tp_alloc_type&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
-stl_vector.h:185:7:void std::_Vector_base<_Tp, _Alloc>::_M_create_storage(std::size_t) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
-stl_vector.h:176:7:void std::_Vector_base<_Tp, _Alloc>::_M_deallocate(std::_Vector_base<_Tp, _Alloc>::pointer, std::size_t) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
-stl_uninitialized.h:364:5:_ForwardIterator std::__uninitialized_fill_n_a(_ForwardIterator, _Size, const _Tp&, std::allocator<_Tp2>&) [with _ForwardIterator = unsigned char*; _Size = unsigned int; _Tp = unsigned char; _Tp2 = unsigned char]	24	static
-stl_construct.h:127:5:void std::_Destroy(_ForwardIterator, _ForwardIterator) [with _ForwardIterator = unsigned char*]	16	static
+new_allocator.h:79:7:__gnu_cxx::new_allocator<_Tp>::new_allocator() [with _Tp = unsigned char]	16	static
+new_allocator.h:86:7:__gnu_cxx::new_allocator<_Tp>::~new_allocator() [with _Tp = unsigned char]	16	static
+stl_vector.h:81:14:std::_Vector_base<unsigned char, std::allocator<unsigned char> >::_Vector_impl::~_Vector_impl()	16	static
+stl_vector.h:136:7:std::_Vector_base<_Tp, _Alloc>::_Vector_base(std::size_t, const allocator_type&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+stl_vector.h:161:7:std::_Vector_base<_Tp, _Alloc>::~_Vector_base() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_vector.h:1334:7:void std::vector<_Tp, _Alloc>::_M_fill_initialize(std::vector<_Tp, _Alloc>::size_type, const value_type&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	32	static
+stl_vector.h:115:7:std::_Vector_base<_Tp, _Alloc>::_Tp_alloc_type& std::_Vector_base<_Tp, _Alloc>::_M_get_Tp_allocator() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_construct.h:203:5:void std::_Destroy(_ForwardIterator, _ForwardIterator, std::allocator<_T2>&) [with _ForwardIterator = unsigned char*; _Tp = unsigned char]	24	static
 std_function.h:263:2:static void std::_Function_base::_Base_manager<_Functor>::_M_init_functor(std::_Any_data&, _Functor&&, std::true_type) [with _Functor = unsigned char (*)(unsigned char, unsigned char*, long unsigned int)]	32	static
 std_function.h:170:2:static _Functor* std::_Function_base::_Base_manager<_Functor>::_M_get_pointer(const std::_Any_data&) [with _Functor = unsigned char (*)(unsigned char, unsigned char*, long unsigned int)]	24	static
 move.h:73:5:constexpr _Tp&& std::forward(typename std::remove_reference<_From>::type&) [with _Tp = unsigned char]	16	static
@@ -68,11 +63,11 @@ std_function.h:170:2:static _Functor* std::_Function_base::_Base_manager<_Functo
 std_function.h:111:7:_Tp& std::_Any_data::_M_access() [with _Tp = void (**)(long unsigned int)]	16	static
 std_function.h:181:2:static void std::_Function_base::_Base_manager<_Functor>::_M_clone(std::_Any_data&, const std::_Any_data&, std::true_type) [with _Functor = void (*)(long unsigned int)]	32	static
 std_function.h:198:2:static void std::_Function_base::_Base_manager<_Functor>::_M_destroy(std::_Any_data&, std::true_type) [with _Functor = void (*)(long unsigned int)]	16	static
-allocator.h:133:7:std::allocator< <template-parameter-1-1> >::allocator(const std::allocator< <template-parameter-1-1> >&) [with _Tp = unsigned char]	16	static
-stl_vector.h:169:7:std::_Vector_base<_Tp, _Alloc>::pointer std::_Vector_base<_Tp, _Alloc>::_M_allocate(std::size_t) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
-alloc_traits.h:461:7:static void std::allocator_traits<std::allocator<_Tp1> >::deallocate(std::allocator_traits<std::allocator<_Tp1> >::allocator_type&, std::allocator_traits<std::allocator<_Tp1> >::pointer, std::allocator_traits<std::allocator<_Tp1> >::size_type) [with _Tp = unsigned char]	24	static
-stl_uninitialized.h:244:5:_ForwardIterator std::uninitialized_fill_n(_ForwardIterator, _Size, const _Tp&) [with _ForwardIterator = unsigned char*; _Size = unsigned int; _Tp = unsigned char]	32	static
-stl_construct.h:117:9:static void std::_Destroy_aux<true>::__destroy(_ForwardIterator, _ForwardIterator) [with _ForwardIterator = unsigned char*]	16	static
+stl_vector.h:92:2:std::_Vector_base<_Tp, _Alloc>::_Vector_impl::_Vector_impl(const _Tp_alloc_type&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_vector.h:185:7:void std::_Vector_base<_Tp, _Alloc>::_M_create_storage(std::size_t) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_vector.h:176:7:void std::_Vector_base<_Tp, _Alloc>::_M_deallocate(std::_Vector_base<_Tp, _Alloc>::pointer, std::size_t) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+stl_uninitialized.h:364:5:_ForwardIterator std::__uninitialized_fill_n_a(_ForwardIterator, _Size, const _Tp&, std::allocator<_Tp2>&) [with _ForwardIterator = unsigned char*; _Size = unsigned int; _Tp = unsigned char; _Tp2 = unsigned char]	24	static
+stl_construct.h:127:5:void std::_Destroy(_ForwardIterator, _ForwardIterator) [with _ForwardIterator = unsigned char*]	16	static
 std_function.h:116:7:const _Tp& std::_Any_data::_M_access() const [with _Tp = unsigned char (*)(unsigned char, unsigned char*, long unsigned int)]	16	static
 move.h:47:5:constexpr _Tp* std::__addressof(_Tp&) [with _Tp = unsigned char (* const)(unsigned char, unsigned char*, long unsigned int)]	16	static
 std_function.h:111:7:_Tp& std::_Any_data::_M_access() [with _Tp = unsigned char (*)(unsigned char, unsigned char*, long unsigned int)]	16	static
@@ -82,8 +77,13 @@ std_function.h:111:7:_Tp& std::_Any_data::_M_access() [with _Tp = unsigned char 
 std_function.h:116:7:const _Tp& std::_Any_data::_M_access() const [with _Tp = void (*)(long unsigned int)]	16	static
 move.h:47:5:constexpr _Tp* std::__addressof(_Tp&) [with _Tp = void (* const)(long unsigned int)]	16	static
 std_function.h:111:7:_Tp& std::_Any_data::_M_access() [with _Tp = void (*)(long unsigned int)]	16	static
+allocator.h:133:7:std::allocator< <template-parameter-1-1> >::allocator(const std::allocator< <template-parameter-1-1> >&) [with _Tp = unsigned char]	16	static
+stl_vector.h:169:7:std::_Vector_base<_Tp, _Alloc>::pointer std::_Vector_base<_Tp, _Alloc>::_M_allocate(std::size_t) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+alloc_traits.h:461:7:static void std::allocator_traits<std::allocator<_CharT> >::deallocate(std::allocator_traits<std::allocator<_CharT> >::allocator_type&, std::allocator_traits<std::allocator<_CharT> >::pointer, std::allocator_traits<std::allocator<_CharT> >::size_type) [with _Tp = unsigned char]	24	static
+stl_uninitialized.h:244:5:_ForwardIterator std::uninitialized_fill_n(_ForwardIterator, _Size, const _Tp&) [with _ForwardIterator = unsigned char*; _Size = unsigned int; _Tp = unsigned char]	32	static
+stl_construct.h:117:9:static void std::_Destroy_aux<true>::__destroy(_ForwardIterator, _ForwardIterator) [with _ForwardIterator = unsigned char*]	16	static
 new_allocator.h:81:7:__gnu_cxx::new_allocator<_Tp>::new_allocator(const __gnu_cxx::new_allocator<_Tp>&) [with _Tp = unsigned char]	16	static
-alloc_traits.h:435:7:static _Tp* std::allocator_traits<std::allocator<_Tp1> >::allocate(std::allocator_traits<std::allocator<_Tp1> >::allocator_type&, std::allocator_traits<std::allocator<_Tp1> >::size_type) [with _Tp = unsigned char]	16	static
+alloc_traits.h:435:7:static _Tp* std::allocator_traits<std::allocator<_CharT> >::allocate(std::allocator_traits<std::allocator<_CharT> >::allocator_type&, std::allocator_traits<std::allocator<_CharT> >::size_type) [with _Tp = unsigned char]	16	static
 new_allocator.h:116:7:void __gnu_cxx::new_allocator<_Tp>::deallocate(__gnu_cxx::new_allocator<_Tp>::pointer, __gnu_cxx::new_allocator<_Tp>::size_type) [with _Tp = unsigned char]	24	static
 stl_uninitialized.h:226:9:static _ForwardIterator std::__uninitialized_fill_n<true>::__uninit_fill_n(_ForwardIterator, _Size, const _Tp&) [with _ForwardIterator = unsigned char*; _Size = unsigned int; _Tp = unsigned char]	24	static
 new_allocator.h:99:7:_Tp* __gnu_cxx::new_allocator<_Tp>::allocate(__gnu_cxx::new_allocator<_Tp>::size_type, const void*) [with _Tp = unsigned char]	24	static
@@ -92,3 +92,6 @@ new_allocator.h:129:7:__gnu_cxx::new_allocator<_Tp>::size_type __gnu_cxx::new_al
 stl_algobase.h:277:5:_Iterator std::__niter_base(_Iterator) [with _Iterator = unsigned char*]	16	static
 stl_algobase.h:761:5:typename __gnu_cxx::__enable_if<std::__is_byte<_Tp>::__value, _Tp*>::__type std::__fill_n_a(_Tp*, _Size, const _Tp&) [with _Size = unsigned int; _Tp = unsigned char]	24	static
 stl_algobase.h:703:5:typename __gnu_cxx::__enable_if<std::__is_byte<_Tp>::__value, void>::__type std::__fill_a(_Tp*, _Tp*, const _Tp&) [with _Tp = unsigned char]	32	static
+spi_readSensordata.cpp:140:1:void __static_initialization_and_destruction_0(int, int)	16	static
+spi_readSensordata.cpp:140:1:cpp)	8	static
+spi_readSensordata.cpp:140:1:cpp)	8	static

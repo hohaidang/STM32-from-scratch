@@ -492,13 +492,13 @@ double BMESensor_Handler::compensate_temperature(const bme280_uncomp_data &uncom
     double var1;
     double var2;
     double temperature { 0 };
-    double temperature_min = -40;
-    double temperature_max = 85;
+    double temperature_min { -40 };
+    double temperature_max { 85 };
 
-    var1 = ((double)uncomp_data.temperature) / 16384.0 - ((double)dev_.calib_data.dig_t1) / 1024.0;
-    var1 = var1 * ((double)dev_.calib_data.dig_t2);
-    var2 = (((double)uncomp_data.temperature) / 131072.0 - ((double)dev_.calib_data.dig_t1) / 8192.0);
-    var2 = (var2 * var2) * ((double)dev_.calib_data.dig_t3);
+    var1 = static_cast<double>(uncomp_data.temperature) / 16384.0 - static_cast<double>(dev_.calib_data.dig_t1) / 1024.0;
+    var1 = var1 * static_cast<double>(dev_.calib_data.dig_t2);
+    var2 = (static_cast<double>(uncomp_data.temperature) / 131072.0 - static_cast<double>(dev_.calib_data.dig_t1) / 8192.0);
+    var2 = (var2 * var2) * static_cast<double>(dev_.calib_data.dig_t3);
     dev_.calib_data.t_fine = (int32_t)(var1 + var2);
     temperature = (var1 + var2) / 5120.0;
 
@@ -524,25 +524,25 @@ double BMESensor_Handler::compensate_pressure(const bme280_uncomp_data &uncomp_d
     double var2;
     double var3;
     double pressure;
-    double pressure_min = 30000.0;
-    double pressure_max = 110000.0;
+    double pressure_min { 30000.0 };
+    double pressure_max { 110000.0 };
 
-    var1 = ((double)dev_.calib_data.t_fine / 2.0) - 64000.0;
-    var2 = var1 * var1 * ((double)dev_.calib_data.dig_p6) / 32768.0;
-    var2 = var2 + var1 * ((double)dev_.calib_data.dig_p5) * 2.0;
-    var2 = (var2 / 4.0) + (((double)dev_.calib_data.dig_p4) * 65536.0);
-    var3 = ((double)dev_.calib_data.dig_p3) * var1 * var1 / 524288.0;
-    var1 = (var3 + ((double)dev_.calib_data.dig_p2) * var1) / 524288.0;
-    var1 = (1.0 + var1 / 32768.0) * ((double)dev_.calib_data.dig_p1);
+    var1 = static_cast<double>(dev_.calib_data.t_fine / 2.0) - 64000.0;
+    var2 = var1 * var1 * static_cast<double>(dev_.calib_data.dig_p6) / 32768.0;
+    var2 = var2 + var1 * static_cast<double>(dev_.calib_data.dig_p5) * 2.0;
+    var2 = (var2 / 4.0) + (static_cast<double>(dev_.calib_data.dig_p4) * 65536.0);
+    var3 = static_cast<double>(dev_.calib_data.dig_p3) * var1 * var1 / 524288.0;
+    var1 = (var3 + static_cast<double>(dev_.calib_data.dig_p2) * var1) / 524288.0;
+    var1 = (1.0 + var1 / 32768.0) * static_cast<double>(dev_.calib_data.dig_p1);
 
     /* avoid exception caused by division by zero */
     if (var1 > (0.0))
     {
-        pressure = 1048576.0 - (double) uncomp_data.pressure;
+        pressure = 1048576.0 - static_cast<double>(uncomp_data.pressure);
         pressure = (pressure - (var2 / 4096.0)) * 6250.0 / var1;
-        var1 = ((double)dev_.calib_data.dig_p9) * pressure * pressure / 2147483648.0;
-        var2 = pressure * ((double)dev_.calib_data.dig_p8) / 32768.0;
-        pressure = pressure + (var1 + var2 + ((double)dev_.calib_data.dig_p7)) / 16.0;
+        var1 = static_cast<double>(dev_.calib_data.dig_p9) * pressure * pressure / 2147483648.0;
+        var2 = pressure * static_cast<double>(dev_.calib_data.dig_p8) / 32768.0;
+        pressure = pressure + (var1 + var2 + static_cast<double>(dev_.calib_data.dig_p7)) / 16.0;
 
         if (pressure < pressure_min)
         {
@@ -568,8 +568,8 @@ double BMESensor_Handler::compensate_pressure(const bme280_uncomp_data &uncomp_d
 double BMESensor_Handler::compensate_humidity(const bme280_uncomp_data &uncomp_data)
 {
     double humidity;
-    double humidity_min = 0.0;
-    double humidity_max = 100.0;
+    double humidity_min { 0.0 };
+    double humidity_max { 100.0 };
     double var1;
     double var2;
     double var3;
@@ -577,14 +577,15 @@ double BMESensor_Handler::compensate_humidity(const bme280_uncomp_data &uncomp_d
     double var5;
     double var6;
 
-    var1 = ((double)dev_.calib_data.t_fine) - 76800.0;
-    var2 = (((double)dev_.calib_data.dig_h4) * 64.0 + (((double)dev_.calib_data.dig_h5) / 16384.0) * var1);
+    var1 = static_cast<double>(dev_.calib_data.t_fine) - 76800.0;
+    var1 = static_cast<double>(dev_.calib_data.t_fine) - 76800.0;
+    var2 = (static_cast<double>(dev_.calib_data.dig_h4) * 64.0 + (static_cast<double>(dev_.calib_data.dig_h5) / 16384.0) * var1);
     var3 = uncomp_data.humidity - var2;
-    var4 = ((double)dev_.calib_data.dig_h2) / 65536.0;
-    var5 = (1.0 + (((double)dev_.calib_data.dig_h3) / 67108864.0) * var1);
-    var6 = 1.0 + (((double)dev_.calib_data.dig_h6) / 67108864.0) * var1 * var5;
+    var4 = static_cast<double>(dev_.calib_data.dig_h2) / 65536.0;
+    var5 = (1.0 + (static_cast<double>(dev_.calib_data.dig_h3) / 67108864.0) * var1);
+    var6 = 1.0 + (static_cast<double>(dev_.calib_data.dig_h6) / 67108864.0) * var1 * var5;
     var6 = var3 * var4 * (var5 * var6);
-    humidity = var6 * (1.0 - ((double)dev_.calib_data.dig_h1) * var6 / 524288.0);
+    humidity = var6 * (1.0 - static_cast<double>(dev_.calib_data.dig_h1) * var6 / 524288.0);
 
     if (humidity > humidity_max)
     {

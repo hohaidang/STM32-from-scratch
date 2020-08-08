@@ -38,8 +38,8 @@ bme280_driver.cpp:482:9:uint8_t BMESensor_Handler::getChipID()	16	static
 bme280_driver.cpp:490:8:double BMESensor_Handler::compensate_temperature(const bme280_uncomp_data&)	64	static
 bme280_driver.cpp:521:8:double BMESensor_Handler::compensate_pressure(const bme280_uncomp_data&)	72	static
 bme280_driver.cpp:568:8:double BMESensor_Handler::compensate_humidity(const bme280_uncomp_data&)	96	static
-bme280_driver.cpp:601:18:u8 BME280_SET_BITS(u8, u8, u8, u8)	16	static
-bme280_driver.cpp:605:18:u8 BME280_GET_BITS(u8, u8, u8)	16	static
+bme280_driver.cpp:602:18:u8 BME280_SET_BITS(u8, u8, u8, u8)	16	static
+bme280_driver.cpp:606:18:u8 BME280_GET_BITS(u8, u8, u8)	16	static
 std_function.h:414:7:)>::function() [with _Res = unsigned char; _ArgTypes = {unsigned char, unsigned char*, long unsigned int}]	16	static
 std_function.h:414:7:)>::function() [with _Res = unsigned char; _ArgTypes = {unsigned char, const unsigned char*, long unsigned int}]	16	static
 std_function.h:414:7:)>::function() [with _Res = void; _ArgTypes = {long unsigned int}]	16	static
@@ -75,6 +75,6 @@ move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >
 move.h:187:5:typename std::enable_if<std::__and_<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> >::value>::type std::swap(_Tp&, _Tp&) [with _Tp = unsigned char (*)(const std::_Any_data&, unsigned char&&, const unsigned char*&&, long unsigned int&&)]	24	static
 move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = void (*&)(const std::_Any_data&, long unsigned int&&)]	16	static
 move.h:187:5:typename std::enable_if<std::__and_<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> >::value>::type std::swap(_Tp&, _Tp&) [with _Tp = void (*)(const std::_Any_data&, long unsigned int&&)]	24	static
-bme280_driver.cpp:607:1:void __static_initialization_and_destruction_0(int, int)	16	static
-bme280_driver.cpp:607:1:cpp)	8	static
-bme280_driver.cpp:607:1:cpp)	8	static
+bme280_driver.cpp:608:1:void __static_initialization_and_destruction_0(int, int)	16	static
+bme280_driver.cpp:608:1:cpp)	8	static
+bme280_driver.cpp:608:1:cpp)	8	static

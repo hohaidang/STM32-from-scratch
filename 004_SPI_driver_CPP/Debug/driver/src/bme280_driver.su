@@ -15,31 +15,31 @@ std_function.h:389:11:std::function<unsigned char(unsigned char, const unsigned 
 std_function.h:389:11:std::function<void(long unsigned int)>::~function()	16	static
 bme280_driver.cpp:64:1:BMESensor_Handler::BMESensor_Handler(BMESensor_Handler::read_fnc, BMESensor_Handler::write_fnc, BMESensor_Handler::delay_ms_fnc)	24	static
 bme280_driver.cpp:85:13:BME280_Stat BMESensor_Handler::init_BME280()	24	static
-bme280_driver.cpp:112:13:BME280_Stat BMESensor_Handler::softReset()	24	static
-bme280_driver.cpp:142:13:BME280_Stat BMESensor_Handler::get_calib_data()	48	static
-bme280_driver.cpp:159:6:void BMESensor_Handler::parse_temp_calib_data(const u8*)	16	static
-bme280_driver.cpp:183:6:void BMESensor_Handler::parse_humidity_calib_data(const u8*)	24	static
-bme280_driver.cpp:208:13:bme280_data BMESensor_Handler::get_sensor_data()	48	static
-bme280_driver.cpp:229:6:void BMESensor_Handler::print_sensor_data()	40	static
-bme280_driver.cpp:250:13:BME280_Stat BMESensor_Handler::setSensorMode(u8)	24	static
-bme280_driver.cpp:277:13:BME280_Stat BMESensor_Handler::put_device_to_sleep(u8&)	24	static
-bme280_driver.cpp:285:13:BME280_Stat BMESensor_Handler::get_status()	16	static
-bme280_driver.cpp:297:13:BME280_Stat BMESensor_Handler::write_power_mode(u8, u8&)	24	static
-bme280_driver.cpp:313:13:BME280_Stat BMESensor_Handler::getSensorMode(u8&)	24	static
-bme280_driver.cpp:328:13:BME280_Stat BMESensor_Handler::set_sensor_settings(const bme280_settings&)	24	static
-bme280_driver.cpp:366:6:void BMESensor_Handler::set_osr_temp_pres_settings(u8&, bme280_settings)	24	static
-bme280_driver.cpp:379:6:void BMESensor_Handler::set_osr_humidity_settings(u8)	24	static
-bme280_driver.cpp:399:13:BME280_Stat BMESensor_Handler::get_sensor_settings(bme280_settings&)	24	static
-bme280_driver.cpp:412:6:void BMESensor_Handler::parse_sensor_data(u8*, bme280_uncomp_data&)	40	static
-bme280_driver.cpp:446:6:void BMESensor_Handler::parse_device_settings(const u8*, bme280_settings&)	24	static
-bme280_driver.cpp:462:13:BME280_Stat BMESensor_Handler::getRegData(u8, u8*, u32)	24	static
-bme280_driver.cpp:476:13:BME280_Stat BMESensor_Handler::setRegData(u8, const u8*, u32)	24	static
-bme280_driver.cpp:482:9:uint8_t BMESensor_Handler::getChipID()	16	static
-bme280_driver.cpp:490:8:double BMESensor_Handler::compensate_temperature(const bme280_uncomp_data&)	64	static
-bme280_driver.cpp:521:8:double BMESensor_Handler::compensate_pressure(const bme280_uncomp_data&)	72	static
-bme280_driver.cpp:568:8:double BMESensor_Handler::compensate_humidity(const bme280_uncomp_data&)	96	static
-bme280_driver.cpp:602:18:u8 BME280_SET_BITS(u8, u8, u8, u8)	16	static
-bme280_driver.cpp:606:18:u8 BME280_GET_BITS(u8, u8, u8)	16	static
+bme280_driver.cpp:118:13:BME280_Stat BMESensor_Handler::softReset()	24	static
+bme280_driver.cpp:148:13:BME280_Stat BMESensor_Handler::get_calib_data()	48	static
+bme280_driver.cpp:165:6:void BMESensor_Handler::parse_temp_calib_data(const u8*)	16	static
+bme280_driver.cpp:189:6:void BMESensor_Handler::parse_humidity_calib_data(const u8*)	24	static
+bme280_driver.cpp:214:13:bme280_data BMESensor_Handler::get_sensor_data()	48	static
+bme280_driver.cpp:235:6:void BMESensor_Handler::print_sensor_data()	40	static
+bme280_driver.cpp:256:13:BME280_Stat BMESensor_Handler::setSensorMode(u8)	24	static
+bme280_driver.cpp:283:13:BME280_Stat BMESensor_Handler::put_device_to_sleep(u8&)	24	static
+bme280_driver.cpp:291:13:BME280_Stat BMESensor_Handler::get_status()	16	static
+bme280_driver.cpp:303:13:BME280_Stat BMESensor_Handler::write_power_mode(u8, u8&)	24	static
+bme280_driver.cpp:319:13:BME280_Stat BMESensor_Handler::getSensorMode(u8&)	24	static
+bme280_driver.cpp:334:13:BME280_Stat BMESensor_Handler::set_sensor_settings(const bme280_settings&)	24	static
+bme280_driver.cpp:372:6:void BMESensor_Handler::set_osr_temp_pres_settings(u8&, bme280_settings)	24	static
+bme280_driver.cpp:385:6:void BMESensor_Handler::set_osr_humidity_settings(u8)	24	static
+bme280_driver.cpp:405:13:BME280_Stat BMESensor_Handler::get_sensor_settings(bme280_settings&)	24	static
+bme280_driver.cpp:418:6:void BMESensor_Handler::parse_sensor_data(u8*, bme280_uncomp_data&)	40	static
+bme280_driver.cpp:452:6:void BMESensor_Handler::parse_device_settings(const u8*, bme280_settings&)	24	static
+bme280_driver.cpp:468:13:BME280_Stat BMESensor_Handler::getRegData(u8, u8*, u32)	24	static
+bme280_driver.cpp:482:13:BME280_Stat BMESensor_Handler::setRegData(u8, const u8*, u32)	24	static
+bme280_driver.cpp:488:9:uint8_t BMESensor_Handler::getChipID()	16	static
+bme280_driver.cpp:496:8:double BMESensor_Handler::compensate_temperature(const bme280_uncomp_data&)	64	static
+bme280_driver.cpp:527:8:double BMESensor_Handler::compensate_pressure(const bme280_uncomp_data&)	72	static
+bme280_driver.cpp:574:8:double BMESensor_Handler::compensate_humidity(const bme280_uncomp_data&)	96	static
+bme280_driver.cpp:608:18:u8 BME280_SET_BITS(u8, u8, u8, u8)	16	static
+bme280_driver.cpp:612:18:u8 BME280_GET_BITS(u8, u8, u8)	16	static
 std_function.h:414:7:)>::function() [with _Res = unsigned char; _ArgTypes = {unsigned char, unsigned char*, long unsigned int}]	16	static
 std_function.h:414:7:)>::function() [with _Res = unsigned char; _ArgTypes = {unsigned char, const unsigned char*, long unsigned int}]	16	static
 std_function.h:414:7:)>::function() [with _Res = void; _ArgTypes = {long unsigned int}]	16	static
@@ -75,6 +75,6 @@ move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >
 move.h:187:5:typename std::enable_if<std::__and_<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> >::value>::type std::swap(_Tp&, _Tp&) [with _Tp = unsigned char (*)(const std::_Any_data&, unsigned char&&, const unsigned char*&&, long unsigned int&&)]	24	static
 move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = void (*&)(const std::_Any_data&, long unsigned int&&)]	16	static
 move.h:187:5:typename std::enable_if<std::__and_<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> >::value>::type std::swap(_Tp&, _Tp&) [with _Tp = void (*)(const std::_Any_data&, long unsigned int&&)]	24	static
-bme280_driver.cpp:608:1:void __static_initialization_and_destruction_0(int, int)	16	static
-bme280_driver.cpp:608:1:cpp)	8	static
-bme280_driver.cpp:608:1:cpp)	8	static
+bme280_driver.cpp:614:1:void __static_initialization_and_destruction_0(int, int)	16	static
+bme280_driver.cpp:614:1:cpp)	8	static
+bme280_driver.cpp:614:1:cpp)	8	static

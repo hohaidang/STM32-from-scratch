@@ -29,11 +29,7 @@ void user_delay_us(u32);
 u8 user_spi_read (const u8, u8 *, u32);
 u8 user_spi_write(const u8, const u8 *, u32);
 
-//SPI1, AHB/APB2
-//PA5 - SPI1_SCK
-//PA6 - SPI1_MISO
-//PA7 - SPI1_MOSI
-//PA4 - slave select
+
 // Alternate function 5
 SPI_Handler *SPI1_Handler;
 GPIO_Handler *PB6;
@@ -53,17 +49,23 @@ int main(void)
         settings.osr_p = 0x07; // x16
         bme280->set_sensor_settings(settings);
         bme280->get_sensor_settings(temp);
-    }
-
-    while(1) {
-        // get sensor data
-        bme280->get_sensor_data();
+        while(1) {
+            // get sensor data
+            bme280->get_sensor_data();
 
 #ifdef DEBUG_EN
-        bme280->print_sensor_data();
+			bme280->print_sensor_data();
 #endif
-        for(int i = 0; i < 1000000; ++i) {};
-   }
+			for (int i = 0; i < 1000000; ++i);
+       }
+    }
+    else {
+#ifdef DEBUG_EN
+    	cout << "Sensor Init failed. Please check again hardware connection pins" << endl;
+#endif
+    }
+
+
    return 0;
 }
 

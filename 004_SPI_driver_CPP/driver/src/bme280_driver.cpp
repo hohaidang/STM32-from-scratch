@@ -85,8 +85,14 @@ BMESensor_Handler::BMESensor_Handler(read_fnc user_read,
 BME280_Stat BMESensor_Handler::init_BME280() {
     BME280_Stat ret = SENSOR_OK;
     // read sensor ID
-    uint8_t regAddr = BME280_CHIP_ID_ADDR;
-    getRegData(regAddr, &dev_.chipID, 1);
+    u8 regAddr { BME280_CHIP_ID_ADDR };
+    u8 try_run { 5 };
+    // try to re-read because BME sensor may not init done before MCU run
+    do{
+    	getRegData(regAddr, &dev_.chipID, 1);
+    	dev_.delay_ms(1000);
+    }while((--try_run) || BME280_CHIP_ID != dev_.chipID);
+
     if(BME280_CHIP_ID == dev_.chipID) {
         // soft reset sensor
         ret = softReset();
@@ -110,9 +116,9 @@ BME280_Stat BMESensor_Handler::init_BME280() {
  *
  */
 BME280_Stat BMESensor_Handler::softReset() {
-    uint8_t regAddr = BME280_SOFT_RST_ADDR;
-    uint8_t softRstVal = BME280_RST_COMMAND;
-    uint8_t regStatus = 0, tryRun = 5;
+    u8 regAddr = BME280_SOFT_RST_ADDR;
+    u8 softRstVal = BME280_RST_COMMAND;
+    u8 regStatus = 0, tryRun = 5;
     BME280_Stat retStatus = SENSOR_OK;
     /* write soft reset command into the sensor */
     setRegData(regAddr, &softRstVal, 1);

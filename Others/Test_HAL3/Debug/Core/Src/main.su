@@ -1,0 +1,10 @@
+main.c:77:4:BME280_SPI_bus_read	88	static
+main.c:115:4:BME280_SPI_bus_write	80	static
+main.c:149:6:BME280_delay_msek	16	static
+main.c:155:4:SPI_routine	8	static
+main.c:179:5:bme280_data_readout_template	80	static
+main.c:340:5:main	16	static
+main.c:394:6:SystemClock_Config	88	static
+main.c:440:13:MX_SPI1_Init	8	static
+main.c:478:13:MX_GPIO_Init	40	static
+main.c:506:6:Error_Handler	4	static

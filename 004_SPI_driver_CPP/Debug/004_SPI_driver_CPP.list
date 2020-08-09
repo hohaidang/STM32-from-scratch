@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 0000002a  00000000  00000000  000402c8  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00018ae8  00000000  00000000  000402f2  2**0
+ 12 .debug_info   00018aed  00000000  00000000  000402f2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_abbrev 000029ca  00000000  00000000  00058dda  2**0
+ 13 .debug_abbrev 000029d8  00000000  00000000  00058ddf  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_aranges 00000918  00000000  00000000  0005b7a8  2**3
+ 14 .debug_aranges 00000918  00000000  00000000  0005b7b8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_ranges 000008b0  00000000  00000000  0005c0c0  2**3
+ 15 .debug_ranges 000008b0  00000000  00000000  0005c0d0  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  00007118  00000000  00000000  0005c970  2**0
+ 16 .debug_macro  00007118  00000000  00000000  0005c980  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   000072f0  00000000  00000000  00063a88  2**0
+ 17 .debug_line   000072f0  00000000  00000000  00063a98  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    00019068  00000000  00000000  0006ad78  2**0
+ 18 .debug_str    00019068  00000000  00000000  0006ad88  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  00083de0  2**0
+ 19 .comment      0000007b  00000000  00000000  00083df0  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00017728  00000000  00000000  00083e5c  2**2
+ 20 .debug_frame  00017728  00000000  00000000  00083e6c  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -1900,7 +1900,7 @@ u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
  8001456:	3301      	adds	r3, #1
  8001458:	4629      	mov	r1, r5
  800145a:	4620      	mov	r0, r4
- 800145c:	f003 fa8e 	bl	800497c <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m>
+ 800145c:	f003 fa8e 	bl	800497c <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm>
 
     PB6->GPIO_WriteToOutputPin(SET);
  8001460:	4b16      	ldr	r3, [pc, #88]	; (80014bc <_Z13user_spi_readhPhm+0x114>)
@@ -9184,12 +9184,12 @@ SPI_Handler::SPI_Handler(SPI_RegDef_t *SPIx_ADDR,
  8004564:	71fb      	strb	r3, [r7, #7]
  8004566:	4613      	mov	r3, r2
  8004568:	71bb      	strb	r3, [r7, #6]
-                         uint8_t BusConfig,
-                         uint8_t SclkSpeed,
-                         uint8_t DFF,
-                         uint8_t CPOL,
-                         uint8_t CPHA,
-                         uint8_t SSM) {
+                         u8 BusConfig,
+                         u8 SclkSpeed,
+                         u8 DFF,
+                         u8 CPOL,
+                         u8 CPHA,
+                         u8 SSM) {
  800456a:	68fb      	ldr	r3, [r7, #12]
  800456c:	4618      	mov	r0, r3
  800456e:	2320      	movs	r3, #32
@@ -9541,7 +9541,7 @@ void SPI_Handler::SPI_Init() {
  80047a8:	af00      	add	r7, sp, #0
  80047aa:	6078      	str	r0, [r7, #4]
     // Lets configure the SPI_CR1 register
-    uint32_t tempReg = 0;
+    u32 tempReg = 0;
  80047ac:	2300      	movs	r3, #0
  80047ae:	60fb      	str	r3, [r7, #12]
 
@@ -9667,7 +9667,7 @@ void SPI_Handler::SPI_Init() {
  *
  * @return None
  **********************************************************************/
-void SPI_Handler::SPI_PeripheralControl(uint8_t EnOrDi) {
+void SPI_Handler::SPI_PeripheralControl(u8 EnOrDi) {
  8004858:	b480      	push	{r7}
  800485a:	b083      	sub	sp, #12
  800485c:	af00      	add	r7, sp, #0
@@ -9713,7 +9713,7 @@ void SPI_Handler::SPI_PeripheralControl(uint8_t EnOrDi) {
  *
  * @return None
  **********************************************************************/
-inline uint8_t SPI_Handler::SPI_GetFlagStatus(const uint8_t FlagName) {
+inline u8 SPI_Handler::SPI_GetFlagStatus(const u8 FlagName) {
  8004896:	b480      	push	{r7}
  8004898:	b083      	sub	sp, #12
  800489a:	af00      	add	r7, sp, #0
@@ -9744,7 +9744,7 @@ inline uint8_t SPI_Handler::SPI_GetFlagStatus(const uint8_t FlagName) {
  *
  * @return None
  **********************************************************************/
-void SPI_Handler::SPI_SendData(const uint8_t *pTxBuffer, uint32_t Len) {
+void SPI_Handler::SPI_SendData(const u8 *pTxBuffer, u32 Len) {
  80048c0:	b580      	push	{r7, lr}
  80048c2:	b084      	sub	sp, #16
  80048c4:	af00      	add	r7, sp, #0
@@ -9860,13 +9860,13 @@ void SPI_Handler::SPI_SendData(const uint8_t *pTxBuffer, uint32_t Len) {
  8004978:	46bd      	mov	sp, r7
  800497a:	bd80      	pop	{r7, pc}
 
-0800497c <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m>:
-    }
-    while(SPI_GetFlagStatus(SPI_BSY_FLAG)); // w8 until SPI done
-}
-
-
-void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer, uint32_t len) {
+0800497c <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm>:
+ * @param[in] len: len of transmit and receive
+ *
+ * @return None
+ *
+ */
+void SPI_Handler::SPI_SendAndReceiveData(const u8 *pTxBuffer, u8 *pRxBuffer, u32 len) {
  800497c:	b580      	push	{r7, lr}
  800497e:	b084      	sub	sp, #16
  8004980:	af00      	add	r7, sp, #0
@@ -9885,7 +9885,7 @@ void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer,
  800499a:	2300      	moveq	r3, #0
  800499c:	b2db      	uxtb	r3, r3
  800499e:	2b00      	cmp	r3, #0
- 80049a0:	d003      	beq.n	80049aa <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m+0x2e>
+ 80049a0:	d003      	beq.n	80049aa <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm+0x2e>
         SPI_PeripheralControl(ENABLE);
  80049a2:	2101      	movs	r1, #1
  80049a4:	68f8      	ldr	r0, [r7, #12]
@@ -9894,7 +9894,7 @@ void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer,
     while(len > 0) {
  80049aa:	683b      	ldr	r3, [r7, #0]
  80049ac:	2b00      	cmp	r3, #0
- 80049ae:	d05c      	beq.n	8004a6a <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m+0xee>
+ 80049ae:	d05c      	beq.n	8004a6a <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm+0xee>
         // 1. wait util tx buffer empty
         while(SPI_GetFlagStatus(SPI_TXE_FLAG) == FLAG_RESET);
  80049b0:	2102      	movs	r1, #2
@@ -9907,8 +9907,8 @@ void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer,
  80049c0:	2300      	movne	r3, #0
  80049c2:	b2db      	uxtb	r3, r3
  80049c4:	2b00      	cmp	r3, #0
- 80049c6:	d000      	beq.n	80049ca <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m+0x4e>
- 80049c8:	e7f2      	b.n	80049b0 <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m+0x34>
+ 80049c6:	d000      	beq.n	80049ca <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm+0x4e>
+ 80049c8:	e7f2      	b.n	80049b0 <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm+0x34>
 
         // 2. check the DFF bit in CR1
         if(SPIx_.pSPIx->CR1 & (1 << SPI_CR1_DFF)) {
@@ -9922,7 +9922,7 @@ void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer,
  80049da:	2300      	moveq	r3, #0
  80049dc:	b2db      	uxtb	r3, r3
  80049de:	2b00      	cmp	r3, #0
- 80049e0:	d00b      	beq.n	80049fa <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m+0x7e>
+ 80049e0:	d00b      	beq.n	80049fa <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm+0x7e>
             // 16 BIT DFF
             // 1. load the data into the DR
             SPIx_.pSPIx->DR = *((uint16_t *)pTxBuffer);
@@ -9939,7 +9939,7 @@ void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer,
  80049f2:	68bb      	ldr	r3, [r7, #8]
  80049f4:	3301      	adds	r3, #1
  80049f6:	60bb      	str	r3, [r7, #8]
- 80049f8:	e00a      	b.n	8004a10 <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m+0x94>
+ 80049f8:	e00a      	b.n	8004a10 <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm+0x94>
         }
         else {
             SPIx_.pSPIx->DR = *pTxBuffer;
@@ -9959,7 +9959,7 @@ void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer,
         }
 
         //1. wait until RXNE is set
-        while (SPI_GetFlagStatus(SPI_RXNE_FLAG) == (uint8_t) FLAG_RESET);
+        while (SPI_GetFlagStatus(SPI_RXNE_FLAG) == (u8) FLAG_RESET);
  8004a10:	2101      	movs	r1, #1
  8004a12:	68f8      	ldr	r0, [r7, #12]
  8004a14:	f7ff ff3f 	bl	8004896 <_ZN11SPI_Handler17SPI_GetFlagStatusEh>
@@ -9970,8 +9970,8 @@ void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer,
  8004a20:	2300      	movne	r3, #0
  8004a22:	b2db      	uxtb	r3, r3
  8004a24:	2b00      	cmp	r3, #0
- 8004a26:	d000      	beq.n	8004a2a <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m+0xae>
- 8004a28:	e7f2      	b.n	8004a10 <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m+0x94>
+ 8004a26:	d000      	beq.n	8004a2a <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm+0xae>
+ 8004a28:	e7f2      	b.n	8004a10 <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm+0x94>
 
         //2. check the DFF bit in CR1
         if ((SPIx_.pSPIx->CR1 & (1 << SPI_CR1_DFF))) {
@@ -9985,7 +9985,7 @@ void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer,
  8004a3a:	2300      	moveq	r3, #0
  8004a3c:	b2db      	uxtb	r3, r3
  8004a3e:	2b00      	cmp	r3, #0
- 8004a40:	d009      	beq.n	8004a56 <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m+0xda>
+ 8004a40:	d009      	beq.n	8004a56 <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm+0xda>
             //16 bit DFF
             //1. load the data from DR to Rxbuffer address
             *((uint16_t*) pRxBuffer) = SPIx_.pSPIx->DR;
@@ -9999,7 +9999,7 @@ void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer,
  8004a4e:	687b      	ldr	r3, [r7, #4]
  8004a50:	3301      	adds	r3, #1
  8004a52:	607b      	str	r3, [r7, #4]
- 8004a54:	e7a9      	b.n	80049aa <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m+0x2e>
+ 8004a54:	e7a9      	b.n	80049aa <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm+0x2e>
         }
         else {
             //8 bit DFF
@@ -10015,7 +10015,7 @@ void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer,
  8004a64:	3301      	adds	r3, #1
  8004a66:	607b      	str	r3, [r7, #4]
     while(len > 0) {
- 8004a68:	e79f      	b.n	80049aa <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m+0x2e>
+ 8004a68:	e79f      	b.n	80049aa <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm+0x2e>
         }
     }
     while(SPI_GetFlagStatus(SPI_BSY_FLAG)); // w8 until SPI done
@@ -10029,8 +10029,8 @@ void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer,
  8004a7a:	2300      	moveq	r3, #0
  8004a7c:	b2db      	uxtb	r3, r3
  8004a7e:	2b00      	cmp	r3, #0
- 8004a80:	d000      	beq.n	8004a84 <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m+0x108>
- 8004a82:	e7f2      	b.n	8004a6a <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m+0xee>
+ 8004a80:	d000      	beq.n	8004a84 <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm+0x108>
+ 8004a82:	e7f2      	b.n	8004a6a <_ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm+0xee>
 }
  8004a84:	bf00      	nop
  8004a86:	3710      	adds	r7, #16
@@ -10040,7 +10040,7 @@ void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer,
 08004a8c <_ZN11SPI_Handler14SPI_SSOEConfigEh>:
 
 
-void SPI_Handler::SPI_SSOEConfig(uint8_t EnOrDi) {
+void SPI_Handler::SPI_SSOEConfig(u8 EnOrDi) {
  8004a8c:	b480      	push	{r7}
  8004a8e:	b083      	sub	sp, #12
  8004a90:	af00      	add	r7, sp, #0
@@ -10085,7 +10085,7 @@ void SPI_Handler::SPI_SSOEConfig(uint8_t EnOrDi) {
  * @return            - None
 
  */
-void SPI_Handler::SPI_SSIConfig(uint8_t EnOrDi)
+void SPI_Handler::SPI_SSIConfig(u8 EnOrDi)
 {
  8004aca:	b480      	push	{r7}
  8004acc:	b083      	sub	sp, #12
@@ -10138,7 +10138,7 @@ void SPI_Handler::SPI_IRQHandling() {
  8004b0a:	b084      	sub	sp, #16
  8004b0c:	af00      	add	r7, sp, #0
  8004b0e:	6078      	str	r0, [r7, #4]
-    volatile uint8_t temp1 = 0, temp2 = 0;
+    volatile u8 temp1 = 0, temp2 = 0;
  8004b10:	2300      	movs	r3, #0
  8004b12:	73fb      	strb	r3, [r7, #15]
  8004b14:	2300      	movs	r3, #0
@@ -10509,7 +10509,7 @@ void SPI_Handler::SPI_ClearOVRFlag() {
  8004d4e:	b085      	sub	sp, #20
  8004d50:	af00      	add	r7, sp, #0
  8004d52:	6078      	str	r0, [r7, #4]
-    volatile uint8_t temp = 0;
+    volatile u8 temp = 0;
  8004d54:	2300      	movs	r3, #0
  8004d56:	73fb      	strb	r3, [r7, #15]
     temp = SPIx_.pSPIx->DR;
@@ -10618,7 +10618,7 @@ void SPI_Handler::SPI_CloseReception() {
 
 08004dfe <_Z28SPI_ApplicationEventCallbackP12SPI_Handle_th>:
 
-__weak void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle, uint8_t AppEv) {
+__weak void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle, u8 AppEv) {
  8004dfe:	b480      	push	{r7}
  8004e00:	b083      	sub	sp, #12
  8004e02:	af00      	add	r7, sp, #0

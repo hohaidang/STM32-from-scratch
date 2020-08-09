@@ -10498,9 +10498,9 @@ LOAD /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.id
  .text._ZN11SPI_Handler12SPI_SendDataEPKhm
                 0x00000000080048c0       0xbc driver/src/stm32f446re_spi_driver.o
                 0x00000000080048c0                SPI_Handler::SPI_SendData(unsigned char const*, unsigned long)
- .text._ZN11SPI_Handler22SPI_SendAndReceiveDataEPhS0_m
+ .text._ZN11SPI_Handler22SPI_SendAndReceiveDataEPKhPhm
                 0x000000000800497c      0x110 driver/src/stm32f446re_spi_driver.o
-                0x000000000800497c                SPI_Handler::SPI_SendAndReceiveData(unsigned char*, unsigned char*, unsigned long)
+                0x000000000800497c                SPI_Handler::SPI_SendAndReceiveData(unsigned char const*, unsigned char*, unsigned long)
  .text._ZN11SPI_Handler14SPI_SSOEConfigEh
                 0x0000000008004a8c       0x3e driver/src/stm32f446re_spi_driver.o
                 0x0000000008004a8c                SPI_Handler::SPI_SSOEConfig(unsigned char)
@@ -17466,23 +17466,23 @@ LOAD /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.id
                 0x000000000000258a       0x1e /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.7-2018-q2-update.macos64_1.4.0.202007081208/tools/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7e-m/crtn.o
 OUTPUT(004_SPI_driver_CPP.elf elf32-littlearm)
 
-.debug_info     0x0000000000000000    0x18ae8
- .debug_info    0x0000000000000000     0x8ad4 Src/spi_readSensordata.o
- .debug_info    0x0000000000008ad4      0xefd Src/syscalls.o
- .debug_info    0x00000000000099d1      0x91c Src/sysmem.o
- .debug_info    0x000000000000a2ed       0x22 Startup/startup_stm32f446retx.o
- .debug_info    0x000000000000a30f     0x5c04 driver/src/bme280_driver.o
- .debug_info    0x000000000000ff13     0x392b driver/src/stm32f446re_gpio_driver.o
- .debug_info    0x000000000001383e     0x52aa driver/src/stm32f446re_spi_driver.o
+.debug_info     0x0000000000000000    0x18aed
+ .debug_info    0x0000000000000000     0x8ac3 Src/spi_readSensordata.o
+ .debug_info    0x0000000000008ac3      0xefd Src/syscalls.o
+ .debug_info    0x00000000000099c0      0x91c Src/sysmem.o
+ .debug_info    0x000000000000a2dc       0x22 Startup/startup_stm32f446retx.o
+ .debug_info    0x000000000000a2fe     0x5c04 driver/src/bme280_driver.o
+ .debug_info    0x000000000000ff02     0x392b driver/src/stm32f446re_gpio_driver.o
+ .debug_info    0x000000000001382d     0x52c0 driver/src/stm32f446re_spi_driver.o
 
-.debug_abbrev   0x0000000000000000     0x29ca
+.debug_abbrev   0x0000000000000000     0x29d8
  .debug_abbrev  0x0000000000000000      0xb91 Src/spi_readSensordata.o
  .debug_abbrev  0x0000000000000b91      0x279 Src/syscalls.o
  .debug_abbrev  0x0000000000000e0a      0x1bb Src/sysmem.o
  .debug_abbrev  0x0000000000000fc5       0x12 Startup/startup_stm32f446retx.o
  .debug_abbrev  0x0000000000000fd7      0x931 driver/src/bme280_driver.o
  .debug_abbrev  0x0000000000001908      0x753 driver/src/stm32f446re_gpio_driver.o
- .debug_abbrev  0x000000000000205b      0x96f driver/src/stm32f446re_spi_driver.o
+ .debug_abbrev  0x000000000000205b      0x97d driver/src/stm32f446re_spi_driver.o
 
 .debug_aranges  0x0000000000000000      0x918
  .debug_aranges

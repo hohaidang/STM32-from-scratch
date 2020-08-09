@@ -13,13 +13,13 @@
  * @brief             - Initialize SPI, GPIOs, Interrupt, etc.
  **********************************************************************/
 SPI_Handler::SPI_Handler(SPI_RegDef_t *SPIx_ADDR,
-                         uint8_t DeviceMode,
-                         uint8_t BusConfig,
-                         uint8_t SclkSpeed,
-                         uint8_t DFF,
-                         uint8_t CPOL,
-                         uint8_t CPHA,
-                         uint8_t SSM) {
+                         u8 DeviceMode,
+                         u8 BusConfig,
+                         u8 SclkSpeed,
+                         u8 DFF,
+                         u8 CPOL,
+                         u8 CPHA,
+                         u8 SSM) {
     SPIx_.pSPIx = SPIx_ADDR;
     SPIx_.SPIConfig.SPI_DeviceMode = DeviceMode;
     SPIx_.SPIConfig.SPI_BusConfig = BusConfig;
@@ -146,7 +146,7 @@ void SPI_Handler::SPI_GPIOs_Init() {
  **********************************************************************/
 void SPI_Handler::SPI_Init() {
     // Lets configure the SPI_CR1 register
-    uint32_t tempReg = 0;
+    u32 tempReg = 0;
 
     // 1. configure the device mode
     tempReg |= SPIx_.SPIConfig.SPI_DeviceMode << SPI_CR1_MSTR;
@@ -218,7 +218,7 @@ void SPI_Handler::SPI_DeInit() {
  *
  * @return None
  **********************************************************************/
-void SPI_Handler::SPI_PeripheralControl(uint8_t EnOrDi) {
+void SPI_Handler::SPI_PeripheralControl(u8 EnOrDi) {
     if(ENABLE == EnOrDi) {
         SPIx_.pSPIx->CR1 |= (1 << SPI_CR1_SPE);
     }
@@ -236,7 +236,7 @@ void SPI_Handler::SPI_PeripheralControl(uint8_t EnOrDi) {
  *
  * @return None
  **********************************************************************/
-inline uint8_t SPI_Handler::SPI_GetFlagStatus(const uint8_t FlagName) {
+inline u8 SPI_Handler::SPI_GetFlagStatus(const u8 FlagName) {
     return (SPIx_.pSPIx->SR & FlagName) ? FLAG_SET : FLAG_RESET;
 }
 
@@ -250,7 +250,7 @@ inline uint8_t SPI_Handler::SPI_GetFlagStatus(const uint8_t FlagName) {
  *
  * @return None
  **********************************************************************/
-void SPI_Handler::SPI_SendData(const uint8_t *pTxBuffer, uint32_t Len) {
+void SPI_Handler::SPI_SendData(const u8 *pTxBuffer, u32 Len) {
 	if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
 		SPI_PeripheralControl(ENABLE);
 	}
@@ -287,7 +287,7 @@ void SPI_Handler::SPI_SendData(const uint8_t *pTxBuffer, uint32_t Len) {
  *
  * @return None
  **********************************************************************/
-void SPI_Handler::SPI_ReceiveData(uint8_t *pRxBuffer, uint32_t Len)
+void SPI_Handler::SPI_ReceiveData(u8 *pRxBuffer, u32 Len)
 {
     if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
         SPI_PeripheralControl(ENABLE);
@@ -295,7 +295,7 @@ void SPI_Handler::SPI_ReceiveData(uint8_t *pRxBuffer, uint32_t Len)
 
     while (Len > 0) {
         //1. wait until RXNE is set
-        while (SPI_GetFlagStatus(SPI_RXNE_FLAG) == (uint8_t) FLAG_RESET);
+        while (SPI_GetFlagStatus(SPI_RXNE_FLAG) == (u8) FLAG_RESET);
 
         //2. check the DFF bit in CR1
         if ((SPIx_.pSPIx->CR1 & (1 << SPI_CR1_DFF))) {
@@ -316,8 +316,17 @@ void SPI_Handler::SPI_ReceiveData(uint8_t *pRxBuffer, uint32_t Len)
     while(SPI_GetFlagStatus(SPI_BSY_FLAG)); // w8 until SPI done
 }
 
-
-void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer, uint32_t len) {
+/*!
+ * @brief This is API is used for send and receive SPI data concurrently
+ *
+ * @param[in] pTxBuffer : Transmit buffer data
+ * @param[in] pRxBuffer : Receive buffer data
+ * @param[in] len: len of transmit and receive
+ *
+ * @return None
+ *
+ */
+void SPI_Handler::SPI_SendAndReceiveData(const u8 *pTxBuffer, u8 *pRxBuffer, u32 len) {
     if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
         SPI_PeripheralControl(ENABLE);
     }
@@ -340,7 +349,7 @@ void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer,
         }
 
         //1. wait until RXNE is set
-        while (SPI_GetFlagStatus(SPI_RXNE_FLAG) == (uint8_t) FLAG_RESET);
+        while (SPI_GetFlagStatus(SPI_RXNE_FLAG) == (u8) FLAG_RESET);
 
         //2. check the DFF bit in CR1
         if ((SPIx_.pSPIx->CR1 & (1 << SPI_CR1_DFF))) {
@@ -359,7 +368,7 @@ void SPI_Handler::SPI_SendAndReceiveData(uint8_t *pTxBuffer, uint8_t *pRxBuffer,
 }
 
 
-void SPI_Handler::SPI_SSOEConfig(uint8_t EnOrDi) {
+void SPI_Handler::SPI_SSOEConfig(u8 EnOrDi) {
 	if(EnOrDi == ENABLE) {
 		SPIx_.pSPIx->CR2 |= (1 << SPI_CR2_SSOE);
 	}
@@ -378,7 +387,7 @@ void SPI_Handler::SPI_SSOEConfig(uint8_t EnOrDi) {
  * @return            - None
 
  */
-void SPI_Handler::SPI_SSIConfig(uint8_t EnOrDi)
+void SPI_Handler::SPI_SSIConfig(u8 EnOrDi)
 {
     if(EnOrDi == ENABLE)
     {
@@ -401,7 +410,7 @@ void SPI_Handler::SPI_SSIConfig(uint8_t EnOrDi)
  *
  * @return None
  */
-void SPI_Handler::SPI_IRQInterruptConfig(const uint8_t IRQNumber, const uint8_t EnorDi) {
+void SPI_Handler::SPI_IRQInterruptConfig(const u8 IRQNumber, const u8 EnorDi) {
     if(EnorDi == ENABLE) {
         if (IRQNumber <= 31) {
             //  program ISER0 register
@@ -439,24 +448,24 @@ void SPI_Handler::SPI_IRQInterruptConfig(const uint8_t IRQNumber, const uint8_t 
  * @param[in] IRPriority: 0->15
  * @return None
  */
-void SPI_Handler::SPI_IRQPriorityConfig(const uint8_t IRQNumber, const uint8_t IRQPriority) {
+void SPI_Handler::SPI_IRQPriorityConfig(const u8 IRQNumber, const u8 IRQPriority) {
     // 1. first lets find out the ipr register
-    uint8_t iprx = IRQNumber >> 2;
-    uint8_t iprx_section = IRQNumber % 4;
-    uint8_t shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
+    u8 iprx = IRQNumber >> 2;
+    u8 iprx_section = IRQNumber % 4;
+    u8 shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
 
     *(NVIC_PR_BASE_ADDR + iprx) |= (IRQPriority << shift_amount);
 }
 
 
-uint8_t SPI_Handler::SPI_SendDataIT(const uint8_t *pTxBuffer, uint32_t Len) {
+u8 SPI_Handler::SPI_SendDataIT(const u8 *pTxBuffer, u32 Len) {
 	if ((SPIx_.pSPIx->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
 		SPI_PeripheralControl(ENABLE);
 	}
 
 	while(SPIx_.TxState != SPI_READY || SPIx_.RxState != SPI_READY);
 	// 1. Save the Tx buffer address and Len information in some global variables
-	SPIx_.pTxBuffer = const_cast<uint8_t*>(pTxBuffer);
+	SPIx_.pTxBuffer = const_cast<u8*>(pTxBuffer);
 	SPIx_.TxLen = Len;
 
 	// 2. Mark the SPI state as busy in transmission so that no other code
@@ -468,7 +477,7 @@ uint8_t SPI_Handler::SPI_SendDataIT(const uint8_t *pTxBuffer, uint32_t Len) {
     return SPIx_.TxState;
 }
 
-uint8_t SPI_Handler::SPI_ReceiveDataIT(uint8_t *pRxBuffer, uint32_t Len) {
+u8 SPI_Handler::SPI_ReceiveDataIT(u8 *pRxBuffer, u32 Len) {
 	while (SPIx_.TxState != SPI_READY || SPIx_.RxState != SPI_READY);
 	SPI_ClearOVRFlag();
 	// 1. Save the Tx buffer address and Len information in some global variables
@@ -490,7 +499,7 @@ uint8_t SPI_Handler::SPI_ReceiveDataIT(uint8_t *pRxBuffer, uint32_t Len) {
 }
 
 void SPI_Handler::SPI_IRQHandling() {
-    volatile uint8_t temp1 = 0, temp2 = 0;
+    volatile u8 temp1 = 0, temp2 = 0;
 	// check for RXNE
 	temp1 = SPIx_.pSPIx->SR & (1 << SPI_SR_RXNE);
 	temp2 = SPIx_.pSPIx->CR2 & (1 << SPI_CR2_RXNEIE);
@@ -584,7 +593,7 @@ void SPI_Handler::spi_ovr_err_interrupt_handle() {
 
 
 void SPI_Handler::SPI_ClearOVRFlag() {
-    volatile uint8_t temp = 0;
+    volatile u8 temp = 0;
     temp = SPIx_.pSPIx->DR;
     temp = SPIx_.pSPIx->SR;
     static_cast<void>(temp);
@@ -606,7 +615,7 @@ void SPI_Handler::SPI_CloseReception() {
     SPIx_.RxState = SPI_READY;
 }
 
-__weak void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle, uint8_t AppEv) {
+__weak void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle, u8 AppEv) {
     //This is a weak implementation . the user application may override this function.
 }
 

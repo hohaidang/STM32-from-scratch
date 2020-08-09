@@ -7,13 +7,13 @@ This project is aim for learning. Built all of the things from sratch for fully 
 Almost projects are devloped in C++11.
 
 ## Environment
-Windows 10 or MacOS.
+* Windows 10 or MacOS.
 
-Nucleo STM32F446RE board with ARM Cortex M4.
+* Nucleo STM32F446RE board with ARM Cortex M4.
 
-BME280 sensor - reading temperature, humidity, pressure via SPI communication protocol.
+* Bosch BME280 sensor - reading temperature, humidity, pressure via SPI communication protocol.
 
-Saleae Black 4 Logic Analyzier - Debugging.
+* Saleae Black 4 Logic Analyzier - Debugging.
 
 ## Projects
 

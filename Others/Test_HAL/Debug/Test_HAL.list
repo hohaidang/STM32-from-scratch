@@ -37,11 +37,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  16 .debug_macro  0002042c  00000000  00000000  0002b370  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   00006e76  00000000  00000000  0004b79c  2**0
+ 17 .debug_line   00006ea6  00000000  00000000  0004b79c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    000c4684  00000000  00000000  00052612  2**0
+ 18 .debug_str    000c4656  00000000  00000000  00052642  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  00116c96  2**0
+ 19 .comment      0000007b  00000000  00000000  00116c98  2**0
                   CONTENTS, READONLY
  20 .debug_frame  00002250  00000000  00000000  00116d14  2**2
                   CONTENTS, READONLY, DEBUGGING
@@ -1124,22 +1124,44 @@ Disassembly of section .text:
  8000e02:	bf00      	nop
 
 08000e04 <bme280_init>:
+/*!
+ *  @brief This API is the entry point.
+ *  It reads the chip-id and calibration data from the sensor.
+ */
+int8_t bme280_init(struct bme280_dev *dev)
+{
  8000e04:	b580      	push	{r7, lr}
  8000e06:	b084      	sub	sp, #16
  8000e08:	af00      	add	r7, sp, #0
  8000e0a:	6078      	str	r0, [r7, #4]
+    int8_t rslt;
+
+    /* chip id read try count */
+    uint8_t try_count = 5;
  8000e0c:	2305      	movs	r3, #5
  8000e0e:	73bb      	strb	r3, [r7, #14]
+    uint8_t chip_id = 0;
  8000e10:	2300      	movs	r3, #0
  8000e12:	737b      	strb	r3, [r7, #13]
+
+    /* Check for null pointer in the device structure*/
+    rslt = null_ptr_check(dev);
  8000e14:	6878      	ldr	r0, [r7, #4]
  8000e16:	f000 ff77 	bl	8001d08 <null_ptr_check>
  8000e1a:	4603      	mov	r3, r0
  8000e1c:	73fb      	strb	r3, [r7, #15]
+
+    /* Proceed if null check is fine */
+    if (rslt == BME280_OK)
  8000e1e:	f997 300f 	ldrsb.w	r3, [r7, #15]
  8000e22:	2b00      	cmp	r3, #0
  8000e24:	d137      	bne.n	8000e96 <bme280_init+0x92>
+    {
+        while (try_count)
  8000e26:	e02c      	b.n	8000e82 <bme280_init+0x7e>
+        {
+            /* Read the chip-id of bme280 sensor */
+            rslt = bme280_get_regs(BME280_CHIP_ID_ADDR, &chip_id, 1, dev);
  8000e28:	f107 010d 	add.w	r1, r7, #13
  8000e2c:	687b      	ldr	r3, [r7, #4]
  8000e2e:	2201      	movs	r2, #1
@@ -1147,27 +1169,47 @@ Disassembly of section .text:
  8000e32:	f000 f836 	bl	8000ea2 <bme280_get_regs>
  8000e36:	4603      	mov	r3, r0
  8000e38:	73fb      	strb	r3, [r7, #15]
+
+            /* Check for chip id validity */
+            if ((rslt == BME280_OK) && (chip_id == BME280_CHIP_ID))
  8000e3a:	f997 300f 	ldrsb.w	r3, [r7, #15]
  8000e3e:	2b00      	cmp	r3, #0
  8000e40:	d114      	bne.n	8000e6c <bme280_init+0x68>
  8000e42:	7b7b      	ldrb	r3, [r7, #13]
  8000e44:	2b60      	cmp	r3, #96	; 0x60
  8000e46:	d111      	bne.n	8000e6c <bme280_init+0x68>
+            {
+                dev->chip_id = chip_id;
  8000e48:	7b7a      	ldrb	r2, [r7, #13]
  8000e4a:	687b      	ldr	r3, [r7, #4]
  8000e4c:	701a      	strb	r2, [r3, #0]
+
+                /* Reset the sensor */
+                rslt = bme280_soft_reset(dev);
  8000e4e:	6878      	ldr	r0, [r7, #4]
  8000e50:	f000 f8dd 	bl	800100e <bme280_soft_reset>
  8000e54:	4603      	mov	r3, r0
  8000e56:	73fb      	strb	r3, [r7, #15]
+
+                if (rslt == BME280_OK)
  8000e58:	f997 300f 	ldrsb.w	r3, [r7, #15]
  8000e5c:	2b00      	cmp	r3, #0
  8000e5e:	d114      	bne.n	8000e8a <bme280_init+0x86>
+                {
+                    /* Read the calibration data */
+                    rslt = get_calib_data(dev);
  8000e60:	6878      	ldr	r0, [r7, #4]
  8000e62:	f000 fde5 	bl	8001a30 <get_calib_data>
  8000e66:	4603      	mov	r3, r0
  8000e68:	73fb      	strb	r3, [r7, #15]
+                }
+
+                break;
  8000e6a:	e00e      	b.n	8000e8a <bme280_init+0x86>
+            }
+
+            /* Wait for 1 ms */
+            dev->delay_us(1000, dev->intf_ptr);
  8000e6c:	687b      	ldr	r3, [r7, #4]
  8000e6e:	695b      	ldr	r3, [r3, #20]
  8000e70:	687a      	ldr	r2, [r7, #4]
@@ -1175,26 +1217,46 @@ Disassembly of section .text:
  8000e74:	4611      	mov	r1, r2
  8000e76:	f44f 707a 	mov.w	r0, #1000	; 0x3e8
  8000e7a:	4798      	blx	r3
+            --try_count;
  8000e7c:	7bbb      	ldrb	r3, [r7, #14]
  8000e7e:	3b01      	subs	r3, #1
  8000e80:	73bb      	strb	r3, [r7, #14]
+        while (try_count)
  8000e82:	7bbb      	ldrb	r3, [r7, #14]
  8000e84:	2b00      	cmp	r3, #0
  8000e86:	d1cf      	bne.n	8000e28 <bme280_init+0x24>
  8000e88:	e000      	b.n	8000e8c <bme280_init+0x88>
+                break;
  8000e8a:	bf00      	nop
+        }
+
+        /* Chip id check failed */
+        if (!try_count)
  8000e8c:	7bbb      	ldrb	r3, [r7, #14]
  8000e8e:	2b00      	cmp	r3, #0
  8000e90:	d101      	bne.n	8000e96 <bme280_init+0x92>
+        {
+            rslt = BME280_E_DEV_NOT_FOUND;
  8000e92:	23fe      	movs	r3, #254	; 0xfe
  8000e94:	73fb      	strb	r3, [r7, #15]
+        }
+    }
+
+    return rslt;
  8000e96:	f997 300f 	ldrsb.w	r3, [r7, #15]
+}
  8000e9a:	4618      	mov	r0, r3
  8000e9c:	3710      	adds	r7, #16
  8000e9e:	46bd      	mov	sp, r7
  8000ea0:	bd80      	pop	{r7, pc}
 
 08000ea2 <bme280_get_regs>:
+
+/*!
+ * @brief This API reads the data from the given register address of the sensor.
+ */
+int8_t bme280_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len, struct bme280_dev *dev)
+{
  8000ea2:	b590      	push	{r4, r7, lr}
  8000ea4:	b087      	sub	sp, #28
  8000ea6:	af00      	add	r7, sp, #0
@@ -1204,23 +1266,39 @@ Disassembly of section .text:
  8000eae:	73fb      	strb	r3, [r7, #15]
  8000eb0:	4613      	mov	r3, r2
  8000eb2:	81bb      	strh	r3, [r7, #12]
+    int8_t rslt;
+
+    /* Check for null pointer in the device structure*/
+    rslt = null_ptr_check(dev);
  8000eb4:	6878      	ldr	r0, [r7, #4]
  8000eb6:	f000 ff27 	bl	8001d08 <null_ptr_check>
  8000eba:	4603      	mov	r3, r0
  8000ebc:	75fb      	strb	r3, [r7, #23]
+
+    /* Proceed if null check is fine */
+    if ((rslt == BME280_OK) && (reg_data != NULL))
  8000ebe:	f997 3017 	ldrsb.w	r3, [r7, #23]
  8000ec2:	2b00      	cmp	r3, #0
  8000ec4:	d11f      	bne.n	8000f06 <bme280_get_regs+0x64>
  8000ec6:	68bb      	ldr	r3, [r7, #8]
  8000ec8:	2b00      	cmp	r3, #0
  8000eca:	d01c      	beq.n	8000f06 <bme280_get_regs+0x64>
+    {
+        /* If interface selected is SPI */
+        if (dev->intf != BME280_I2C_INTF)
  8000ecc:	687b      	ldr	r3, [r7, #4]
  8000ece:	7a1b      	ldrb	r3, [r3, #8]
  8000ed0:	2b01      	cmp	r3, #1
  8000ed2:	d003      	beq.n	8000edc <bme280_get_regs+0x3a>
+        {
+            reg_addr = reg_addr | 0x80;
  8000ed4:	7bfb      	ldrb	r3, [r7, #15]
  8000ed6:	f063 037f 	orn	r3, r3, #127	; 0x7f
  8000eda:	73fb      	strb	r3, [r7, #15]
+        }
+
+        /* Read the data  */
+        dev->intf_rslt = dev->read(reg_addr, reg_data, len, dev->intf_ptr);
  8000edc:	687b      	ldr	r3, [r7, #4]
  8000ede:	68dc      	ldr	r4, [r3, #12]
  8000ee0:	89ba      	ldrh	r2, [r7, #12]
@@ -1233,22 +1311,43 @@ Disassembly of section .text:
  8000eee:	461a      	mov	r2, r3
  8000ef0:	687b      	ldr	r3, [r7, #4]
  8000ef2:	f883 2045 	strb.w	r2, [r3, #69]	; 0x45
+
+        /* Check for communication error */
+        if (dev->intf_rslt != BME280_INTF_RET_SUCCESS)
  8000ef6:	687b      	ldr	r3, [r7, #4]
  8000ef8:	f993 3045 	ldrsb.w	r3, [r3, #69]	; 0x45
  8000efc:	2b00      	cmp	r3, #0
  8000efe:	d004      	beq.n	8000f0a <bme280_get_regs+0x68>
+        {
+            rslt = BME280_E_COMM_FAIL;
  8000f00:	23fc      	movs	r3, #252	; 0xfc
  8000f02:	75fb      	strb	r3, [r7, #23]
+        if (dev->intf_rslt != BME280_INTF_RET_SUCCESS)
  8000f04:	e001      	b.n	8000f0a <bme280_get_regs+0x68>
+        }
+    }
+    else
+    {
+        rslt = BME280_E_NULL_PTR;
  8000f06:	23ff      	movs	r3, #255	; 0xff
  8000f08:	75fb      	strb	r3, [r7, #23]
+    }
+
+    return rslt;
  8000f0a:	f997 3017 	ldrsb.w	r3, [r7, #23]
+}
  8000f0e:	4618      	mov	r0, r3
  8000f10:	371c      	adds	r7, #28
  8000f12:	46bd      	mov	sp, r7
  8000f14:	bd90      	pop	{r4, r7, pc}
 
 08000f16 <bme280_set_regs>:
+/*!
+ * @brief This API writes the given data to the register address
+ * of the sensor.
+ */
+int8_t bme280_set_regs(uint8_t *reg_addr, const uint8_t *reg_data, uint8_t len, struct bme280_dev *dev)
+{
  8000f16:	b590      	push	{r4, r7, lr}
  8000f18:	b08d      	sub	sp, #52	; 0x34
  8000f1a:	af00      	add	r7, sp, #0
@@ -1257,15 +1356,30 @@ Disassembly of section .text:
  8000f20:	603b      	str	r3, [r7, #0]
  8000f22:	4613      	mov	r3, r2
  8000f24:	71fb      	strb	r3, [r7, #7]
+    int8_t rslt;
+    uint8_t temp_buff[20]; /* Typically not to write more than 10 registers */
+
+    if (len > 10)
  8000f26:	79fb      	ldrb	r3, [r7, #7]
  8000f28:	2b0a      	cmp	r3, #10
  8000f2a:	d901      	bls.n	8000f30 <bme280_set_regs+0x1a>
+    {
+        len = 10;
  8000f2c:	230a      	movs	r3, #10
  8000f2e:	71fb      	strb	r3, [r7, #7]
+
+    uint16_t temp_len;
+    uint8_t reg_addr_cnt;
+
+    /* Check for null pointer in the device structure*/
+    rslt = null_ptr_check(dev);
  8000f30:	6838      	ldr	r0, [r7, #0]
  8000f32:	f000 fee9 	bl	8001d08 <null_ptr_check>
  8000f36:	4603      	mov	r3, r0
  8000f38:	f887 302f 	strb.w	r3, [r7, #47]	; 0x2f
+
+    /* Check for arguments validity */
+    if ((rslt == BME280_OK) && (reg_addr != NULL) && (reg_data != NULL))
  8000f3c:	f997 302f 	ldrsb.w	r3, [r7, #47]	; 0x2f
  8000f40:	2b00      	cmp	r3, #0
  8000f42:	d159      	bne.n	8000ff8 <bme280_set_regs+0xe2>
@@ -1275,19 +1389,30 @@ Disassembly of section .text:
  8000f4a:	68bb      	ldr	r3, [r7, #8]
  8000f4c:	2b00      	cmp	r3, #0
  8000f4e:	d053      	beq.n	8000ff8 <bme280_set_regs+0xe2>
+    {
+        if (len != 0)
  8000f50:	79fb      	ldrb	r3, [r7, #7]
  8000f52:	2b00      	cmp	r3, #0
  8000f54:	d04c      	beq.n	8000ff0 <bme280_set_regs+0xda>
+        {
+            temp_buff[0] = reg_data[0];
  8000f56:	68bb      	ldr	r3, [r7, #8]
  8000f58:	781b      	ldrb	r3, [r3, #0]
  8000f5a:	753b      	strb	r3, [r7, #20]
+
+            /* If interface selected is SPI */
+            if (dev->intf != BME280_I2C_INTF)
  8000f5c:	683b      	ldr	r3, [r7, #0]
  8000f5e:	7a1b      	ldrb	r3, [r3, #8]
  8000f60:	2b01      	cmp	r3, #1
  8000f62:	d01a      	beq.n	8000f9a <bme280_set_regs+0x84>
+            {
+                for (reg_addr_cnt = 0; reg_addr_cnt < len; reg_addr_cnt++)
  8000f64:	2300      	movs	r3, #0
  8000f66:	f887 302b 	strb.w	r3, [r7, #43]	; 0x2b
  8000f6a:	e011      	b.n	8000f90 <bme280_set_regs+0x7a>
+                {
+                    reg_addr[reg_addr_cnt] = reg_addr[reg_addr_cnt] & 0x7F;
  8000f6c:	f897 302b 	ldrb.w	r3, [r7, #43]	; 0x2b
  8000f70:	68fa      	ldr	r2, [r7, #12]
  8000f72:	4413      	add	r3, r2
@@ -1298,6 +1423,7 @@ Disassembly of section .text:
  8000f7e:	f002 027f 	and.w	r2, r2, #127	; 0x7f
  8000f82:	b2d2      	uxtb	r2, r2
  8000f84:	701a      	strb	r2, [r3, #0]
+                for (reg_addr_cnt = 0; reg_addr_cnt < len; reg_addr_cnt++)
  8000f86:	f897 302b 	ldrb.w	r3, [r7, #43]	; 0x2b
  8000f8a:	3301      	adds	r3, #1
  8000f8c:	f887 302b 	strb.w	r3, [r7, #43]	; 0x2b
@@ -1305,14 +1431,25 @@ Disassembly of section .text:
  8000f94:	79fb      	ldrb	r3, [r7, #7]
  8000f96:	429a      	cmp	r2, r3
  8000f98:	d3e8      	bcc.n	8000f6c <bme280_set_regs+0x56>
+                }
+            }
+
+            /* Burst write mode */
+            if (len > 1)
  8000f9a:	79fb      	ldrb	r3, [r7, #7]
  8000f9c:	2b01      	cmp	r3, #1
  8000f9e:	d90d      	bls.n	8000fbc <bme280_set_regs+0xa6>
+            {
+                /* Interleave register address w.r.t data for
+                 * burst write
+                 */
+                interleave_reg_addr(reg_addr, temp_buff, reg_data, len);
  8000fa0:	79fb      	ldrb	r3, [r7, #7]
  8000fa2:	f107 0114 	add.w	r1, r7, #20
  8000fa6:	68ba      	ldr	r2, [r7, #8]
  8000fa8:	68f8      	ldr	r0, [r7, #12]
  8000faa:	f000 fd85 	bl	8001ab8 <interleave_reg_addr>
+                temp_len = ((len * 2) - 1);
  8000fae:	79fb      	ldrb	r3, [r7, #7]
  8000fb0:	b29b      	uxth	r3, r3
  8000fb2:	005b      	lsls	r3, r3, #1
@@ -1320,8 +1457,15 @@ Disassembly of section .text:
  8000fb6:	3b01      	subs	r3, #1
  8000fb8:	85bb      	strh	r3, [r7, #44]	; 0x2c
  8000fba:	e001      	b.n	8000fc0 <bme280_set_regs+0xaa>
+            }
+            else
+            {
+                temp_len = len;
  8000fbc:	79fb      	ldrb	r3, [r7, #7]
  8000fbe:	85bb      	strh	r3, [r7, #44]	; 0x2c
+            }
+
+            dev->intf_rslt = dev->write(reg_addr[0], temp_buff, temp_len, dev->intf_ptr);
  8000fc0:	683b      	ldr	r3, [r7, #0]
  8000fc2:	691c      	ldr	r4, [r3, #16]
  8000fc4:	68fb      	ldr	r3, [r7, #12]
@@ -1335,46 +1479,90 @@ Disassembly of section .text:
  8000fd6:	461a      	mov	r2, r3
  8000fd8:	683b      	ldr	r3, [r7, #0]
  8000fda:	f883 2045 	strb.w	r2, [r3, #69]	; 0x45
+
+            /* Check for communication error */
+            if (dev->intf_rslt != BME280_INTF_RET_SUCCESS)
  8000fde:	683b      	ldr	r3, [r7, #0]
  8000fe0:	f993 3045 	ldrsb.w	r3, [r3, #69]	; 0x45
  8000fe4:	2b00      	cmp	r3, #0
  8000fe6:	d00b      	beq.n	8001000 <bme280_set_regs+0xea>
+            {
+                rslt = BME280_E_COMM_FAIL;
  8000fe8:	23fc      	movs	r3, #252	; 0xfc
  8000fea:	f887 302f 	strb.w	r3, [r7, #47]	; 0x2f
+        if (len != 0)
  8000fee:	e007      	b.n	8001000 <bme280_set_regs+0xea>
+            }
+        }
+        else
+        {
+            rslt = BME280_E_INVALID_LEN;
  8000ff0:	23fd      	movs	r3, #253	; 0xfd
  8000ff2:	f887 302f 	strb.w	r3, [r7, #47]	; 0x2f
+        if (len != 0)
  8000ff6:	e003      	b.n	8001000 <bme280_set_regs+0xea>
+        }
+    }
+    else
+    {
+        rslt = BME280_E_NULL_PTR;
  8000ff8:	23ff      	movs	r3, #255	; 0xff
  8000ffa:	f887 302f 	strb.w	r3, [r7, #47]	; 0x2f
  8000ffe:	e000      	b.n	8001002 <bme280_set_regs+0xec>
+        if (len != 0)
  8001000:	bf00      	nop
+    }
+
+    return rslt;
  8001002:	f997 302f 	ldrsb.w	r3, [r7, #47]	; 0x2f
+}
  8001006:	4618      	mov	r0, r3
  8001008:	3734      	adds	r7, #52	; 0x34
  800100a:	46bd      	mov	sp, r7
  800100c:	bd90      	pop	{r4, r7, pc}
 
 0800100e <bme280_soft_reset>:
+
+/*!
+ * @brief This API performs the soft reset of the sensor.
+ */
+int8_t bme280_soft_reset(struct bme280_dev *dev)
+{
  800100e:	b580      	push	{r7, lr}
  8001010:	b084      	sub	sp, #16
  8001012:	af00      	add	r7, sp, #0
  8001014:	6078      	str	r0, [r7, #4]
+    int8_t rslt;
+    uint8_t reg_addr = BME280_RESET_ADDR;
  8001016:	23e0      	movs	r3, #224	; 0xe0
  8001018:	737b      	strb	r3, [r7, #13]
+    uint8_t status_reg = 0;
  800101a:	2300      	movs	r3, #0
  800101c:	733b      	strb	r3, [r7, #12]
+    uint8_t try_run = 5;
  800101e:	2305      	movs	r3, #5
  8001020:	73bb      	strb	r3, [r7, #14]
+
+    /* 0xB6 is the soft reset command */
+    uint8_t soft_rst_cmd = BME280_SOFT_RESET_COMMAND;
  8001022:	23b6      	movs	r3, #182	; 0xb6
  8001024:	72fb      	strb	r3, [r7, #11]
+
+    /* Check for null pointer in the device structure*/
+    rslt = null_ptr_check(dev);
  8001026:	6878      	ldr	r0, [r7, #4]
  8001028:	f000 fe6e 	bl	8001d08 <null_ptr_check>
  800102c:	4603      	mov	r3, r0
  800102e:	73fb      	strb	r3, [r7, #15]
+
+    /* Proceed if null check is fine */
+    if (rslt == BME280_OK)
  8001030:	f997 300f 	ldrsb.w	r3, [r7, #15]
  8001034:	2b00      	cmp	r3, #0
  8001036:	d133      	bne.n	80010a0 <bme280_soft_reset+0x92>
+    {
+        /* Write the soft reset command in the sensor */
+        rslt = bme280_set_regs(&reg_addr, &soft_rst_cmd, 1, dev);
  8001038:	f107 010b 	add.w	r1, r7, #11
  800103c:	f107 000d 	add.w	r0, r7, #13
  8001040:	687b      	ldr	r3, [r7, #4]
@@ -1382,9 +1570,17 @@ Disassembly of section .text:
  8001044:	f7ff ff67 	bl	8000f16 <bme280_set_regs>
  8001048:	4603      	mov	r3, r0
  800104a:	73fb      	strb	r3, [r7, #15]
+
+        if (rslt == BME280_OK)
  800104c:	f997 300f 	ldrsb.w	r3, [r7, #15]
  8001050:	2b00      	cmp	r3, #0
  8001052:	d125      	bne.n	80010a0 <bme280_soft_reset+0x92>
+        {
+            /* If NVM not copied yet, Wait for NVM to copy */
+            do
+            {
+                /* As per data sheet - Table 1, startup time is 2 ms. */
+                dev->delay_us(2000, dev->intf_ptr);
  8001054:	687b      	ldr	r3, [r7, #4]
  8001056:	695b      	ldr	r3, [r3, #20]
  8001058:	687a      	ldr	r2, [r7, #4]
@@ -1392,6 +1588,7 @@ Disassembly of section .text:
  800105c:	4611      	mov	r1, r2
  800105e:	f44f 60fa 	mov.w	r0, #2000	; 0x7d0
  8001062:	4798      	blx	r3
+                rslt = bme280_get_regs(BME280_STATUS_REG_ADDR, &status_reg, 1, dev);
  8001064:	f107 010c 	add.w	r1, r7, #12
  8001068:	687b      	ldr	r3, [r7, #4]
  800106a:	2201      	movs	r2, #1
@@ -1399,6 +1596,8 @@ Disassembly of section .text:
  800106e:	f7ff ff18 	bl	8000ea2 <bme280_get_regs>
  8001072:	4603      	mov	r3, r0
  8001074:	73fb      	strb	r3, [r7, #15]
+
+            } while ((rslt == BME280_OK) && (try_run--) && (status_reg & BME280_STATUS_IM_UPDATE));
  8001076:	f997 300f 	ldrsb.w	r3, [r7, #15]
  800107a:	2b00      	cmp	r3, #0
  800107c:	d109      	bne.n	8001092 <bme280_soft_reset+0x84>
@@ -1411,19 +1610,35 @@ Disassembly of section .text:
  800108a:	f003 0301 	and.w	r3, r3, #1
  800108e:	2b00      	cmp	r3, #0
  8001090:	d1e0      	bne.n	8001054 <bme280_soft_reset+0x46>
+
+            if (status_reg & BME280_STATUS_IM_UPDATE)
  8001092:	7b3b      	ldrb	r3, [r7, #12]
  8001094:	f003 0301 	and.w	r3, r3, #1
  8001098:	2b00      	cmp	r3, #0
  800109a:	d001      	beq.n	80010a0 <bme280_soft_reset+0x92>
+            {
+                rslt = BME280_E_NVM_COPY_FAILED;
  800109c:	23fa      	movs	r3, #250	; 0xfa
  800109e:	73fb      	strb	r3, [r7, #15]
+            }
+        }
+    }
+
+    return rslt;
  80010a0:	f997 300f 	ldrsb.w	r3, [r7, #15]
+}
  80010a4:	4618      	mov	r0, r3
  80010a6:	3710      	adds	r7, #16
  80010a8:	46bd      	mov	sp, r7
  80010aa:	bd80      	pop	{r7, pc}
 
 080010ac <bme280_get_sensor_data>:
+ * @brief This API reads the pressure, temperature and humidity data from the
+ * sensor, compensates the data and store it in the bme280_data structure
+ * instance passed by the user.
+ */
+int8_t bme280_get_sensor_data(uint8_t sensor_comp, struct bme280_data *comp_data, struct bme280_dev *dev)
+{
  80010ac:	b580      	push	{r7, lr}
  80010ae:	b08a      	sub	sp, #40	; 0x28
  80010b0:	af00      	add	r7, sp, #0
@@ -1431,25 +1646,40 @@ Disassembly of section .text:
  80010b4:	60b9      	str	r1, [r7, #8]
  80010b6:	607a      	str	r2, [r7, #4]
  80010b8:	73fb      	strb	r3, [r7, #15]
+    int8_t rslt;
+
+    /* Array to store the pressure, temperature and humidity data read from
+     * the sensor
+     */
+    uint8_t reg_data[BME280_P_T_H_DATA_LEN] = { 0 };
  80010ba:	f107 031c 	add.w	r3, r7, #28
  80010be:	2200      	movs	r2, #0
  80010c0:	601a      	str	r2, [r3, #0]
  80010c2:	605a      	str	r2, [r3, #4]
+    struct bme280_uncomp_data uncomp_data = { 0 };
  80010c4:	f107 0310 	add.w	r3, r7, #16
  80010c8:	2200      	movs	r2, #0
  80010ca:	601a      	str	r2, [r3, #0]
  80010cc:	605a      	str	r2, [r3, #4]
  80010ce:	609a      	str	r2, [r3, #8]
+
+    /* Check for null pointer in the device structure*/
+    rslt = null_ptr_check(dev);
  80010d0:	6878      	ldr	r0, [r7, #4]
  80010d2:	f000 fe19 	bl	8001d08 <null_ptr_check>
  80010d6:	4603      	mov	r3, r0
  80010d8:	f887 3027 	strb.w	r3, [r7, #39]	; 0x27
+
+    if ((rslt == BME280_OK) && (comp_data != NULL))
  80010dc:	f997 3027 	ldrsb.w	r3, [r7, #39]	; 0x27
  80010e0:	2b00      	cmp	r3, #0
  80010e2:	d124      	bne.n	800112e <bme280_get_sensor_data+0x82>
  80010e4:	68bb      	ldr	r3, [r7, #8]
  80010e6:	2b00      	cmp	r3, #0
  80010e8:	d021      	beq.n	800112e <bme280_get_sensor_data+0x82>
+    {
+        /* Read the pressure and temperature data from the sensor */
+        rslt = bme280_get_regs(BME280_DATA_ADDR, reg_data, BME280_P_T_H_DATA_LEN, dev);
  80010ea:	f107 011c 	add.w	r1, r7, #28
  80010ee:	687b      	ldr	r3, [r7, #4]
  80010f0:	2208      	movs	r2, #8
@@ -1457,14 +1687,24 @@ Disassembly of section .text:
  80010f4:	f7ff fed5 	bl	8000ea2 <bme280_get_regs>
  80010f8:	4603      	mov	r3, r0
  80010fa:	f887 3027 	strb.w	r3, [r7, #39]	; 0x27
+
+        if (rslt == BME280_OK)
  80010fe:	f997 3027 	ldrsb.w	r3, [r7, #39]	; 0x27
  8001102:	2b00      	cmp	r3, #0
  8001104:	d116      	bne.n	8001134 <bme280_get_sensor_data+0x88>
+        {
+            /* Parse the read data from the sensor */
+            bme280_parse_sensor_data(reg_data, &uncomp_data);
  8001106:	f107 0210 	add.w	r2, r7, #16
  800110a:	f107 031c 	add.w	r3, r7, #28
  800110e:	4611      	mov	r1, r2
  8001110:	4618      	mov	r0, r3
  8001112:	f000 f815 	bl	8001140 <bme280_parse_sensor_data>
+
+            /* Compensate the pressure and/or temperature and/or
+             * humidity data from the sensor
+             */
+            rslt = bme280_compensate_data(sensor_comp, &uncomp_data, comp_data, &dev->calib_data);
  8001116:	687b      	ldr	r3, [r7, #4]
  8001118:	3318      	adds	r3, #24
  800111a:	f107 0110 	add.w	r1, r7, #16
@@ -1473,36 +1713,61 @@ Disassembly of section .text:
  8001122:	f000 f853 	bl	80011cc <bme280_compensate_data>
  8001126:	4603      	mov	r3, r0
  8001128:	f887 3027 	strb.w	r3, [r7, #39]	; 0x27
+        if (rslt == BME280_OK)
  800112c:	e002      	b.n	8001134 <bme280_get_sensor_data+0x88>
+        }
+    }
+    else
+    {
+        rslt = BME280_E_NULL_PTR;
  800112e:	23ff      	movs	r3, #255	; 0xff
  8001130:	f887 3027 	strb.w	r3, [r7, #39]	; 0x27
+    }
+
+    return rslt;
  8001134:	f997 3027 	ldrsb.w	r3, [r7, #39]	; 0x27
+}
  8001138:	4618      	mov	r0, r3
  800113a:	3728      	adds	r7, #40	; 0x28
  800113c:	46bd      	mov	sp, r7
  800113e:	bd80      	pop	{r7, pc}
 
 08001140 <bme280_parse_sensor_data>:
+/*!
+ *  @brief This API is used to parse the pressure, temperature and
+ *  humidity data and store it in the bme280_uncomp_data structure instance.
+ */
+void bme280_parse_sensor_data(const uint8_t *reg_data, struct bme280_uncomp_data *uncomp_data)
+{
  8001140:	b480      	push	{r7}
  8001142:	b087      	sub	sp, #28
  8001144:	af00      	add	r7, sp, #0
  8001146:	6078      	str	r0, [r7, #4]
  8001148:	6039      	str	r1, [r7, #0]
+    uint32_t data_xlsb;
+    uint32_t data_lsb;
+    uint32_t data_msb;
+
+    /* Store the parsed register values for pressure data */
+    data_msb = (uint32_t)reg_data[0] << 12;
  800114a:	687b      	ldr	r3, [r7, #4]
  800114c:	781b      	ldrb	r3, [r3, #0]
  800114e:	031b      	lsls	r3, r3, #12
  8001150:	617b      	str	r3, [r7, #20]
+    data_lsb = (uint32_t)reg_data[1] << 4;
  8001152:	687b      	ldr	r3, [r7, #4]
  8001154:	3301      	adds	r3, #1
  8001156:	781b      	ldrb	r3, [r3, #0]
  8001158:	011b      	lsls	r3, r3, #4
  800115a:	613b      	str	r3, [r7, #16]
+    data_xlsb = (uint32_t)reg_data[2] >> 4;
  800115c:	687b      	ldr	r3, [r7, #4]
  800115e:	3302      	adds	r3, #2
  8001160:	781b      	ldrb	r3, [r3, #0]
  8001162:	091b      	lsrs	r3, r3, #4
  8001164:	b2db      	uxtb	r3, r3
  8001166:	60fb      	str	r3, [r7, #12]
+    uncomp_data->pressure = data_msb | data_lsb | data_xlsb;
  8001168:	697a      	ldr	r2, [r7, #20]
  800116a:	693b      	ldr	r3, [r7, #16]
  800116c:	431a      	orrs	r2, r3
@@ -1510,22 +1775,28 @@ Disassembly of section .text:
  8001170:	431a      	orrs	r2, r3
  8001172:	683b      	ldr	r3, [r7, #0]
  8001174:	601a      	str	r2, [r3, #0]
+
+    /* Store the parsed register values for temperature data */
+    data_msb = (uint32_t)reg_data[3] << 12;
  8001176:	687b      	ldr	r3, [r7, #4]
  8001178:	3303      	adds	r3, #3
  800117a:	781b      	ldrb	r3, [r3, #0]
  800117c:	031b      	lsls	r3, r3, #12
  800117e:	617b      	str	r3, [r7, #20]
+    data_lsb = (uint32_t)reg_data[4] << 4;
  8001180:	687b      	ldr	r3, [r7, #4]
  8001182:	3304      	adds	r3, #4
  8001184:	781b      	ldrb	r3, [r3, #0]
  8001186:	011b      	lsls	r3, r3, #4
  8001188:	613b      	str	r3, [r7, #16]
+    data_xlsb = (uint32_t)reg_data[5] >> 4;
  800118a:	687b      	ldr	r3, [r7, #4]
  800118c:	3305      	adds	r3, #5
  800118e:	781b      	ldrb	r3, [r3, #0]
  8001190:	091b      	lsrs	r3, r3, #4
  8001192:	b2db      	uxtb	r3, r3
  8001194:	60fb      	str	r3, [r7, #12]
+    uncomp_data->temperature = data_msb | data_lsb | data_xlsb;
  8001196:	697a      	ldr	r2, [r7, #20]
  8001198:	693b      	ldr	r3, [r7, #16]
  800119a:	431a      	orrs	r2, r3
@@ -1533,20 +1804,26 @@ Disassembly of section .text:
  800119e:	431a      	orrs	r2, r3
  80011a0:	683b      	ldr	r3, [r7, #0]
  80011a2:	605a      	str	r2, [r3, #4]
+
+    /* Store the parsed register values for humidity data */
+    data_msb = (uint32_t)reg_data[6] << 8;
  80011a4:	687b      	ldr	r3, [r7, #4]
  80011a6:	3306      	adds	r3, #6
  80011a8:	781b      	ldrb	r3, [r3, #0]
  80011aa:	021b      	lsls	r3, r3, #8
  80011ac:	617b      	str	r3, [r7, #20]
+    data_lsb = (uint32_t)reg_data[7];
  80011ae:	687b      	ldr	r3, [r7, #4]
  80011b0:	3307      	adds	r3, #7
  80011b2:	781b      	ldrb	r3, [r3, #0]
  80011b4:	613b      	str	r3, [r7, #16]
+    uncomp_data->humidity = data_msb | data_lsb;
  80011b6:	697a      	ldr	r2, [r7, #20]
  80011b8:	693b      	ldr	r3, [r7, #16]
  80011ba:	431a      	orrs	r2, r3
  80011bc:	683b      	ldr	r3, [r7, #0]
  80011be:	609a      	str	r2, [r3, #8]
+}
  80011c0:	bf00      	nop
  80011c2:	371c      	adds	r7, #28
  80011c4:	46bd      	mov	sp, r7
@@ -1554,6 +1831,12 @@ Disassembly of section .text:
  80011ca:	4770      	bx	lr
 
 080011cc <bme280_compensate_data>:
+ */
+int8_t bme280_compensate_data(uint8_t sensor_comp,
+                              const struct bme280_uncomp_data *uncomp_data,
+                              struct bme280_data *comp_data,
+                              struct bme280_calib_data *calib_data)
+{
  80011cc:	b590      	push	{r4, r7, lr}
  80011ce:	b087      	sub	sp, #28
  80011d0:	af00      	add	r7, sp, #0
@@ -1562,8 +1845,11 @@ Disassembly of section .text:
  80011d6:	603b      	str	r3, [r7, #0]
  80011d8:	4603      	mov	r3, r0
  80011da:	73fb      	strb	r3, [r7, #15]
+    int8_t rslt = BME280_OK;
  80011dc:	2300      	movs	r3, #0
  80011de:	75fb      	strb	r3, [r7, #23]
+
+    if ((uncomp_data != NULL) && (comp_data != NULL) && (calib_data != NULL))
  80011e0:	68bb      	ldr	r3, [r7, #8]
  80011e2:	2b00      	cmp	r3, #0
  80011e4:	d04b      	beq.n	800127e <bme280_compensate_data+0xb2>
@@ -1573,22 +1859,33 @@ Disassembly of section .text:
  80011ec:	683b      	ldr	r3, [r7, #0]
  80011ee:	2b00      	cmp	r3, #0
  80011f0:	d045      	beq.n	800127e <bme280_compensate_data+0xb2>
+    {
+        /* Initialize to zero */
+        comp_data->temperature = 0;
  80011f2:	687a      	ldr	r2, [r7, #4]
  80011f4:	f04f 0300 	mov.w	r3, #0
  80011f8:	f04f 0400 	mov.w	r4, #0
  80011fc:	e9c2 3402 	strd	r3, r4, [r2, #8]
+        comp_data->pressure = 0;
  8001200:	687a      	ldr	r2, [r7, #4]
  8001202:	f04f 0300 	mov.w	r3, #0
  8001206:	f04f 0400 	mov.w	r4, #0
  800120a:	e9c2 3400 	strd	r3, r4, [r2]
+        comp_data->humidity = 0;
  800120e:	687a      	ldr	r2, [r7, #4]
  8001210:	f04f 0300 	mov.w	r3, #0
  8001214:	f04f 0400 	mov.w	r4, #0
  8001218:	e9c2 3404 	strd	r3, r4, [r2, #16]
+
+        /* If pressure or temperature component is selected */
+        if (sensor_comp & (BME280_PRESS | BME280_TEMP | BME280_HUM))
  800121c:	7bfb      	ldrb	r3, [r7, #15]
  800121e:	f003 0307 	and.w	r3, r3, #7
  8001222:	2b00      	cmp	r3, #0
  8001224:	d00a      	beq.n	800123c <bme280_compensate_data+0x70>
+        {
+            /* Compensate the temperature data */
+            comp_data->temperature = compensate_temperature(uncomp_data, calib_data);
  8001226:	6839      	ldr	r1, [r7, #0]
  8001228:	68b8      	ldr	r0, [r7, #8]
  800122a:	f000 f831 	bl	8001290 <compensate_temperature>
@@ -1596,10 +1893,16 @@ Disassembly of section .text:
  8001232:	eef0 7a60 	vmov.f32	s15, s1
  8001236:	687b      	ldr	r3, [r7, #4]
  8001238:	ed83 7b02 	vstr	d7, [r3, #8]
+        }
+
+        if (sensor_comp & BME280_PRESS)
  800123c:	7bfb      	ldrb	r3, [r7, #15]
  800123e:	f003 0301 	and.w	r3, r3, #1
  8001242:	2b00      	cmp	r3, #0
  8001244:	d00a      	beq.n	800125c <bme280_compensate_data+0x90>
+        {
+            /* Compensate the pressure data */
+            comp_data->pressure = compensate_pressure(uncomp_data, calib_data);
  8001246:	6839      	ldr	r1, [r7, #0]
  8001248:	68b8      	ldr	r0, [r7, #8]
  800124a:	f000 f8f5 	bl	8001438 <compensate_pressure>
@@ -1607,10 +1910,16 @@ Disassembly of section .text:
  8001252:	eef0 7a60 	vmov.f32	s15, s1
  8001256:	687b      	ldr	r3, [r7, #4]
  8001258:	ed83 7b00 	vstr	d7, [r3]
+        }
+
+        if (sensor_comp & BME280_HUM)
  800125c:	7bfb      	ldrb	r3, [r7, #15]
  800125e:	f003 0304 	and.w	r3, r3, #4
  8001262:	2b00      	cmp	r3, #0
  8001264:	d00d      	beq.n	8001282 <bme280_compensate_data+0xb6>
+        {
+            /* Compensate the humidity data */
+            comp_data->humidity = compensate_humidity(uncomp_data, calib_data);
  8001266:	6839      	ldr	r1, [r7, #0]
  8001268:	68b8      	ldr	r0, [r7, #8]
  800126a:	f000 fabd 	bl	80017e8 <compensate_humidity>
@@ -1618,10 +1927,20 @@ Disassembly of section .text:
  8001272:	eef0 7a60 	vmov.f32	s15, s1
  8001276:	687b      	ldr	r3, [r7, #4]
  8001278:	ed83 7b04 	vstr	d7, [r3, #16]
+        if (sensor_comp & BME280_HUM)
  800127c:	e001      	b.n	8001282 <bme280_compensate_data+0xb6>
+        }
+    }
+    else
+    {
+        rslt = BME280_E_NULL_PTR;
  800127e:	23ff      	movs	r3, #255	; 0xff
  8001280:	75fb      	strb	r3, [r7, #23]
+    }
+
+    return rslt;
  8001282:	f997 3017 	ldrsb.w	r3, [r7, #23]
+}
  8001286:	4618      	mov	r0, r3
  8001288:	371c      	adds	r7, #28
  800128a:	46bd      	mov	sp, r7
@@ -1629,17 +1948,30 @@ Disassembly of section .text:
 	...
 
 08001290 <compensate_temperature>:
+/*!
+ * @brief This internal API is used to compensate the raw temperature data and
+ * return the compensated temperature data in double data type.
+ */
+static double compensate_temperature(const struct bme280_uncomp_data *uncomp_data, struct bme280_calib_data *calib_data)
+{
  8001290:	b5b0      	push	{r4, r5, r7, lr}
  8001292:	b08c      	sub	sp, #48	; 0x30
  8001294:	af00      	add	r7, sp, #0
  8001296:	6078      	str	r0, [r7, #4]
  8001298:	6039      	str	r1, [r7, #0]
+    double var1;
+    double var2;
+    double temperature;
+    double temperature_min = -40;
  800129a:	f04f 0300 	mov.w	r3, #0
  800129e:	4c60      	ldr	r4, [pc, #384]	; (8001420 <compensate_temperature+0x190>)
  80012a0:	e9c7 3408 	strd	r3, r4, [r7, #32]
+    double temperature_max = 85;
  80012a4:	f04f 0300 	mov.w	r3, #0
  80012a8:	4c5e      	ldr	r4, [pc, #376]	; (8001424 <compensate_temperature+0x194>)
  80012aa:	e9c7 3406 	strd	r3, r4, [r7, #24]
+
+    var1 = ((double)uncomp_data->temperature) / 16384.0 - ((double)calib_data->dig_t1) / 1024.0;
  80012ae:	687b      	ldr	r3, [r7, #4]
  80012b0:	685b      	ldr	r3, [r3, #4]
  80012b2:	4618      	mov	r0, r3
@@ -1666,6 +1998,7 @@ Disassembly of section .text:
  80012ea:	4603      	mov	r3, r0
  80012ec:	460c      	mov	r4, r1
  80012ee:	e9c7 3404 	strd	r3, r4, [r7, #16]
+    var1 = var1 * ((double)calib_data->dig_t2);
  80012f2:	683b      	ldr	r3, [r7, #0]
  80012f4:	f9b3 3002 	ldrsh.w	r3, [r3, #2]
  80012f8:	4618      	mov	r0, r3
@@ -1679,6 +2012,7 @@ Disassembly of section .text:
  800130e:	4603      	mov	r3, r0
  8001310:	460c      	mov	r4, r1
  8001312:	e9c7 3404 	strd	r3, r4, [r7, #16]
+    var2 = (((double)uncomp_data->temperature) / 131072.0 - ((double)calib_data->dig_t1) / 8192.0);
  8001316:	687b      	ldr	r3, [r7, #4]
  8001318:	685b      	ldr	r3, [r3, #4]
  800131a:	4618      	mov	r0, r3
@@ -1705,6 +2039,7 @@ Disassembly of section .text:
  8001354:	4603      	mov	r3, r0
  8001356:	460c      	mov	r4, r1
  8001358:	e9c7 3402 	strd	r3, r4, [r7, #8]
+    var2 = (var2 * var2) * ((double)calib_data->dig_t3);
  800135c:	e9d7 2302 	ldrd	r2, r3, [r7, #8]
  8001360:	e9d7 0102 	ldrd	r0, r1, [r7, #8]
  8001364:	f7ff f90c 	bl	8000580 <__aeabi_dmul>
@@ -1724,6 +2059,7 @@ Disassembly of section .text:
  8001388:	4603      	mov	r3, r0
  800138a:	460c      	mov	r4, r1
  800138c:	e9c7 3402 	strd	r3, r4, [r7, #8]
+    calib_data->t_fine = (int32_t)(var1 + var2);
  8001390:	e9d7 2302 	ldrd	r2, r3, [r7, #8]
  8001394:	e9d7 0104 	ldrd	r0, r1, [r7, #16]
  8001398:	f7fe ff3c 	bl	8000214 <__adddf3>
@@ -1735,6 +2071,7 @@ Disassembly of section .text:
  80013a8:	4602      	mov	r2, r0
  80013aa:	683b      	ldr	r3, [r7, #0]
  80013ac:	625a      	str	r2, [r3, #36]	; 0x24
+    temperature = (var1 + var2) / 5120.0;
  80013ae:	e9d7 2302 	ldrd	r2, r3, [r7, #8]
  80013b2:	e9d7 0104 	ldrd	r0, r1, [r7, #16]
  80013b6:	f7fe ff2d 	bl	8000214 <__adddf3>
@@ -1748,25 +2085,37 @@ Disassembly of section .text:
  80013cc:	4603      	mov	r3, r0
  80013ce:	460c      	mov	r4, r1
  80013d0:	e9c7 340a 	strd	r3, r4, [r7, #40]	; 0x28
+
+    if (temperature < temperature_min)
  80013d4:	e9d7 2308 	ldrd	r2, r3, [r7, #32]
  80013d8:	e9d7 010a 	ldrd	r0, r1, [r7, #40]	; 0x28
  80013dc:	f7ff fb42 	bl	8000a64 <__aeabi_dcmplt>
  80013e0:	4603      	mov	r3, r0
  80013e2:	2b00      	cmp	r3, #0
  80013e4:	d004      	beq.n	80013f0 <compensate_temperature+0x160>
+    {
+        temperature = temperature_min;
  80013e6:	e9d7 3408 	ldrd	r3, r4, [r7, #32]
  80013ea:	e9c7 340a 	strd	r3, r4, [r7, #40]	; 0x28
  80013ee:	e00c      	b.n	800140a <compensate_temperature+0x17a>
+    }
+    else if (temperature > temperature_max)
  80013f0:	e9d7 2306 	ldrd	r2, r3, [r7, #24]
  80013f4:	e9d7 010a 	ldrd	r0, r1, [r7, #40]	; 0x28
  80013f8:	f7ff fb52 	bl	8000aa0 <__aeabi_dcmpgt>
  80013fc:	4603      	mov	r3, r0
  80013fe:	2b00      	cmp	r3, #0
  8001400:	d003      	beq.n	800140a <compensate_temperature+0x17a>
+    {
+        temperature = temperature_max;
  8001402:	e9d7 3406 	ldrd	r3, r4, [r7, #24]
  8001406:	e9c7 340a 	strd	r3, r4, [r7, #40]	; 0x28
+    }
+
+    return temperature;
  800140a:	e9d7 340a 	ldrd	r3, r4, [r7, #40]	; 0x28
  800140e:	ec44 3b17 	vmov	d7, r3, r4
+}
  8001412:	eeb0 0a47 	vmov.f32	s0, s14
  8001416:	eef0 0a67 	vmov.f32	s1, s15
  800141a:	3730      	adds	r7, #48	; 0x30
@@ -1780,17 +2129,31 @@ Disassembly of section .text:
  8001434:	40b40000 	.word	0x40b40000
 
 08001438 <compensate_pressure>:
+ * @brief This internal API is used to compensate the raw pressure data and
+ * return the compensated pressure data in double data type.
+ */
+static double compensate_pressure(const struct bme280_uncomp_data *uncomp_data,
+                                  const struct bme280_calib_data *calib_data)
+{
  8001438:	b5b0      	push	{r4, r5, r7, lr}
  800143a:	b08e      	sub	sp, #56	; 0x38
  800143c:	af00      	add	r7, sp, #0
  800143e:	6078      	str	r0, [r7, #4]
  8001440:	6039      	str	r1, [r7, #0]
+    double var1;
+    double var2;
+    double var3;
+    double pressure;
+    double pressure_min = 30000.0;
  8001442:	a4dd      	add	r4, pc, #884	; (adr r4, 80017b8 <compensate_pressure+0x380>)
  8001444:	e9d4 3400 	ldrd	r3, r4, [r4]
  8001448:	e9c7 340a 	strd	r3, r4, [r7, #40]	; 0x28
+    double pressure_max = 110000.0;
  800144c:	a4dc      	add	r4, pc, #880	; (adr r4, 80017c0 <compensate_pressure+0x388>)
  800144e:	e9d4 3400 	ldrd	r3, r4, [r4]
  8001452:	e9c7 3408 	strd	r3, r4, [r7, #32]
+
+    var1 = ((double)calib_data->t_fine / 2.0) - 64000.0;
  8001456:	683b      	ldr	r3, [r7, #0]
  8001458:	6a5b      	ldr	r3, [r3, #36]	; 0x24
  800145a:	4618      	mov	r0, r3
@@ -1808,6 +2171,7 @@ Disassembly of section .text:
  800147e:	4603      	mov	r3, r0
  8001480:	460c      	mov	r4, r1
  8001482:	e9c7 3406 	strd	r3, r4, [r7, #24]
+    var2 = var1 * var1 * ((double)calib_data->dig_p6) / 32768.0;
  8001486:	e9d7 2306 	ldrd	r2, r3, [r7, #24]
  800148a:	e9d7 0106 	ldrd	r0, r1, [r7, #24]
  800148e:	f7ff f877 	bl	8000580 <__aeabi_dmul>
@@ -1834,6 +2198,7 @@ Disassembly of section .text:
  80014c4:	4603      	mov	r3, r0
  80014c6:	460c      	mov	r4, r1
  80014c8:	e9c7 3404 	strd	r3, r4, [r7, #16]
+    var2 = var2 + var1 * ((double)calib_data->dig_p5) * 2.0;
  80014cc:	683b      	ldr	r3, [r7, #0]
  80014ce:	f9b3 300e 	ldrsh.w	r3, [r3, #14]
  80014d2:	4618      	mov	r0, r3
@@ -1856,6 +2221,7 @@ Disassembly of section .text:
  8001500:	4603      	mov	r3, r0
  8001502:	460c      	mov	r4, r1
  8001504:	e9c7 3404 	strd	r3, r4, [r7, #16]
+    var2 = (var2 / 4.0) + (((double)calib_data->dig_p4) * 65536.0);
  8001508:	f04f 0200 	mov.w	r2, #0
  800150c:	4ba2      	ldr	r3, [pc, #648]	; (8001798 <compensate_pressure+0x360>)
  800150e:	e9d7 0104 	ldrd	r0, r1, [r7, #16]
@@ -1879,6 +2245,7 @@ Disassembly of section .text:
  8001540:	4603      	mov	r3, r0
  8001542:	460c      	mov	r4, r1
  8001544:	e9c7 3404 	strd	r3, r4, [r7, #16]
+    var3 = ((double)calib_data->dig_p3) * var1 * var1 / 524288.0;
  8001548:	683b      	ldr	r3, [r7, #0]
  800154a:	f9b3 300a 	ldrsh.w	r3, [r3, #10]
  800154e:	4618      	mov	r0, r3
@@ -1901,6 +2268,7 @@ Disassembly of section .text:
  800157e:	4603      	mov	r3, r0
  8001580:	460c      	mov	r4, r1
  8001582:	e9c7 3402 	strd	r3, r4, [r7, #8]
+    var1 = (var3 + ((double)calib_data->dig_p2) * var1) / 524288.0;
  8001586:	683b      	ldr	r3, [r7, #0]
  8001588:	f9b3 3008 	ldrsh.w	r3, [r3, #8]
  800158c:	4618      	mov	r0, r3
@@ -1923,6 +2291,7 @@ Disassembly of section .text:
  80015bc:	4603      	mov	r3, r0
  80015be:	460c      	mov	r4, r1
  80015c0:	e9c7 3406 	strd	r3, r4, [r7, #24]
+    var1 = (1.0 + var1 / 32768.0) * ((double)calib_data->dig_p1);
  80015c4:	f04f 0200 	mov.w	r2, #0
  80015c8:	4b72      	ldr	r3, [pc, #456]	; (8001794 <compensate_pressure+0x35c>)
  80015ca:	e9d7 0106 	ldrd	r0, r1, [r7, #24]
@@ -1950,6 +2319,9 @@ Disassembly of section .text:
  8001602:	4603      	mov	r3, r0
  8001604:	460c      	mov	r4, r1
  8001606:	e9c7 3406 	strd	r3, r4, [r7, #24]
+
+    /* avoid exception caused by division by zero */
+    if (var1 > (0.0))
  800160a:	f04f 0200 	mov.w	r2, #0
  800160e:	f04f 0300 	mov.w	r3, #0
  8001612:	e9d7 0106 	ldrd	r0, r1, [r7, #24]
@@ -1957,6 +2329,8 @@ Disassembly of section .text:
  800161a:	4603      	mov	r3, r0
  800161c:	2b00      	cmp	r3, #0
  800161e:	f000 80d3 	beq.w	80017c8 <compensate_pressure+0x390>
+    {
+        pressure = 1048576.0 - (double) uncomp_data->pressure;
  8001622:	687b      	ldr	r3, [r7, #4]
  8001624:	681b      	ldr	r3, [r3, #0]
  8001626:	4618      	mov	r0, r3
@@ -1971,6 +2345,7 @@ Disassembly of section .text:
  800163e:	4603      	mov	r3, r0
  8001640:	460c      	mov	r4, r1
  8001642:	e9c7 340c 	strd	r3, r4, [r7, #48]	; 0x30
+        pressure = (pressure - (var2 / 4096.0)) * 6250.0 / var1;
  8001646:	f04f 0200 	mov.w	r2, #0
  800164a:	4b58      	ldr	r3, [pc, #352]	; (80017ac <compensate_pressure+0x374>)
  800164c:	e9d7 0104 	ldrd	r0, r1, [r7, #16]
@@ -1997,6 +2372,7 @@ Disassembly of section .text:
  8001686:	4603      	mov	r3, r0
  8001688:	460c      	mov	r4, r1
  800168a:	e9c7 340c 	strd	r3, r4, [r7, #48]	; 0x30
+        var1 = ((double)calib_data->dig_p9) * pressure * pressure / 2147483648.0;
  800168e:	683b      	ldr	r3, [r7, #0]
  8001690:	f9b3 3016 	ldrsh.w	r3, [r3, #22]
  8001694:	4618      	mov	r0, r3
@@ -2019,6 +2395,7 @@ Disassembly of section .text:
  80016c4:	4603      	mov	r3, r0
  80016c6:	460c      	mov	r4, r1
  80016c8:	e9c7 3406 	strd	r3, r4, [r7, #24]
+        var2 = pressure * ((double)calib_data->dig_p8) / 32768.0;
  80016cc:	683b      	ldr	r3, [r7, #0]
  80016ce:	f9b3 3014 	ldrsh.w	r3, [r3, #20]
  80016d2:	4618      	mov	r0, r3
@@ -2035,6 +2412,7 @@ Disassembly of section .text:
  80016f2:	4603      	mov	r3, r0
  80016f4:	460c      	mov	r4, r1
  80016f6:	e9c7 3404 	strd	r3, r4, [r7, #16]
+        pressure = pressure + (var1 + var2 + ((double)calib_data->dig_p7)) / 16.0;
  80016fa:	e9d7 2304 	ldrd	r2, r3, [r7, #16]
  80016fe:	e9d7 0106 	ldrd	r0, r1, [r7, #24]
  8001702:	f7fe fd87 	bl	8000214 <__adddf3>
@@ -2067,21 +2445,29 @@ Disassembly of section .text:
  8001748:	4603      	mov	r3, r0
  800174a:	460c      	mov	r4, r1
  800174c:	e9c7 340c 	strd	r3, r4, [r7, #48]	; 0x30
+
+        if (pressure < pressure_min)
  8001750:	e9d7 230a 	ldrd	r2, r3, [r7, #40]	; 0x28
  8001754:	e9d7 010c 	ldrd	r0, r1, [r7, #48]	; 0x30
  8001758:	f7ff f984 	bl	8000a64 <__aeabi_dcmplt>
  800175c:	4603      	mov	r3, r0
  800175e:	2b00      	cmp	r3, #0
  8001760:	d004      	beq.n	800176c <compensate_pressure+0x334>
+        {
+            pressure = pressure_min;
  8001762:	e9d7 340a 	ldrd	r3, r4, [r7, #40]	; 0x28
  8001766:	e9c7 340c 	strd	r3, r4, [r7, #48]	; 0x30
  800176a:	e031      	b.n	80017d0 <compensate_pressure+0x398>
+        }
+        else if (pressure > pressure_max)
  800176c:	e9d7 2308 	ldrd	r2, r3, [r7, #32]
  8001770:	e9d7 010c 	ldrd	r0, r1, [r7, #48]	; 0x30
  8001774:	f7ff f994 	bl	8000aa0 <__aeabi_dcmpgt>
  8001778:	4603      	mov	r3, r0
  800177a:	2b00      	cmp	r3, #0
  800177c:	d028      	beq.n	80017d0 <compensate_pressure+0x398>
+        {
+            pressure = pressure_max;
  800177e:	e9d7 3408 	ldrd	r3, r4, [r7, #32]
  8001782:	e9c7 340c 	strd	r3, r4, [r7, #48]	; 0x30
  8001786:	e023      	b.n	80017d0 <compensate_pressure+0x398>
@@ -2101,10 +2487,19 @@ Disassembly of section .text:
  80017bc:	40dd4c00 	.word	0x40dd4c00
  80017c0:	00000000 	.word	0x00000000
  80017c4:	40fadb00 	.word	0x40fadb00
+        }
+    }
+    else /* Invalid case */
+    {
+        pressure = pressure_min;
  80017c8:	e9d7 340a 	ldrd	r3, r4, [r7, #40]	; 0x28
  80017cc:	e9c7 340c 	strd	r3, r4, [r7, #48]	; 0x30
+    }
+
+    return pressure;
  80017d0:	e9d7 340c 	ldrd	r3, r4, [r7, #48]	; 0x30
  80017d4:	ec44 3b17 	vmov	d7, r3, r4
+}
  80017d8:	eeb0 0a47 	vmov.f32	s0, s14
  80017dc:	eef0 0a67 	vmov.f32	s1, s15
  80017e0:	3738      	adds	r7, #56	; 0x38
@@ -2113,17 +2508,32 @@ Disassembly of section .text:
  80017e6:	bf00      	nop
 
 080017e8 <compensate_humidity>:
+ * @brief This internal API is used to compensate the raw humidity data and
+ * return the compensated humidity data in double data type.
+ */
+static double compensate_humidity(const struct bme280_uncomp_data *uncomp_data,
+                                  const struct bme280_calib_data *calib_data)
+{
  80017e8:	b5b0      	push	{r4, r5, r7, lr}
  80017ea:	b094      	sub	sp, #80	; 0x50
  80017ec:	af00      	add	r7, sp, #0
  80017ee:	6078      	str	r0, [r7, #4]
  80017f0:	6039      	str	r1, [r7, #0]
+    double humidity;
+    double humidity_min = 0.0;
  80017f2:	f04f 0300 	mov.w	r3, #0
  80017f6:	f04f 0400 	mov.w	r4, #0
  80017fa:	e9c7 3410 	strd	r3, r4, [r7, #64]	; 0x40
+    double humidity_max = 100.0;
  80017fe:	f04f 0300 	mov.w	r3, #0
  8001802:	4c83      	ldr	r4, [pc, #524]	; (8001a10 <compensate_humidity+0x228>)
  8001804:	e9c7 340e 	strd	r3, r4, [r7, #56]	; 0x38
+    double var3;
+    double var4;
+    double var5;
+    double var6;
+
+    var1 = ((double)calib_data->t_fine) - 76800.0;
  8001808:	683b      	ldr	r3, [r7, #0]
  800180a:	6a5b      	ldr	r3, [r3, #36]	; 0x24
  800180c:	4618      	mov	r0, r3
@@ -2134,6 +2544,7 @@ Disassembly of section .text:
  800181c:	4603      	mov	r3, r0
  800181e:	460c      	mov	r4, r1
  8001820:	e9c7 340c 	strd	r3, r4, [r7, #48]	; 0x30
+    var2 = (((double)calib_data->dig_h4) * 64.0 + (((double)calib_data->dig_h5) / 16384.0) * var1);
  8001824:	683b      	ldr	r3, [r7, #0]
  8001826:	f9b3 301e 	ldrsh.w	r3, [r3, #30]
  800182a:	4618      	mov	r0, r3
@@ -2166,6 +2577,7 @@ Disassembly of section .text:
  8001874:	4603      	mov	r3, r0
  8001876:	460c      	mov	r4, r1
  8001878:	e9c7 340a 	strd	r3, r4, [r7, #40]	; 0x28
+    var3 = uncomp_data->humidity - var2;
  800187c:	687b      	ldr	r3, [r7, #4]
  800187e:	689b      	ldr	r3, [r3, #8]
  8001880:	4618      	mov	r0, r3
@@ -2175,6 +2587,7 @@ Disassembly of section .text:
  800188e:	4603      	mov	r3, r0
  8001890:	460c      	mov	r4, r1
  8001892:	e9c7 3408 	strd	r3, r4, [r7, #32]
+    var4 = ((double)calib_data->dig_h2) / 65536.0;
  8001896:	683b      	ldr	r3, [r7, #0]
  8001898:	f9b3 301a 	ldrsh.w	r3, [r3, #26]
  800189c:	4618      	mov	r0, r3
@@ -2185,6 +2598,7 @@ Disassembly of section .text:
  80018ac:	4603      	mov	r3, r0
  80018ae:	460c      	mov	r4, r1
  80018b0:	e9c7 3406 	strd	r3, r4, [r7, #24]
+    var5 = (1.0 + (((double)calib_data->dig_h3) / 67108864.0) * var1);
  80018b4:	683b      	ldr	r3, [r7, #0]
  80018b6:	7f1b      	ldrb	r3, [r3, #28]
  80018b8:	4618      	mov	r0, r3
@@ -2208,6 +2622,7 @@ Disassembly of section .text:
  80018ea:	4603      	mov	r3, r0
  80018ec:	460c      	mov	r4, r1
  80018ee:	e9c7 3404 	strd	r3, r4, [r7, #16]
+    var6 = 1.0 + (((double)calib_data->dig_h6) / 67108864.0) * var1 * var5;
  80018f2:	683b      	ldr	r3, [r7, #0]
  80018f4:	f993 3022 	ldrsb.w	r3, [r3, #34]	; 0x22
  80018f8:	4618      	mov	r0, r3
@@ -2237,6 +2652,7 @@ Disassembly of section .text:
  800193a:	4603      	mov	r3, r0
  800193c:	460c      	mov	r4, r1
  800193e:	e9c7 3402 	strd	r3, r4, [r7, #8]
+    var6 = var3 * var4 * (var5 * var6);
  8001942:	e9d7 2306 	ldrd	r2, r3, [r7, #24]
  8001946:	e9d7 0108 	ldrd	r0, r1, [r7, #32]
  800194a:	f7fe fe19 	bl	8000580 <__aeabi_dmul>
@@ -2255,6 +2671,7 @@ Disassembly of section .text:
  800196e:	4603      	mov	r3, r0
  8001970:	460c      	mov	r4, r1
  8001972:	e9c7 3402 	strd	r3, r4, [r7, #8]
+    humidity = var6 * (1.0 - ((double)calib_data->dig_h1) * var6 / 524288.0);
  8001976:	683b      	ldr	r3, [r7, #0]
  8001978:	7e1b      	ldrb	r3, [r3, #24]
  800197a:	4618      	mov	r0, r3
@@ -2284,25 +2701,37 @@ Disassembly of section .text:
  80019bc:	4603      	mov	r3, r0
  80019be:	460c      	mov	r4, r1
  80019c0:	e9c7 3412 	strd	r3, r4, [r7, #72]	; 0x48
+
+    if (humidity > humidity_max)
  80019c4:	e9d7 230e 	ldrd	r2, r3, [r7, #56]	; 0x38
  80019c8:	e9d7 0112 	ldrd	r0, r1, [r7, #72]	; 0x48
  80019cc:	f7ff f868 	bl	8000aa0 <__aeabi_dcmpgt>
  80019d0:	4603      	mov	r3, r0
  80019d2:	2b00      	cmp	r3, #0
  80019d4:	d004      	beq.n	80019e0 <compensate_humidity+0x1f8>
+    {
+        humidity = humidity_max;
  80019d6:	e9d7 340e 	ldrd	r3, r4, [r7, #56]	; 0x38
  80019da:	e9c7 3412 	strd	r3, r4, [r7, #72]	; 0x48
  80019de:	e00c      	b.n	80019fa <compensate_humidity+0x212>
+    }
+    else if (humidity < humidity_min)
  80019e0:	e9d7 2310 	ldrd	r2, r3, [r7, #64]	; 0x40
  80019e4:	e9d7 0112 	ldrd	r0, r1, [r7, #72]	; 0x48
  80019e8:	f7ff f83c 	bl	8000a64 <__aeabi_dcmplt>
  80019ec:	4603      	mov	r3, r0
  80019ee:	2b00      	cmp	r3, #0
  80019f0:	d003      	beq.n	80019fa <compensate_humidity+0x212>
+    {
+        humidity = humidity_min;
  80019f2:	e9d7 3410 	ldrd	r3, r4, [r7, #64]	; 0x40
  80019f6:	e9c7 3412 	strd	r3, r4, [r7, #72]	; 0x48
+    }
+
+    return humidity;
  80019fa:	e9d7 3412 	ldrd	r3, r4, [r7, #72]	; 0x48
  80019fe:	ec44 3b17 	vmov	d7, r3, r4
+}
  8001a02:	eeb0 0a47 	vmov.f32	s0, s14
  8001a06:	eef0 0a67 	vmov.f32	s1, s15
  8001a0a:	3750      	adds	r7, #80	; 0x50
@@ -2318,12 +2747,23 @@ Disassembly of section .text:
  8001a2c:	41200000 	.word	0x41200000
 
 08001a30 <get_calib_data>:
+/*!
+ * @brief This internal API reads the calibration data from the sensor, parse
+ * it and store in the device structure.
+ */
+static int8_t get_calib_data(struct bme280_dev *dev)
+{
  8001a30:	b580      	push	{r7, lr}
  8001a32:	b08a      	sub	sp, #40	; 0x28
  8001a34:	af00      	add	r7, sp, #0
  8001a36:	6078      	str	r0, [r7, #4]
+    int8_t rslt;
+    uint8_t reg_addr = BME280_TEMP_PRESS_CALIB_DATA_ADDR;
  8001a38:	2388      	movs	r3, #136	; 0x88
  8001a3a:	f887 3026 	strb.w	r3, [r7, #38]	; 0x26
+
+    /* Array to store calibration data */
+    uint8_t calib_data[BME280_TEMP_PRESS_CALIB_DATA_LEN] = { 0 };
  8001a3e:	f107 030c 	add.w	r3, r7, #12
  8001a42:	2200      	movs	r2, #0
  8001a44:	601a      	str	r2, [r3, #0]
@@ -2333,6 +2773,9 @@ Disassembly of section .text:
  8001a4c:	611a      	str	r2, [r3, #16]
  8001a4e:	615a      	str	r2, [r3, #20]
  8001a50:	831a      	strh	r2, [r3, #24]
+
+    /* Read the calibration data from the sensor */
+    rslt = bme280_get_regs(reg_addr, calib_data, BME280_TEMP_PRESS_CALIB_DATA_LEN, dev);
  8001a52:	f107 010c 	add.w	r1, r7, #12
  8001a56:	f897 0026 	ldrb.w	r0, [r7, #38]	; 0x26
  8001a5a:	687b      	ldr	r3, [r7, #4]
@@ -2340,15 +2783,26 @@ Disassembly of section .text:
  8001a5e:	f7ff fa20 	bl	8000ea2 <bme280_get_regs>
  8001a62:	4603      	mov	r3, r0
  8001a64:	f887 3027 	strb.w	r3, [r7, #39]	; 0x27
+
+    if (rslt == BME280_OK)
  8001a68:	f997 3027 	ldrsb.w	r3, [r7, #39]	; 0x27
  8001a6c:	2b00      	cmp	r3, #0
  8001a6e:	d11d      	bne.n	8001aac <get_calib_data+0x7c>
+    {
+        /* Parse temperature and pressure calibration data and store
+         * it in device structure
+         */
+        parse_temp_press_calib_data(calib_data, dev);
  8001a70:	f107 030c 	add.w	r3, r7, #12
  8001a74:	6879      	ldr	r1, [r7, #4]
  8001a76:	4618      	mov	r0, r3
  8001a78:	f000 f849 	bl	8001b0e <parse_temp_press_calib_data>
+        reg_addr = BME280_HUMIDITY_CALIB_DATA_ADDR;
  8001a7c:	23e1      	movs	r3, #225	; 0xe1
  8001a7e:	f887 3026 	strb.w	r3, [r7, #38]	; 0x26
+
+        /* Read the humidity calibration data from the sensor */
+        rslt = bme280_get_regs(reg_addr, calib_data, BME280_HUMIDITY_CALIB_DATA_LEN, dev);
  8001a82:	f107 010c 	add.w	r1, r7, #12
  8001a86:	f897 0026 	ldrb.w	r0, [r7, #38]	; 0x26
  8001a8a:	687b      	ldr	r3, [r7, #4]
@@ -2356,20 +2810,38 @@ Disassembly of section .text:
  8001a8e:	f7ff fa08 	bl	8000ea2 <bme280_get_regs>
  8001a92:	4603      	mov	r3, r0
  8001a94:	f887 3027 	strb.w	r3, [r7, #39]	; 0x27
+
+        if (rslt == BME280_OK)
  8001a98:	f997 3027 	ldrsb.w	r3, [r7, #39]	; 0x27
  8001a9c:	2b00      	cmp	r3, #0
  8001a9e:	d105      	bne.n	8001aac <get_calib_data+0x7c>
+        {
+            /* Parse humidity calibration data and store it in
+             * device structure
+             */
+            parse_humidity_calib_data(calib_data, dev);
  8001aa0:	f107 030c 	add.w	r3, r7, #12
  8001aa4:	6879      	ldr	r1, [r7, #4]
  8001aa6:	4618      	mov	r0, r3
  8001aa8:	f000 f8e0 	bl	8001c6c <parse_humidity_calib_data>
+        }
+    }
+
+    return rslt;
  8001aac:	f997 3027 	ldrsb.w	r3, [r7, #39]	; 0x27
+}
  8001ab0:	4618      	mov	r0, r3
  8001ab2:	3728      	adds	r7, #40	; 0x28
  8001ab4:	46bd      	mov	sp, r7
  8001ab6:	bd80      	pop	{r7, pc}
 
 08001ab8 <interleave_reg_addr>:
+/*!
+ * @brief This internal API interleaves the register address between the
+ * register data buffer for burst write operation.
+ */
+static void interleave_reg_addr(const uint8_t *reg_addr, uint8_t *temp_buff, const uint8_t *reg_data, uint8_t len)
+{
  8001ab8:	b480      	push	{r7}
  8001aba:	b087      	sub	sp, #28
  8001abc:	af00      	add	r7, sp, #0
@@ -2377,9 +2849,14 @@ Disassembly of section .text:
  8001ac0:	60b9      	str	r1, [r7, #8]
  8001ac2:	607a      	str	r2, [r7, #4]
  8001ac4:	70fb      	strb	r3, [r7, #3]
+    uint8_t index;
+
+    for (index = 1; index < len; index++)
  8001ac6:	2301      	movs	r3, #1
  8001ac8:	75fb      	strb	r3, [r7, #23]
  8001aca:	e016      	b.n	8001afa <interleave_reg_addr+0x42>
+    {
+        temp_buff[(index * 2) - 1] = reg_addr[index];
  8001acc:	7dfb      	ldrb	r3, [r7, #23]
  8001ace:	68fa      	ldr	r2, [r7, #12]
  8001ad0:	441a      	add	r2, r3
@@ -2390,6 +2867,7 @@ Disassembly of section .text:
  8001ada:	440b      	add	r3, r1
  8001adc:	7812      	ldrb	r2, [r2, #0]
  8001ade:	701a      	strb	r2, [r3, #0]
+        temp_buff[index * 2] = reg_data[index];
  8001ae0:	7dfb      	ldrb	r3, [r7, #23]
  8001ae2:	687a      	ldr	r2, [r7, #4]
  8001ae4:	441a      	add	r2, r3
@@ -2400,6 +2878,7 @@ Disassembly of section .text:
  8001aee:	440b      	add	r3, r1
  8001af0:	7812      	ldrb	r2, [r2, #0]
  8001af2:	701a      	strb	r2, [r3, #0]
+    for (index = 1; index < len; index++)
  8001af4:	7dfb      	ldrb	r3, [r7, #23]
  8001af6:	3301      	adds	r3, #1
  8001af8:	75fb      	strb	r3, [r7, #23]
@@ -2407,6 +2886,8 @@ Disassembly of section .text:
  8001afc:	78fb      	ldrb	r3, [r7, #3]
  8001afe:	429a      	cmp	r2, r3
  8001b00:	d3e4      	bcc.n	8001acc <interleave_reg_addr+0x14>
+    }
+}
  8001b02:	bf00      	nop
  8001b04:	371c      	adds	r7, #28
  8001b06:	46bd      	mov	sp, r7
@@ -2414,14 +2895,23 @@ Disassembly of section .text:
  8001b0c:	4770      	bx	lr
 
 08001b0e <parse_temp_press_calib_data>:
+/*!
+ *  @brief This internal API is used to parse the temperature and
+ *  pressure calibration data and store it in device structure.
+ */
+static void parse_temp_press_calib_data(const uint8_t *reg_data, struct bme280_dev *dev)
+{
  8001b0e:	b480      	push	{r7}
  8001b10:	b085      	sub	sp, #20
  8001b12:	af00      	add	r7, sp, #0
  8001b14:	6078      	str	r0, [r7, #4]
  8001b16:	6039      	str	r1, [r7, #0]
+    struct bme280_calib_data *calib_data = &dev->calib_data;
  8001b18:	683b      	ldr	r3, [r7, #0]
  8001b1a:	3318      	adds	r3, #24
  8001b1c:	60fb      	str	r3, [r7, #12]
+
+    calib_data->dig_t1 = BME280_CONCAT_BYTES(reg_data[1], reg_data[0]);
  8001b1e:	687b      	ldr	r3, [r7, #4]
  8001b20:	3301      	adds	r3, #1
  8001b22:	781b      	ldrb	r3, [r3, #0]
@@ -2435,6 +2925,7 @@ Disassembly of section .text:
  8001b32:	b29a      	uxth	r2, r3
  8001b34:	68fb      	ldr	r3, [r7, #12]
  8001b36:	801a      	strh	r2, [r3, #0]
+    calib_data->dig_t2 = (int16_t)BME280_CONCAT_BYTES(reg_data[3], reg_data[2]);
  8001b38:	687b      	ldr	r3, [r7, #4]
  8001b3a:	3303      	adds	r3, #3
  8001b3c:	781b      	ldrb	r3, [r3, #0]
@@ -2448,6 +2939,7 @@ Disassembly of section .text:
  8001b4c:	b21a      	sxth	r2, r3
  8001b4e:	68fb      	ldr	r3, [r7, #12]
  8001b50:	805a      	strh	r2, [r3, #2]
+    calib_data->dig_t3 = (int16_t)BME280_CONCAT_BYTES(reg_data[5], reg_data[4]);
  8001b52:	687b      	ldr	r3, [r7, #4]
  8001b54:	3305      	adds	r3, #5
  8001b56:	781b      	ldrb	r3, [r3, #0]
@@ -2461,6 +2953,7 @@ Disassembly of section .text:
  8001b66:	b21a      	sxth	r2, r3
  8001b68:	68fb      	ldr	r3, [r7, #12]
  8001b6a:	809a      	strh	r2, [r3, #4]
+    calib_data->dig_p1 = BME280_CONCAT_BYTES(reg_data[7], reg_data[6]);
  8001b6c:	687b      	ldr	r3, [r7, #4]
  8001b6e:	3307      	adds	r3, #7
  8001b70:	781b      	ldrb	r3, [r3, #0]
@@ -2475,6 +2968,7 @@ Disassembly of section .text:
  8001b82:	b29a      	uxth	r2, r3
  8001b84:	68fb      	ldr	r3, [r7, #12]
  8001b86:	80da      	strh	r2, [r3, #6]
+    calib_data->dig_p2 = (int16_t)BME280_CONCAT_BYTES(reg_data[9], reg_data[8]);
  8001b88:	687b      	ldr	r3, [r7, #4]
  8001b8a:	3309      	adds	r3, #9
  8001b8c:	781b      	ldrb	r3, [r3, #0]
@@ -2488,6 +2982,7 @@ Disassembly of section .text:
  8001b9c:	b21a      	sxth	r2, r3
  8001b9e:	68fb      	ldr	r3, [r7, #12]
  8001ba0:	811a      	strh	r2, [r3, #8]
+    calib_data->dig_p3 = (int16_t)BME280_CONCAT_BYTES(reg_data[11], reg_data[10]);
  8001ba2:	687b      	ldr	r3, [r7, #4]
  8001ba4:	330b      	adds	r3, #11
  8001ba6:	781b      	ldrb	r3, [r3, #0]
@@ -2501,6 +2996,7 @@ Disassembly of section .text:
  8001bb6:	b21a      	sxth	r2, r3
  8001bb8:	68fb      	ldr	r3, [r7, #12]
  8001bba:	815a      	strh	r2, [r3, #10]
+    calib_data->dig_p4 = (int16_t)BME280_CONCAT_BYTES(reg_data[13], reg_data[12]);
  8001bbc:	687b      	ldr	r3, [r7, #4]
  8001bbe:	330d      	adds	r3, #13
  8001bc0:	781b      	ldrb	r3, [r3, #0]
@@ -2514,6 +3010,7 @@ Disassembly of section .text:
  8001bd0:	b21a      	sxth	r2, r3
  8001bd2:	68fb      	ldr	r3, [r7, #12]
  8001bd4:	819a      	strh	r2, [r3, #12]
+    calib_data->dig_p5 = (int16_t)BME280_CONCAT_BYTES(reg_data[15], reg_data[14]);
  8001bd6:	687b      	ldr	r3, [r7, #4]
  8001bd8:	330f      	adds	r3, #15
  8001bda:	781b      	ldrb	r3, [r3, #0]
@@ -2527,6 +3024,7 @@ Disassembly of section .text:
  8001bea:	b21a      	sxth	r2, r3
  8001bec:	68fb      	ldr	r3, [r7, #12]
  8001bee:	81da      	strh	r2, [r3, #14]
+    calib_data->dig_p6 = (int16_t)BME280_CONCAT_BYTES(reg_data[17], reg_data[16]);
  8001bf0:	687b      	ldr	r3, [r7, #4]
  8001bf2:	3311      	adds	r3, #17
  8001bf4:	781b      	ldrb	r3, [r3, #0]
@@ -2540,6 +3038,7 @@ Disassembly of section .text:
  8001c04:	b21a      	sxth	r2, r3
  8001c06:	68fb      	ldr	r3, [r7, #12]
  8001c08:	821a      	strh	r2, [r3, #16]
+    calib_data->dig_p7 = (int16_t)BME280_CONCAT_BYTES(reg_data[19], reg_data[18]);
  8001c0a:	687b      	ldr	r3, [r7, #4]
  8001c0c:	3313      	adds	r3, #19
  8001c0e:	781b      	ldrb	r3, [r3, #0]
@@ -2553,6 +3052,7 @@ Disassembly of section .text:
  8001c1e:	b21a      	sxth	r2, r3
  8001c20:	68fb      	ldr	r3, [r7, #12]
  8001c22:	825a      	strh	r2, [r3, #18]
+    calib_data->dig_p8 = (int16_t)BME280_CONCAT_BYTES(reg_data[21], reg_data[20]);
  8001c24:	687b      	ldr	r3, [r7, #4]
  8001c26:	3315      	adds	r3, #21
  8001c28:	781b      	ldrb	r3, [r3, #0]
@@ -2566,6 +3066,7 @@ Disassembly of section .text:
  8001c38:	b21a      	sxth	r2, r3
  8001c3a:	68fb      	ldr	r3, [r7, #12]
  8001c3c:	829a      	strh	r2, [r3, #20]
+    calib_data->dig_p9 = (int16_t)BME280_CONCAT_BYTES(reg_data[23], reg_data[22]);
  8001c3e:	687b      	ldr	r3, [r7, #4]
  8001c40:	3317      	adds	r3, #23
  8001c42:	781b      	ldrb	r3, [r3, #0]
@@ -2579,10 +3080,12 @@ Disassembly of section .text:
  8001c52:	b21a      	sxth	r2, r3
  8001c54:	68fb      	ldr	r3, [r7, #12]
  8001c56:	82da      	strh	r2, [r3, #22]
+    calib_data->dig_h1 = reg_data[25];
  8001c58:	687b      	ldr	r3, [r7, #4]
  8001c5a:	7e5a      	ldrb	r2, [r3, #25]
  8001c5c:	68fb      	ldr	r3, [r7, #12]
  8001c5e:	761a      	strb	r2, [r3, #24]
+}
  8001c60:	bf00      	nop
  8001c62:	3714      	adds	r7, #20
  8001c64:	46bd      	mov	sp, r7
@@ -2590,14 +3093,27 @@ Disassembly of section .text:
  8001c6a:	4770      	bx	lr
 
 08001c6c <parse_humidity_calib_data>:
+/*!
+ *  @brief This internal API is used to parse the humidity calibration data
+ *  and store it in device structure.
+ */
+static void parse_humidity_calib_data(const uint8_t *reg_data, struct bme280_dev *dev)
+{
  8001c6c:	b480      	push	{r7}
  8001c6e:	b087      	sub	sp, #28
  8001c70:	af00      	add	r7, sp, #0
  8001c72:	6078      	str	r0, [r7, #4]
  8001c74:	6039      	str	r1, [r7, #0]
+    struct bme280_calib_data *calib_data = &dev->calib_data;
  8001c76:	683b      	ldr	r3, [r7, #0]
  8001c78:	3318      	adds	r3, #24
  8001c7a:	617b      	str	r3, [r7, #20]
+    int16_t dig_h4_lsb;
+    int16_t dig_h4_msb;
+    int16_t dig_h5_lsb;
+    int16_t dig_h5_msb;
+
+    calib_data->dig_h2 = (int16_t)BME280_CONCAT_BYTES(reg_data[1], reg_data[0]);
  8001c7c:	687b      	ldr	r3, [r7, #4]
  8001c7e:	3301      	adds	r3, #1
  8001c80:	781b      	ldrb	r3, [r3, #0]
@@ -2610,10 +3126,12 @@ Disassembly of section .text:
  8001c8e:	b21a      	sxth	r2, r3
  8001c90:	697b      	ldr	r3, [r7, #20]
  8001c92:	835a      	strh	r2, [r3, #26]
+    calib_data->dig_h3 = reg_data[2];
  8001c94:	687b      	ldr	r3, [r7, #4]
  8001c96:	789a      	ldrb	r2, [r3, #2]
  8001c98:	697b      	ldr	r3, [r7, #20]
  8001c9a:	771a      	strb	r2, [r3, #28]
+    dig_h4_msb = (int16_t)(int8_t)reg_data[3] * 16;
  8001c9c:	687b      	ldr	r3, [r7, #4]
  8001c9e:	3303      	adds	r3, #3
  8001ca0:	781b      	ldrb	r3, [r3, #0]
@@ -2622,18 +3140,21 @@ Disassembly of section .text:
  8001ca6:	011b      	lsls	r3, r3, #4
  8001ca8:	b29b      	uxth	r3, r3
  8001caa:	827b      	strh	r3, [r7, #18]
+    dig_h4_lsb = (int16_t)(reg_data[4] & 0x0F);
  8001cac:	687b      	ldr	r3, [r7, #4]
  8001cae:	3304      	adds	r3, #4
  8001cb0:	781b      	ldrb	r3, [r3, #0]
  8001cb2:	b21b      	sxth	r3, r3
  8001cb4:	f003 030f 	and.w	r3, r3, #15
  8001cb8:	823b      	strh	r3, [r7, #16]
+    calib_data->dig_h4 = dig_h4_msb | dig_h4_lsb;
  8001cba:	8a7a      	ldrh	r2, [r7, #18]
  8001cbc:	8a3b      	ldrh	r3, [r7, #16]
  8001cbe:	4313      	orrs	r3, r2
  8001cc0:	b21a      	sxth	r2, r3
  8001cc2:	697b      	ldr	r3, [r7, #20]
  8001cc4:	83da      	strh	r2, [r3, #30]
+    dig_h5_msb = (int16_t)(int8_t)reg_data[5] * 16;
  8001cc6:	687b      	ldr	r3, [r7, #4]
  8001cc8:	3305      	adds	r3, #5
  8001cca:	781b      	ldrb	r3, [r3, #0]
@@ -2642,24 +3163,28 @@ Disassembly of section .text:
  8001cd0:	011b      	lsls	r3, r3, #4
  8001cd2:	b29b      	uxth	r3, r3
  8001cd4:	81fb      	strh	r3, [r7, #14]
+    dig_h5_lsb = (int16_t)(reg_data[4] >> 4);
  8001cd6:	687b      	ldr	r3, [r7, #4]
  8001cd8:	3304      	adds	r3, #4
  8001cda:	781b      	ldrb	r3, [r3, #0]
  8001cdc:	091b      	lsrs	r3, r3, #4
  8001cde:	b2db      	uxtb	r3, r3
  8001ce0:	81bb      	strh	r3, [r7, #12]
+    calib_data->dig_h5 = dig_h5_msb | dig_h5_lsb;
  8001ce2:	89fa      	ldrh	r2, [r7, #14]
  8001ce4:	89bb      	ldrh	r3, [r7, #12]
  8001ce6:	4313      	orrs	r3, r2
  8001ce8:	b21a      	sxth	r2, r3
  8001cea:	697b      	ldr	r3, [r7, #20]
  8001cec:	841a      	strh	r2, [r3, #32]
+    calib_data->dig_h6 = (int8_t)reg_data[6];
  8001cee:	687b      	ldr	r3, [r7, #4]
  8001cf0:	3306      	adds	r3, #6
  8001cf2:	781b      	ldrb	r3, [r3, #0]
  8001cf4:	b25a      	sxtb	r2, r3
  8001cf6:	697b      	ldr	r3, [r7, #20]
  8001cf8:	f883 2022 	strb.w	r2, [r3, #34]	; 0x22
+}
  8001cfc:	bf00      	nop
  8001cfe:	371c      	adds	r7, #28
  8001d00:	46bd      	mov	sp, r7
@@ -2667,10 +3192,19 @@ Disassembly of section .text:
  8001d06:	4770      	bx	lr
 
 08001d08 <null_ptr_check>:
+/*!
+ * @brief This internal API is used to validate the device structure pointer for
+ * null conditions.
+ */
+static int8_t null_ptr_check(const struct bme280_dev *dev)
+{
  8001d08:	b480      	push	{r7}
  8001d0a:	b085      	sub	sp, #20
  8001d0c:	af00      	add	r7, sp, #0
  8001d0e:	6078      	str	r0, [r7, #4]
+    int8_t rslt;
+
+    if ((dev == NULL) || (dev->read == NULL) || (dev->write == NULL) || (dev->delay_us == NULL))
  8001d10:	687b      	ldr	r3, [r7, #4]
  8001d12:	2b00      	cmp	r3, #0
  8001d14:	d00b      	beq.n	8001d2e <null_ptr_check+0x26>
@@ -2686,12 +3220,24 @@ Disassembly of section .text:
  8001d28:	695b      	ldr	r3, [r3, #20]
  8001d2a:	2b00      	cmp	r3, #0
  8001d2c:	d102      	bne.n	8001d34 <null_ptr_check+0x2c>
+    {
+        /* Device structure pointer is not valid */
+        rslt = BME280_E_NULL_PTR;
  8001d2e:	23ff      	movs	r3, #255	; 0xff
  8001d30:	73fb      	strb	r3, [r7, #15]
  8001d32:	e001      	b.n	8001d38 <null_ptr_check+0x30>
+    }
+    else
+    {
+        /* Device structure is fine */
+        rslt = BME280_OK;
  8001d34:	2300      	movs	r3, #0
  8001d36:	73fb      	strb	r3, [r7, #15]
+    }
+
+    return rslt;
  8001d38:	f997 300f 	ldrsb.w	r3, [r7, #15]
+}
  8001d3c:	4618      	mov	r0, r3
  8001d3e:	3714      	adds	r7, #20
  8001d40:	46bd      	mov	sp, r7
@@ -3746,45 +4292,99 @@ void SystemInit(void)
  80022e4:	e000ed00 	.word	0xe000ed00
 
 080022e8 <Reset_Handler>:
+
+    .section  .text.Reset_Handler
+  .weak  Reset_Handler
+  .type  Reset_Handler, %function
+Reset_Handler:  
+  ldr   sp, =_estack      /* set stack pointer */
  80022e8:	f8df d034 	ldr.w	sp, [pc, #52]	; 8002320 <LoopFillZerobss+0x14>
+
+/* Copy the data segment initializers from flash to SRAM */  
+  movs  r1, #0
  80022ec:	2100      	movs	r1, #0
+  b  LoopCopyDataInit
  80022ee:	e003      	b.n	80022f8 <LoopCopyDataInit>
 
 080022f0 <CopyDataInit>:
+
+CopyDataInit:
+  ldr  r3, =_sidata
  80022f0:	4b0c      	ldr	r3, [pc, #48]	; (8002324 <LoopFillZerobss+0x18>)
+  ldr  r3, [r3, r1]
  80022f2:	585b      	ldr	r3, [r3, r1]
+  str  r3, [r0, r1]
  80022f4:	5043      	str	r3, [r0, r1]
+  adds  r1, r1, #4
  80022f6:	3104      	adds	r1, #4
 
 080022f8 <LoopCopyDataInit>:
+    
+LoopCopyDataInit:
+  ldr  r0, =_sdata
  80022f8:	480b      	ldr	r0, [pc, #44]	; (8002328 <LoopFillZerobss+0x1c>)
+  ldr  r3, =_edata
  80022fa:	4b0c      	ldr	r3, [pc, #48]	; (800232c <LoopFillZerobss+0x20>)
+  adds  r2, r0, r1
  80022fc:	1842      	adds	r2, r0, r1
+  cmp  r2, r3
  80022fe:	429a      	cmp	r2, r3
+  bcc  CopyDataInit
  8002300:	d3f6      	bcc.n	80022f0 <CopyDataInit>
+  ldr  r2, =_sbss
  8002302:	4a0b      	ldr	r2, [pc, #44]	; (8002330 <LoopFillZerobss+0x24>)
+  b  LoopFillZerobss
  8002304:	e002      	b.n	800230c <LoopFillZerobss>
 
 08002306 <FillZerobss>:
+/* Zero fill the bss segment. */  
+FillZerobss:
+  movs  r3, #0
  8002306:	2300      	movs	r3, #0
+  str  r3, [r2], #4
  8002308:	f842 3b04 	str.w	r3, [r2], #4
 
 0800230c <LoopFillZerobss>:
+    
+LoopFillZerobss:
+  ldr  r3, = _ebss
  800230c:	4b09      	ldr	r3, [pc, #36]	; (8002334 <LoopFillZerobss+0x28>)
+  cmp  r2, r3
  800230e:	429a      	cmp	r2, r3
+  bcc  FillZerobss
  8002310:	d3f9      	bcc.n	8002306 <FillZerobss>
+
+/* Call the clock system intitialization function.*/
+  bl  SystemInit   
  8002312:	f7ff ffd3 	bl	80022bc <SystemInit>
+/* Call static constructors */
+    bl __libc_init_array
  8002316:	f001 fd69 	bl	8003dec <__libc_init_array>
+/* Call the application's entry point.*/
+  bl  main
  800231a:	f7ff fdd5 	bl	8001ec8 <main>
+  bx  lr    
  800231e:	4770      	bx	lr
+  ldr   sp, =_estack      /* set stack pointer */
  8002320:	20020000 	.word	0x20020000
+  ldr  r3, =_sidata
  8002324:	08003e7c 	.word	0x08003e7c
+  ldr  r0, =_sdata
  8002328:	20000000 	.word	0x20000000
+  ldr  r3, =_edata
  800232c:	2000000c 	.word	0x2000000c
+  ldr  r2, =_sbss
  8002330:	2000000c 	.word	0x2000000c
+  ldr  r3, = _ebss
  8002334:	200000cc 	.word	0x200000cc
 
 08002338 <ADC_IRQHandler>:
+ * @retval None       
+*/
+    .section  .text.Default_Handler,"ax",%progbits
+Default_Handler:
+Infinite_Loop:
+  b  Infinite_Loop
  8002338:	e7fe      	b.n	8002338 <ADC_IRQHandler>
 	...
 

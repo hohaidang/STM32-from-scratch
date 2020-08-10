@@ -10,14 +10,14 @@ C_SRCS += \
 CPP_SRCS += \
 ../Src/000_blinkLED.cpp 
 
+C_DEPS += \
+./Src/syscalls.d \
+./Src/sysmem.d 
+
 OBJS += \
 ./Src/000_blinkLED.o \
 ./Src/syscalls.o \
 ./Src/sysmem.o 
-
-C_DEPS += \
-./Src/syscalls.d \
-./Src/sysmem.d 
 
 CPP_DEPS += \
 ./Src/000_blinkLED.d 

@@ -97,28 +97,28 @@ void SPI_Handler::SPI_GPIOs_Init() {
                                         GPIO_PIN_NO_5,
                                         GPIO_MODE_ALTFN,
                                         GPIO_SPEED_HIGH,
-                                        IRQ_Prio_NO_15,
                                         GPIO_OP_TYPE_PP,
                                         GPIO_NO_PUPD,
-                                        5) );
+                                        IRQ_Prio_NO_15,
+                                        GPIO_ALT_5) );
 
         SPI_MOSI.reset( new GPIO_Handler(GPIOA,
                                         GPIO_PIN_NO_7,
                                         GPIO_MODE_ALTFN,
                                         GPIO_SPEED_HIGH,
-                                        IRQ_Prio_NO_15,
                                         GPIO_OP_TYPE_PP,
                                         GPIO_NO_PUPD,
-                                        5) );
+                                        IRQ_Prio_NO_15,
+                                        GPIO_ALT_5) );
 
         SPI_MISO.reset( new GPIO_Handler(GPIOA,
                                         GPIO_PIN_NO_6,
                                         GPIO_MODE_ALTFN,
                                         GPIO_SPEED_HIGH,
-                                        IRQ_Prio_NO_15,
                                         GPIO_OP_TYPE_PP,
                                         GPIO_NO_PUPD,
-                                        5) );
+                                        IRQ_Prio_NO_15,
+                                        GPIO_ALT_5) );
 
 
         if(SPIx_.SPIConfig.SPI_SSM == SPI_SSM_DI) {
@@ -127,9 +127,9 @@ void SPI_Handler::SPI_GPIOs_Init() {
                                             GPIO_PIN_NO_4,
                                             GPIO_MODE_ALTFN,
                                             GPIO_SPEED_HIGH,
-                                            IRQ_Prio_NO_15,
                                             GPIO_OP_TYPE_PP,
                                             GPIO_NO_PUPD,
+                                            IRQ_Prio_NO_15,
                                             5) );
         }
     }

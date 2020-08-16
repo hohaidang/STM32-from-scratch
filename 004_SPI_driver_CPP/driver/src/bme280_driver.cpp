@@ -573,15 +573,15 @@ double BMESensor_Handler::compensate_pressure(const bme280_uncomp_data &uncomp_d
  */
 double BMESensor_Handler::compensate_humidity(const bme280_uncomp_data &uncomp_data)
 {
-    double humidity;
+    double humidity { 0.0 };
     double humidity_min { 0.0 };
     double humidity_max { 100.0 };
-    double var1;
-    double var2;
-    double var3;
-    double var4;
-    double var5;
-    double var6;
+    double var1 { 0.0 };
+    double var2 { 0.0 };
+    double var3 { 0.0 };
+    double var4 { 0.0 };
+    double var5 { 0.0 };
+    double var6 { 0.0 };
 
     var1 = static_cast<double>(dev_.calib_data.t_fine) - 76800.0;
     var1 = static_cast<double>(dev_.calib_data.t_fine) - 76800.0;

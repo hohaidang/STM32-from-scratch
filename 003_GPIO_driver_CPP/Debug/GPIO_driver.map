@@ -16160,12 +16160,12 @@ LOAD /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.id
                 0x000000000000249a       0x1e /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.7-2018-q2-update.macos64_1.4.0.202007081208/tools/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7e-m/crtn.o
 OUTPUT(GPIO_driver.elf elf32-littlearm)
 
-.debug_info     0x0000000000000000     0x8267
+.debug_info     0x0000000000000000     0x8266
  .debug_info    0x0000000000000000     0x3194 Src/004_btm_interrupt.o
  .debug_info    0x0000000000003194      0xefd Src/syscalls.o
  .debug_info    0x0000000000004091      0x91c Src/sysmem.o
  .debug_info    0x00000000000049ad       0x22 Startup/startup_stm32f446retx.o
- .debug_info    0x00000000000049cf     0x3898 driver/src/stm32f446re_gpio_driver.o
+ .debug_info    0x00000000000049cf     0x3897 driver/src/stm32f446re_gpio_driver.o
 
 .debug_abbrev   0x0000000000000000     0x1182
  .debug_abbrev  0x0000000000000000      0x602 Src/004_btm_interrupt.o
@@ -16302,12 +16302,12 @@ OUTPUT(GPIO_driver.elf elf32-littlearm)
  .debug_macro   0x00000000000054c6       0x16 Src/sysmem.o
  .debug_macro   0x00000000000054dc      0x758 driver/src/stm32f446re_gpio_driver.o
 
-.debug_line     0x0000000000000000     0x34b6
+.debug_line     0x0000000000000000     0x34b2
  .debug_line    0x0000000000000000     0x1262 Src/004_btm_interrupt.o
  .debug_line    0x0000000000001262      0x794 Src/syscalls.o
  .debug_line    0x00000000000019f6      0x595 Src/sysmem.o
  .debug_line    0x0000000000001f8b       0x84 Startup/startup_stm32f446retx.o
- .debug_line    0x000000000000200f     0x14a7 driver/src/stm32f446re_gpio_driver.o
+ .debug_line    0x000000000000200f     0x14a3 driver/src/stm32f446re_gpio_driver.o
 
 .debug_str      0x0000000000000000     0xff1a
  .debug_str     0x0000000000000000     0xeca2 Src/004_btm_interrupt.o

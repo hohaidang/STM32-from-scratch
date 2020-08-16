@@ -2,7 +2,7 @@
  * stm32f446re_gpio_driver.cpp
  *
  *  Created on: Jul 13, 2020
- *      Author: prnsoft
+ *      Author: hohaidang
  */
 
 #include "../inc/stm32f446re_gpio_driver.h"

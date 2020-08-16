@@ -17651,21 +17651,21 @@ OUTPUT(004_SPI_driver_CPP.elf elf32-littlearm)
  .debug_line    0x0000000000004460     0x15db driver/src/stm32f446re_gpio_driver.o
  .debug_line    0x0000000000005a3b     0x18a2 driver/src/stm32f446re_spi_driver.o
 
-.debug_str      0x0000000000000000    0x1916c
- .debug_str     0x0000000000000000    0x16250 Src/spi_readSensordata.o
-                                      0x16c27 (size before relaxing)
- .debug_str     0x0000000000016250      0xeb1 Src/syscalls.o
+.debug_str      0x0000000000000000    0x1920e
+ .debug_str     0x0000000000000000    0x162f2 Src/spi_readSensordata.o
+                                      0x16cc9 (size before relaxing)
+ .debug_str     0x00000000000162f2      0xeb1 Src/syscalls.o
                                        0x8952 (size before relaxing)
- .debug_str     0x0000000000017101       0x31 Src/sysmem.o
+ .debug_str     0x00000000000171a3       0x31 Src/sysmem.o
                                        0x7af0 (size before relaxing)
- .debug_str     0x0000000000017132       0x31 Startup/startup_stm32f446retx.o
+ .debug_str     0x00000000000171d4       0x31 Startup/startup_stm32f446retx.o
                                          0x7d (size before relaxing)
- .debug_str     0x0000000000017163     0x143f driver/src/bme280_driver.o
-                                      0x127bd (size before relaxing)
- .debug_str     0x00000000000185a2      0x34a driver/src/stm32f446re_gpio_driver.o
-                                       0xfd4b (size before relaxing)
- .debug_str     0x00000000000188ec      0x880 driver/src/stm32f446re_spi_driver.o
-                                      0x11f46 (size before relaxing)
+ .debug_str     0x0000000000017205     0x143f driver/src/bme280_driver.o
+                                      0x1285f (size before relaxing)
+ .debug_str     0x0000000000018644      0x34a driver/src/stm32f446re_gpio_driver.o
+                                       0xfded (size before relaxing)
+ .debug_str     0x000000000001898e      0x880 driver/src/stm32f446re_spi_driver.o
+                                      0x11fe8 (size before relaxing)
 
 .comment        0x0000000000000000       0x7b
  .comment       0x0000000000000000       0x7b Src/spi_readSensordata.o

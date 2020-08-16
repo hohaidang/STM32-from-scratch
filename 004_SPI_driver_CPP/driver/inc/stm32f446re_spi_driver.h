@@ -12,39 +12,39 @@
 #include <memory>
 
 // @SPI_DeviceMode
-#define SPI_DEVICE_MODE_MASTER					1   // choose SPI as Master
-#define SPI_DEVICE_MODE_SLAVE					0
+#define SPI_DEVICE_MODE_MASTER                  (u8)(1)   // choose SPI as Master
+#define SPI_DEVICE_MODE_SLAVE                   (u8)(0)
 
 // @SPI_BusConfig
-#define SPI_BUS_CONFIG_FD						1	// full duplex
-#define SPI_BUS_CONFIG_HD						2	// half duplex, transmit only
-#define SPI_BUS_CONFIG_SIMPLEX_RXONLY			3	// simplex Rx only
+#define SPI_BUS_CONFIG_FD                       (u8)(1)	// full duplex
+#define SPI_BUS_CONFIG_HD                       (u8)(2)	// half duplex, transmit only
+#define SPI_BUS_CONFIG_SIMPLEX_RXONLY           (u8)(3)	// simplex Rx only
 
 // @SPI_SclkSpeed
-#define SPI_SCLK_SPEED_DIV2						0
-#define SPI_SCLK_SPEED_DIV4						1
-#define SPI_SCLK_SPEED_DIV8						2
-#define SPI_SCLK_SPEED_DIV16					3
-#define SPI_SCLK_SPEED_DIV32					4
-#define SPI_SCLK_SPEED_DIV64					5
-#define SPI_SCLK_SPEED_DIV128					6
-#define SPI_SCLK_SPEED_DIV256					7
+#define SPI_SCLK_SPEED_DIV2                     (u8)(0)
+#define SPI_SCLK_SPEED_DIV4                     (u8)(1)
+#define SPI_SCLK_SPEED_DIV8                     (u8)(2)
+#define SPI_SCLK_SPEED_DIV16                    (u8)(3)
+#define SPI_SCLK_SPEED_DIV32                    (u8)(4)
+#define SPI_SCLK_SPEED_DIV64                    (u8)(5)
+#define SPI_SCLK_SPEED_DIV128                   (u8)(6)
+#define SPI_SCLK_SPEED_DIV256                   (u8)(7)
 
 // @SPI_DFF, data format
-#define SPI_DFF_8BITS                           0
-#define SPI_DFF_16BITS                          1
+#define SPI_DFF_8BITS                           (u8)(0)
+#define SPI_DFF_16BITS                          (u8)(1)
 
 // @SPI_CPOL
-#define SPI_CPOL_HIGH                           1   // start clock with high, idle clock is high
-#define SPI_CPOL_LOW                            0   // start clock with low, idle clock is low
+#define SPI_CPOL_HIGH                           (u8)(1)   // start clock with high, idle clock is high
+#define SPI_CPOL_LOW                            (u8)(0)   // start clock with low, idle clock is low
 
 // @SPI_CPHA
-#define SPI_CPHA_HIGH                           1   // Capture data at second edge clock
-#define SPI_CPHA_LOW                            0   // Capture data at first edge clock
+#define SPI_CPHA_HIGH                           (u8)(1)   // Capture data at second edge clock
+#define SPI_CPHA_LOW                            (u8)(0)   // Capture data at first edge clock
 
 // @SPI_SSM, slave management
-#define SPI_SSM_EN                              1   // sw slave management free slave select pin, 1 master 1 slave
-#define SPI_SSM_DI                              0   // hw slave management use multiple slave and multiple slave select
+#define SPI_SSM_EN                              (u8)(1)   // sw slave management free slave select pin, 1 master 1 slave
+#define SPI_SSM_DI                              (u8)(0)   // hw slave management use multiple slave and multiple slave select
 
 // @FLAG_NAME_STATUS SPI related status flags definitions
 #define SPI_TXE_FLAG    (1u << SPI_SR_TXE)
@@ -52,48 +52,43 @@
 #define SPI_BSY_FLAG    (1u << SPI_SR_BSY)
 
 // SPI application states
-#define SPI_READY           0
-#define SPI_BUSY_IN_RX      1
-#define SPI_BUSY_IN_TX      2
+#define SPI_READY           (u8)(0)
+#define SPI_BUSY_IN_RX      (u8)(1)
+#define SPI_BUSY_IN_TX      (u8)(2)
 
 // SPI Application events
-#define SPI_EVENT_TX_CMPLT  1
-#define SPI_EVENT_RX_CMPLT  2
-#define SPI_EVENT_OVR_ERR   3
+#define SPI_EVENT_TX_CMPLT  (u8)(1)
+#define SPI_EVENT_RX_CMPLT  (u8)(2)
+#define SPI_EVENT_OVR_ERR   (u8)(3)
 
 typedef struct {
-    u8 SPI_DeviceMode;      /*!<possible values from @SPI_DeviceMode>*/
-    u8 SPI_BusConfig;       /*!<possible values from @SPI_BusConfig>*/
-    u8 SPI_SclkSpeed;       /*!<possible values from @SPI_SclkSpeed>*/
-    u8 SPI_DFF;             /*!<possible values from @SPI_DFF>*/
-    u8 SPI_CPOL;            /*!<possible values from @SPI_CPOL>*/
-    u8 SPI_CPHA;            /*!<possible values from @SPI_CPHA>*/
-    u8 SPI_SSM;             /*!<possible values from @SPI_SSM>*/
+    u8 SPI_DeviceMode; /*!<possible values from @SPI_DeviceMode>*/
+    u8 SPI_BusConfig; /*!<possible values from @SPI_BusConfig>*/
+    u8 SPI_SclkSpeed; /*!<possible values from @SPI_SclkSpeed>*/
+    u8 SPI_DFF; /*!<possible values from @SPI_DFF>*/
+    u8 SPI_CPOL; /*!<possible values from @SPI_CPOL>*/
+    u8 SPI_CPHA; /*!<possible values from @SPI_CPHA>*/
+    u8 SPI_SSM; /*!<possible values from @SPI_SSM>*/
 } SPI_Config_t;
 
 typedef struct {
-    u8  *pTxBuffer;          /* !< To store the app. Tx buffer address > */
-    u8  *pRxBuffer;          /* !< To store the app. Rx buffer address > */
-    u32 TxLen;               /* !< To store Tx len > */
-    u32 RxLen;               /* !< To store Tx len > */
-    u8  TxState;             /* !< To store Tx state > */
-    u8  RxState;             /* !< To store Rx state > */
+    u8 *pTxBuffer; /* !< To store the app. Tx buffer address > */
+    u8 *pRxBuffer; /* !< To store the app. Rx buffer address > */
+    u32 TxLen; /* !< To store Tx len > */
+    u32 RxLen; /* !< To store Tx len > */
+    u8 TxState; /* !< To store Tx state > */
+    u8 RxState; /* !< To store Rx state > */
 } SPI_Handle_t;
 
 void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle, u8 AppEv);
 
 class GPIO_Handler;
 
-/*********************************************************************
- * @class      		  - SPI_Handler
- *
- * @brief             - Constructor, initialize SPI, clock, IRQ
- **********************************************************************/
 class SPI_Handler {
 protected:
-    SPI_RegDef_t *SPIx_;      /*!< This holds the base address of SPIx(x:0,1,2) peripheral >*/
-    SPI_Config_t config_ = {};
-    SPI_Handle_t handle_ = {};
+    SPI_RegDef_t *SPIx_; /*!< This holds the base address of SPIx(x:0,1,2) peripheral >*/
+    SPI_Config_t config_ = { };
+    SPI_Handle_t handle_ = { };
     std::unique_ptr<GPIO_Handler> SPI_Sck;
     std::unique_ptr<GPIO_Handler> SPI_MOSI;
     std::unique_ptr<GPIO_Handler> SPI_MISO;

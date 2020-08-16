@@ -62,73 +62,65 @@
 #define SPI_EVENT_OVR_ERR   3
 
 typedef struct {
-    u8 SPI_DeviceMode; /*!<possible values from @SPI_DeviceMode>*/
-    u8 SPI_BusConfig;  /*!<possible values from @SPI_BusConfig>*/
-    u8 SPI_SclkSpeed;  /*!<possible values from @SPI_SclkSpeed>*/
-    u8 SPI_DFF;        /*!<possible values from @SPI_DFF>*/
-    u8 SPI_CPOL;       /*!<possible values from @SPI_CPOL>*/
-    u8 SPI_CPHA;       /*!<possible values from @SPI_CPHA>*/
-    u8 SPI_SSM;        /*!<possible values from @SPI_SSM>*/
-}SPI_Config_t;
+    u8 SPI_DeviceMode;      /*!<possible values from @SPI_DeviceMode>*/
+    u8 SPI_BusConfig;       /*!<possible values from @SPI_BusConfig>*/
+    u8 SPI_SclkSpeed;       /*!<possible values from @SPI_SclkSpeed>*/
+    u8 SPI_DFF;             /*!<possible values from @SPI_DFF>*/
+    u8 SPI_CPOL;            /*!<possible values from @SPI_CPOL>*/
+    u8 SPI_CPHA;            /*!<possible values from @SPI_CPHA>*/
+    u8 SPI_SSM;             /*!<possible values from @SPI_SSM>*/
+} SPI_Config_t;
 
 typedef struct {
-    SPI_RegDef_t    *pSPIx;      /*!< This holds the base address of SPIx(x:0,1,2) peripheral >*/
-    SPI_Config_t    SPIConfig;
-    u8         *pTxBuffer; /* !< To store the app. Tx buffer address > */
-    u8         *pRxBuffer; /* !< To store the app. Rx buffer address > */
-    uint32_t        TxLen;      /* !< To store Tx len > */
-    uint32_t        RxLen;      /* !< To store Tx len > */
-    u8         TxState;    /* !< To store Tx state > */
-    u8         RxState;    /* !< To store Rx state > */
-}SPI_Handle_t;
+    u8  *pTxBuffer;          /* !< To store the app. Tx buffer address > */
+    u8  *pRxBuffer;          /* !< To store the app. Rx buffer address > */
+    u32 TxLen;               /* !< To store Tx len > */
+    u32 RxLen;               /* !< To store Tx len > */
+    u8  TxState;             /* !< To store Tx state > */
+    u8  RxState;             /* !< To store Rx state > */
+} SPI_Handle_t;
 
 void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle, u8 AppEv);
 
 class GPIO_Handler;
-
-
 
 /*********************************************************************
  * @class      		  - SPI_Handler
  *
  * @brief             - Constructor, initialize SPI, clock, IRQ
  **********************************************************************/
-class SPI_Handler{
+class SPI_Handler {
 protected:
-	SPI_Handle_t SPIx_ = {};
-	std::unique_ptr<GPIO_Handler> SPI_Sck;
-	std::unique_ptr<GPIO_Handler> SPI_MOSI;
-	std::unique_ptr<GPIO_Handler> SPI_MISO;
-	std::unique_ptr<GPIO_Handler> SPI_NSS;
+    SPI_RegDef_t *SPIx_;      /*!< This holds the base address of SPIx(x:0,1,2) peripheral >*/
+    SPI_Config_t config_ = {};
+    SPI_Handle_t handle_ = {};
+    std::unique_ptr<GPIO_Handler> SPI_Sck;
+    std::unique_ptr<GPIO_Handler> SPI_MOSI;
+    std::unique_ptr<GPIO_Handler> SPI_MISO;
+    std::unique_ptr<GPIO_Handler> SPI_NSS;
 
 public:
-	SPI_Handler(SPI_RegDef_t *SPIx_ADDR,
-	            u8 DeviceMode,
-	            u8 BusConfig,
-	            u8 SclkSpeed,
-	            u8 DFF,
-	            u8 CPOL,
-	            u8 CPHA,
-	            u8 SSM);
-	~SPI_Handler();
+    SPI_Handler(SPI_RegDef_t *SPIx_ADDR, u8 device_mode, u8 bus_config,
+            u8 sclk_speed, u8 DFF, u8 CPOL, u8 CPHA, u8 SSM);
+    ~SPI_Handler();
 
-	// peripheral clock setup
-	void SPI_PeriClockControl(); // EnorDi: enable or disable
-	void SPI_Init();
-	void SPI_DeInit();
+    // peripheral clock setup
+    void SPI_PeriClockControl(); // EnorDi: enable or disable
+    void SPI_Init();
+    void SPI_DeInit();
 
-	inline u8 SPI_GetFlagStatus(const u8 FlagName);
-	void SPI_PeripheralControl(u8 EnOrDi);
+    inline u8 SPI_GetFlagStatus(const u8 FlagName);
+    void SPI_PeripheralControl(u8 EnOrDi);
 
-	// Data Send and Receive
-	void SPI_SendData(const u8 *pTxBuffer, uint32_t Len);
-	void SPI_ReceiveData(u8 *pRxBuffer, uint32_t Len);
-	void SPI_SendAndReceiveData(const u8 *pTxBuffer, u8 *pRxBuffer, uint32_t len);
+    // Data Send and Receive
+    void SPI_SendData(const u8 *pTxBuffer, uint32_t Len);
+    void SPI_ReceiveData(u8 *pRxBuffer, uint32_t Len);
+    void SPI_SendAndReceiveData(const u8 *pTxBuffer, u8 *pRxBuffer,
+            uint32_t len);
 
     // Data Send and Receive in interrupt mode
     u8 SPI_SendDataIT(const u8 *pTxBuffer, uint32_t Len);
     u8 SPI_ReceiveDataIT(u8 *pRxBuffer, uint32_t Len);
-
 
     // IRQ Configuration and ISR Handling
     void SPI_IRQInterruptConfig(const u8 IRQNumber, const u8 EnorDi);
@@ -139,16 +131,14 @@ public:
     void SPI_CloseReception();
 
 private:
-
-	void SPI_GPIOs_Init();
-	void SPI_GPIOs_DeInit();
-	void SPI_SSIConfig(u8 EnOrDi);
-	void SPI_SSOEConfig(u8 EnOrDi);
-	void spi_txe_interrupt_handle();
-	void spi_rxne_interrupt_handle();
-	void spi_ovr_err_interrupt_handle();
+    void SPI_GPIOs_Init();
+    void SPI_GPIOs_DeInit();
+    void SPI_SSIConfig(const u8 EnOrDi);
+    void SPI_SSOEConfig(const u8 EnOrDi);
+    void spi_txe_interrupt_handle();
+    void spi_rxne_interrupt_handle();
+    void spi_ovr_err_interrupt_handle();
 
 };
-
 
 #endif /* INC_STM32F446RE_SPI_DRIVER_H_ */

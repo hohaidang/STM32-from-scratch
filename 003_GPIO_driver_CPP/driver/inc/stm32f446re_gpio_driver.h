@@ -81,11 +81,6 @@ typedef struct {
     uint8_t GPIO_PinAltFunMode;
 } GPIO_PinConfig_t;
 
-typedef struct {
-    GPIO_RegDef_t *pGPIOx; // this holds the base address of GPIO port
-    GPIO_PinConfig_t GPIO_PinConfig; // this hold Pin configuration setting
-} GPIO_Handle_t;
-
 class GPIO_Handler {
 protected:
     GPIO_RegDef_t *GPIOx_;

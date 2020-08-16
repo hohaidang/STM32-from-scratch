@@ -17,19 +17,16 @@ using namespace std;
 #define BME280_FORCED_MODE              (u8)(0x01)
 #define BME280_NORMAL_MODE              (u8)(0x03)
 
-
-
-typedef enum  {
-    SENSOR_OK       = 0x00U,
-    SENSOR_NOT_OK   = 0x01U
+typedef enum {
+    SENSOR_OK = 0x00U,
+    SENSOR_NOT_OK = 0x01U
 } BME280_Stat;
 
 /*!
  * @brief bme280 sensor settings structure which comprises of mode,
  * oversampling and filter settings.
  */
-struct bme280_settings
-{
+struct bme280_settings {
     /*< pressure oversampling */
     uint8_t osr_p;
 
@@ -49,8 +46,7 @@ struct bme280_settings
 /*!
  * @brief Calibration data
  */
-struct bme280_calib_data
-{
+struct bme280_calib_data {
     /*< Calibration coefficient for the temperature sensor */
     uint16_t dig_t1;
 
@@ -155,10 +151,11 @@ class BMESensor_Handler {
     } bme280;
 
 private:
-    bme280 dev_ = {};
-    bme280_data data_ = {};
+    bme280 dev_ = { };
+    bme280_data data_ = { };
 public:
-    BMESensor_Handler(read_fnc user_read, write_fnc user_write, delay_ms_fnc user_delay);
+    BMESensor_Handler(read_fnc user_read, write_fnc user_write,
+            delay_ms_fnc user_delay);
     ~BMESensor_Handler();
     uint8_t getChipID();
     BME280_Stat softReset();
@@ -188,6 +185,5 @@ private:
     double compensate_humidity(const bme280_uncomp_data &uncomp_data);
 
 };
-
 
 #endif /* INC_BME280_DRIVER_H_ */

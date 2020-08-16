@@ -383,7 +383,7 @@ void BMESensor_Handler::set_osr_temp_pres_settings(u8 &cur_ctrl_means_reg, const
  *
  */
 void BMESensor_Handler::set_osr_humidity_settings(const u8 osr_h) {
-    uint8_t ctrl_hum = 0x00, ctrl_means = 0x00;
+    u8 ctrl_hum = 0x00, ctrl_means = 0x00;
 
     ctrl_hum = osr_h & BME280_CTRL_HUM_MSK;
     /* Write the humidity control value in the register */
@@ -417,25 +417,25 @@ BME280_Stat BMESensor_Handler::get_sensor_settings(bme280_settings &settings) {
  */
 void BMESensor_Handler::parse_sensor_data(u8 *reg_data, bme280_uncomp_data &uncomp_data) {
     /* Variables to store the sensor data */
-    uint32_t data_xlsb;
-    uint32_t data_lsb;
-    uint32_t data_msb;
+    u32 data_xlsb;
+    u32 data_lsb;
+    u32 data_msb;
 
     /* Store the parsed register values for pressure data */
-    data_msb = (uint32_t)reg_data[0] << 12;
-    data_lsb = (uint32_t)reg_data[1] << 4;
-    data_xlsb = (uint32_t)reg_data[2] >> 4;
+    data_msb = (u32)reg_data[0] << 12;
+    data_lsb = (u32)reg_data[1] << 4;
+    data_xlsb = (u32)reg_data[2] >> 4;
     uncomp_data.pressure = data_msb | data_lsb | data_xlsb;
 
     /* Store the parsed register values for temperature data */
-    data_msb = (uint32_t)reg_data[3] << 12;
-    data_lsb = (uint32_t)reg_data[4] << 4;
-    data_xlsb = (uint32_t)reg_data[5] >> 4;
+    data_msb = (u32)reg_data[3] << 12;
+    data_lsb = (u32)reg_data[4] << 4;
+    data_xlsb = (u32)reg_data[5] >> 4;
     uncomp_data.temperature = data_msb | data_lsb | data_xlsb;
 
     /* Store the parsed register values for humidity data */
-    data_msb = (uint32_t)reg_data[6] << 8;
-    data_lsb = (uint32_t)reg_data[7];
+    data_msb = (u32)reg_data[6] << 8;
+    data_lsb = (u32)reg_data[7];
     uncomp_data.humidity = data_msb | data_lsb;
 }
 
@@ -485,7 +485,7 @@ BME280_Stat BMESensor_Handler::setRegData(u8 regAddr, const u8 *setData, const u
     return SENSOR_OK;
 }
 
-uint8_t BMESensor_Handler::getChipID() {
+u8 BMESensor_Handler::getChipID() {
     return dev_.chipID;
 }
 

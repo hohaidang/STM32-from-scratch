@@ -29,9 +29,9 @@ int main(void)
 							GPIO_PIN_NO_5,
 							GPIO_MODE_OUT,
 							GPIO_SPEED_LOW,
-							IRQ_Prio_NO_15,
 							GPIO_OP_TYPE_PP,
-							GPIO_NO_PUPD);
+							GPIO_NO_PUPD,
+							IRQ_Prio_NO_15);
 
 	USER_BUTTON = new GPIO_Handler(GPIOC,
 								   GPIO_PIN_NO_13,

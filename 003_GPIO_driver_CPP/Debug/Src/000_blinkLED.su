@@ -1,2 +1,0 @@
-000_blinkLED.cpp:3:6:void delay()	16	static
-000_blinkLED.cpp:9:5:int main()	48	static

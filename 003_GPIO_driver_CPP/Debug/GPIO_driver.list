@@ -3056,9 +3056,9 @@ constexpr static inline u8 get_irq_pinNum(u8 PinNumber) {
  8001af4:	af00      	add	r7, sp, #0
  8001af6:	4603      	mov	r3, r0
  8001af8:	71fb      	strb	r3, [r7, #7]
-	return (PinNumber < 5) 	? PinNumber + 6 : \
-		   (PinNumber < 10)	? IRQ_NO_EXTI9_5 : \
-		   (PinNumber < 16) ? IRQ_NO_EXTI15_10 : 0;
+    return (PinNumber < 5) 	? PinNumber + 6 : \
+           (PinNumber < 10)	? IRQ_NO_EXTI9_5 : \
+           (PinNumber < 16) ? IRQ_NO_EXTI15_10 : 0;
  8001afa:	79fb      	ldrb	r3, [r7, #7]
  8001afc:	2b04      	cmp	r3, #4
  8001afe:	d803      	bhi.n	8001b08 <_ZL14get_irq_pinNumh+0x18>

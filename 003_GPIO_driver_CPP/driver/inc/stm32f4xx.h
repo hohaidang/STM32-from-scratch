@@ -23,29 +23,6 @@
 using u8 = uint8_t;
 using u32 = uint32_t;
 
-// Check ARM Cortex - M4 device generic User Guide
-// ARM Cortex Mx Processor NVIC ISERx Register Address
-#define NVIC_ISER0          ((__vo uint32_t *) 0xE000E100)
-#define NVIC_ISER1          ((__vo uint32_t *) 0xE000E104)
-#define NVIC_ISER2          ((__vo uint32_t *) 0xE000E108)
-#define NVIC_ISER3          ((__vo uint32_t *) 0xE000E10C)
-
-// ARM Cortex Mx Processor NVIC ICERx Register Address
-#define NVIC_ICER0          ((__vo uint32_t *) 0xE000E180)
-#define NVIC_ICER1          ((__vo uint32_t *) 0xE000E184)
-#define NVIC_ICER2          ((__vo uint32_t *) 0xE000E188)
-#define NVIC_ICER3          ((__vo uint32_t *) 0xE000E18C)
-
-#define NVIC_PR_BASE_ADDR   ((__vo uint32_t *) 0xE000E400)
-
-// Cortex M4 just have 16 priorities NVIC (4 most significant bits)
-// https://community.arm.com/developer/ip-products/system/b/embedded-blog/posts/cutting-through-the-confusion-with-arm-cortex-m-interrupt-priorities
-#define NO_PR_BITS_IMPLEMENTED          4
-
-typedef struct {
-    __vo uint32_t PRI[60];
-}NVIC_PIR_RegDef_t;
-
 typedef struct {
     __vo uint32_t MODER;                        /*!< GPIO port mode register,                       Address offset: 0x00      */
     __vo uint32_t OTYPER;                       /*!< ,                                          Address offset: 0x04      */
@@ -128,6 +105,9 @@ typedef struct {
     __vo uint32_t I2SPR;            /*!< Offset, 0x20  */
 }SPI_RegDef_t;
 
+
+
+
 #define AHB1PERIPH_BASEADDR         0x40020000U
 #define APB2PERIPH_BASEADDR         0x40010000U
 #define APB1PERIPH_BASEADDR         0x40000000U
@@ -152,6 +132,8 @@ typedef struct {
 #define EXTI_BASEADDR               (APB2PERIPH_BASEADDR + 0x3C00)
 
 #define SYSCFG_BASEADDR             (APB2PERIPH_BASEADDR + 0x3800)
+
+
 
 
 // @GPIOx_ADDR
@@ -275,8 +257,6 @@ typedef struct {
 #define SPI_SR_OVR                      6
 #define SPI_SR_BSY                      7
 #define SPI_SR_FRE                      8
-
-
 
 inline uint8_t gpio_baseAddr_to_code(GPIO_RegDef_t *Port) {
     return ( (Port == GPIOA) ? 0x00 : \

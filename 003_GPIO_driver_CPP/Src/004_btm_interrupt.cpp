@@ -33,8 +33,8 @@ int main(void)
 							GPIO_NO_PUPD,
 							IRQ_Prio_NO_15);
 
-	USER_BUTTON = new GPIO_Handler(GPIOC,
-								   GPIO_PIN_NO_13,
+	USER_BUTTON = new GPIO_Handler(GPIOA,
+								   GPIO_PIN_NO_0,
 								   GPIO_MODE_IT_FT,
 								   GPIO_SPEED_FAST,
 								   IRQ_Prio_NO_15);

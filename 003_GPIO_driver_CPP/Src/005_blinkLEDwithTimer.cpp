@@ -7,18 +7,14 @@
 
 
 
-
 #include "../driver/inc/stm32f446re_gpio_driver.h"
-
-void delay(void)
-{
-    for(uint32_t i = 0 ; i < 500000 ; i ++);
-}
+#include "../driver/inc/sys_tick_driver.h"
 
 
 int main(void)
 {
-
+//    SysTick_Initialize(16000);
+    SysTick SysTick;
     GPIO_Handler LED2 = GPIO_Handler(GPIOA,
                                     GPIO_PIN_NO_5,
                                     GPIO_MODE_OUT,
@@ -29,7 +25,11 @@ int main(void)
     while(1)
     {
         LED2.GPIO_ToggleOutputPin();
-        delay();
+//        delay(1000);
+//        SysTick.delay_ms(1000);
     }
     return 0;
 }
+
+
+

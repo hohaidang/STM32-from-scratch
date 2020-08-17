@@ -9,6 +9,7 @@
 #define INC_STM32F446RE_GPIO_DRIVER_H_
 
 #include "stm32f4xx.h"
+#include "core_cm4.h"
 
 // @GPIO_PIN_NUMS
 #define GPIO_PIN_NO_0           0

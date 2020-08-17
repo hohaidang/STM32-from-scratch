@@ -261,24 +261,24 @@ void GPIO_Handler::GPIO_IRQInterruptConfig(const u8 IRQNumber,
     if (EnorDi == ENABLE) {
         if (IRQNumber <= 31) {
             //	program ISER0 register
-            *NVIC_ISER0 |= (1 << IRQNumber);
+            NVIC->ISER[0] |= (1 << IRQNumber);
         } else if (IRQNumber > 31 && IRQNumber < 64) {
             // program ISER1 register
-            *NVIC_ISER1 |= (1 << (IRQNumber % 32));
+            NVIC->ISER[1] |= (1 << (IRQNumber % 32));
         } else if (IRQNumber >= 64 && IRQNumber < 96) {
             // program ISER2 register
-            *NVIC_ISER2 |= (1 << (IRQNumber % 64));
+            NVIC->ISER[2] |= (1 << (IRQNumber % 64));
         }
     } else {
         if (IRQNumber <= 31) {
             // program ICER0 register
-            *NVIC_ICER0 |= (1 << IRQNumber);
+            NVIC->ICER[0] |= (1 << IRQNumber);
         } else if (IRQNumber > 31 && IRQNumber < 64) {
             // program ICER1 register
-            *NVIC_ICER1 |= (1 << (IRQNumber % 32));
+            NVIC->ICER[1] |= (1 << (IRQNumber % 32));
         } else if (IRQNumber >= 64 && IRQNumber < 96) {
             // program ICE2 register
-            *NVIC_ICER2 |= (1 << (IRQNumber % 64));
+            NVIC->ICER[2] |= (1 << (IRQNumber % 64));
         }
     }
 
@@ -299,8 +299,7 @@ void GPIO_Handler::GPIO_IRQPriorityConfig(const u8 IRQNumber,
     u8 iprx = IRQNumber >> 2;
     u8 iprx_section = IRQNumber % 4;
     u8 shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
-
-    *(NVIC_PR_BASE_ADDR + iprx) |= (IRQPriority << shift_amount);
+    NVIC->IPR[iprx] |= (IRQPriority << shift_amount);
 }
 
 /*!

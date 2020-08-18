@@ -13,7 +13,6 @@
 
 int main(void)
 {
-//    SysTick_Initialize(16000);
     SysTick SysTick;
     GPIO_Handler LED2 = GPIO_Handler(GPIOA,
                                     GPIO_PIN_NO_5,
@@ -25,8 +24,7 @@ int main(void)
     while(1)
     {
         LED2.GPIO_ToggleOutputPin();
-//        delay(1000);
-//        SysTick.delay_ms(1000);
+        SysTick.delay_ms(1000);
     }
     return 0;
 }

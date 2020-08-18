@@ -16,8 +16,7 @@ class SysTick {
 public:
     SysTick();
     ~SysTick();
-    void delay_ms(u32 period);
-    u32 get_tick();
+    void delay_ms(const u32 period) const;
 };
 
 

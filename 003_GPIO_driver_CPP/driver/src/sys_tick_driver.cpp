@@ -2,13 +2,11 @@
  * sys_tick_driver.cpp
  *
  *  Created on: Aug 17, 2020
- *      Author: prnsoft
+ *      Author: hohaidang
  */
 
 
 #include "../inc/sys_tick_driver.h"
-
-
 
 #define HSI_CLOCK                   (u32)(16000000UL) /* 16MHz */
 
@@ -19,34 +17,67 @@ struct compute_reload_tick {
     enum { value = static_cast<u32>((Clk_Source / 1000U) - 1U) };
 };
 
-// TODO: giai quyet van de khi nao goi delay thi moi init system tick
+/*!
+ * @brief: Constructor initialize system tick with 1ms
+ *
+ * @param: None
+ *
+ * @return: None
+ *
+ */
 SysTick::SysTick() {
-    SYSTICK->CSR = 0; // disable systick
+    SYSTICK->CSR = 0; /* disable systick */
 
-    SYSTICK->RVR = compute_reload_tick<HSI_CLOCK>::value; // set reload register
-    // Set priority 0 for systick
-    SCB->SHPR[3] |= 0;
+    SYSTICK->RVR = compute_reload_tick<HSI_CLOCK>::value; /* set reload register */
+
+    SCB->SHPR[3] |= 0; /* Set priority 0 for system tick */
 
     // Reset Systick counter value
     SYSTICK->CVR = 0;
 
-    // select processor clock
-    /* Enable systick interrupt*/
-    u32 temp = 0;
-    temp = (SYSTICK_CSR_CLKSOURCE | SYSTICK_CSR_TICKINT | SYSTICK_CSR_ENA);
-    SYSTICK->CSR = temp;
+    /* Select processor clock
+     * Enable System Tick interrupt
+     */
+    SYSTICK->CSR |= (SYSTICK_CSR_CLKSOURCE | SYSTICK_CSR_TICKINT | SYSTICK_CSR_ENA);
 }
 
-void SysTick::delay_ms(u32 period) {
+/*!
+ * @brief: Destructor disable system tick
+ *
+ * @param: None
+ *
+ * @return: None
+ *
+ */
+SysTick::~SysTick() {
+    SYSTICK->CSR = 0; /* disable systick */
+    SYSTICK->RVR = 0; /* reset reload register */
+    SYSTICK->CSR &= ~(SYSTICK_CSR_CLKSOURCE | SYSTICK_CSR_TICKINT | SYSTICK_CSR_ENA);
+}
+
+/*!
+ * @brief: This API is used for delay milliseconds.
+ *
+ * @param[in]: period of time in millisecond.
+ *
+ * @return: None
+ *
+ */
+void SysTick::delay_ms(const u32 period) const {
     utick = period;
     while(utick != RESET);
 }
 
+/*!
+ * @brief: Interrupt service routine for system tick. This API will be triggered every time counter count from 1 to 0. (1ms)
+ *
+ * @param: None
+ *
+ * @return: None
+ *
+ */
 extern "C" {
     void SysTick_Handler(void) {
-        // handle the interrupt
-        if (utick > 0) {
-            --utick;
-        }
+        utick = (utick > 0) ? (utick - 1u) : (utick);
     }
 }

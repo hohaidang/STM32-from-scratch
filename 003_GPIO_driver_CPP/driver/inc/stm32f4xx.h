@@ -108,9 +108,9 @@ typedef struct {
 
 
 
-#define AHB1PERIPH_BASEADDR         0x40020000U
-#define APB2PERIPH_BASEADDR         0x40010000U
-#define APB1PERIPH_BASEADDR         0x40000000U
+#define AHB1PERIPH_BASEADDR         0x40020000UL
+#define APB2PERIPH_BASEADDR         0x40010000UL
+#define APB1PERIPH_BASEADDR         0x40000000UL
 
 
 #define GPIOA_BASEADDR              (AHB1PERIPH_BASEADDR)
@@ -137,22 +137,22 @@ typedef struct {
 
 
 // @GPIOx_ADDR
-#define GPIOA                       ((GPIO_RegDef_t *) GPIOA_BASEADDR)
-#define GPIOB                       ((GPIO_RegDef_t *) GPIOB_BASEADDR)
-#define GPIOC                       ((GPIO_RegDef_t *) GPIOC_BASEADDR)
-#define GPIOD                       ((GPIO_RegDef_t *) GPIOD_BASEADDR)
-#define GPIOE                       ((GPIO_RegDef_t *) GPIOE_BASEADDR)
-#define GPIOF                       ((GPIO_RegDef_t *) GPIOF_BASEADDR)
-#define GPIOG                       ((GPIO_RegDef_t *) GPIOG_BASEADDR)
-#define GPIOH                       ((GPIO_RegDef_t *) GPIOH_BASEADDR)
-#define RCC                         ((RCC_RegDef_t *)  RCC_BASEADDR)
-#define EXTI                        ((EXTI_RegDef_t *) EXTI_BASEADDR)
-#define SYSCFG                      ((SYSCFG_RegDef_t *) SYSCFG_BASEADDR)
+#define GPIOA                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOA_BASEADDR) )
+#define GPIOB                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOB_BASEADDR) )
+#define GPIOC                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOC_BASEADDR) )
+#define GPIOD                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOD_BASEADDR) )
+#define GPIOE                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOE_BASEADDR) )
+#define GPIOF                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOF_BASEADDR) )
+#define GPIOG                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOG_BASEADDR) )
+#define GPIOH                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOH_BASEADDR) )
+#define RCC                         ( reinterpret_cast<RCC_RegDef_t *>      (RCC_BASEADDR) )
+#define EXTI                        ( reinterpret_cast<EXTI_RegDef_t *>     (EXTI_BASEADDR) )
+#define SYSCFG                      ( reinterpret_cast<SYSCFG_RegDef_t *>   (SYSCFG_BASEADDR) )
 
-#define SPI1                        ((SPI_RegDef_t *) SPI1_BASEADDR)
-#define SPI2                        ((SPI_RegDef_t *) SPI2_BASEADDR)
-#define SPI3                        ((SPI_RegDef_t *) SPI3_BASEADDR)
-#define SPI4                        ((SPI_RegDef_t *) SPI4_BASEADDR)
+#define SPI1                        ( reinterpret_cast<SPI_RegDef_t *>      (SPI1_BASEADDR) )
+#define SPI2                        ( reinterpret_cast<SPI_RegDef_t *>      (SPI2_BASEADDR) )
+#define SPI3                        ( reinterpret_cast<SPI_RegDef_t *>      (SPI3_BASEADDR) )
+#define SPI4                        ( reinterpret_cast<SPI_RegDef_t *>      (SPI4_BASEADDR) )
 
 // RCC CLOCK ENABLE
 #define GPIOA_PCLK_EN()             (RCC->AHB1ENR |=  (1 << 0u))
@@ -268,8 +268,6 @@ inline uint8_t gpio_baseAddr_to_code(GPIO_RegDef_t *Port) {
              (Port == GPIOG) ? 0x06 : \
              (Port == GPIOH) ? 0x07 : 0x00 );
 }
-
-
 
 #include "stm32f446re_gpio_driver.h"
 

@@ -74,9 +74,9 @@ typedef struct
 #define NVIC_BASEADDR       (SCS_BASE +  0x0100UL)                    /*!< NVIC Base Address */
 #define SCB_BASEADDR        (SCS_BASE +  0x0D00UL)                    /*!< System Control Block Base Address */
 
-#define SYSTICK             ((SysTick_Reg_t   *)     SysTick_BASEADDR  )   /*!< SysTick configuration struct */
-#define NVIC                ((NVIC_Reg_t      *)     NVIC_BASEADDR     )   /*!< NVIC configuration struct */
-#define SCB                 ((SCB_Reg_t       *)     SCB_BASEADDR      )   /*!< SCB configuration struct */
+#define SYSTICK             ( reinterpret_cast<SysTick_Reg_t *>  (SysTick_BASEADDR)  )   /*!< SysTick configuration struct */
+#define NVIC                ( reinterpret_cast<NVIC_Reg_t *>     (NVIC_BASEADDR)     )   /*!< NVIC configuration struct */
+#define SCB                 ( reinterpret_cast<SCB_Reg_t *>      (SCB_BASEADDR)      )   /*!< SCB configuration struct */
 
 /*
  * Bit position definitions SysTick_CSR

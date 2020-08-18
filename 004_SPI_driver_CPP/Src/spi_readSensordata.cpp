@@ -19,6 +19,7 @@
 
 #include "../driver/inc/stm32f4xx.h"
 #include "../driver/inc/bme280_driver.h"
+#include "../driver/inc/sys_tick_driver.h"
 #include <vector>
 
 using namespace std;
@@ -29,15 +30,14 @@ void user_delay_us(u32);
 u8 user_spi_read (const u8, u8 *, u32);
 u8 user_spi_write(const u8, const u8 *, u32);
 
-
-// Alternate function 5
-SPI_Handler *SPI1_Handler;
-GPIO_Handler *PB6;
-BMESensor_Handler *bme280;
-
+unique_ptr<SysTick> SystemTick;
+unique_ptr<SPI_Handler> SPI1_Handler;
+unique_ptr<GPIO_Handler> PB6;
+unique_ptr<BMESensor_Handler> bme280;
 
 int main(void)
 {
+
     bme280_settings temp = { 0 };
     InitilizePeripheral();
     if (bme280->get_status() == SENSOR_OK) {
@@ -56,7 +56,7 @@ int main(void)
 #ifdef DEBUG_EN
 			bme280->print_sensor_data();
 #endif
-			for (int i = 0; i < 1000000; ++i);
+			SystemTick->delay_ms(1000);
        }
     }
     else {
@@ -70,41 +70,77 @@ int main(void)
 }
 
 void InitilizePeripheral(void) {
-    // HSI Clock 16 Mhz
-    SPI1_Handler = new SPI_Handler(SPI1,
+    // HSI Clock 16 MHz
+    SystemTick.reset( new SysTick() );
+
+    SPI1_Handler.reset( new SPI_Handler(SPI1,
                                     SPI_DEVICE_MODE_MASTER,
                                     SPI_BUS_CONFIG_FD,
                                     SPI_SCLK_SPEED_DIV32,
                                     SPI_DFF_8BITS,
                                     SPI_CPOL_LOW,
                                     SPI_CPHA_LOW,
-                                    SPI_SSM_EN);
+                                    SPI_SSM_EN) );
 
     // TODO: design interrupt for SPI connect with sensor
-//  SPI1_Handler->SPI_IRQInterruptConfig(IRQ_NO_SPI1, ENABLE);
-//  SPI1_Handler->SPI_IRQPriorityConfig(IRQ_NO_SPI1, IRQ_Prio_NO_15);
+    SPI1_Handler->SPI_IRQInterruptConfig(SPI1_IRQn, ENABLE);
+    SPI1_Handler->SPI_IRQPriorityConfig(SPI1_IRQn, IRQ_Prio_NO_15);
 
-    PB6 = new GPIO_Handler(GPIOB,
+    PB6.reset( new GPIO_Handler(GPIOB,
                            GPIO_PIN_NO_6,
                            GPIO_MODE_OUT,
                            GPIO_SPEED_FAST,
                            GPIO_OP_TYPE_PP,
-                           GPIO_NO_PUPD);
+                           GPIO_NO_PUPD) );
     PB6->GPIO_WriteToOutputPin(SET);
 
-    bme280 = new BMESensor_Handler(user_spi_read,
+    bme280.reset( new BMESensor_Handler(user_spi_read,
                                    user_spi_write,
-                                   user_delay_us);
+                                   user_delay_us) );
 }
 
 void user_delay_us(u32 period)
 {
-    // TODO: Design system tick in here
-    for(int i = 0; i < 25000; ++i) {
-
-    }
+    SystemTick->delay_ms(period);
 }
 
+u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
+    vector<u8> txBuffer(len + 1, 0);
+    vector<u8> rxBuffer;
+    txBuffer[0] = reg_addr;
+
+    PB6->GPIO_WriteToOutputPin(RESET);
+
+    SPI1_Handler->SPI_SendReceiveDataIT(txBuffer, rxBuffer, len + 1);
+
+    PB6->GPIO_WriteToOutputPin(SET);
+    cout << "RxBuffer = " << endl;
+    for(auto it = rxBuffer.begin(); it != rxBuffer.end(); ++it) {
+        cout << " " << hex << unsigned(*it);
+    }
+    // copy to reg_data
+    for(u32 i = 0; i < len; ++i) {
+        reg_data[i] = rxBuffer[i + 1];
+    }
+    return 0;
+}
+
+u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
+    vector<u8> txBuffer(len + 1, 0);
+    txBuffer[0] = reg_addr;
+    for(u32 i = 0; i < len; ++i) {
+        txBuffer[i + 1] = reg_data[i];
+    }
+
+    PB6->GPIO_WriteToOutputPin(RESET);
+    SPI1_Handler->SPI_SendDataIT(txBuffer, len + 1);
+    while(SPI1_Handler->get_TxState() != SPI_READY);
+    PB6->GPIO_WriteToOutputPin(SET);
+
+    return 0;
+}
+
+/*
 u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
     vector<u8> txBuffer(len + 1, 0);
     vector<u8> rxBuffer(len + 1, 0);
@@ -136,7 +172,7 @@ u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
 
     return 0;
 }
-
+*/
 extern "C" {
     void SPI1_IRQHandler(void) {
         // handle the interrupt

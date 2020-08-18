@@ -2688,12 +2688,12 @@ void GPIO_Handler::GPIO_ToggleOutputPin() {
  800189a:	4770      	bx	lr
 
 0800189c <_ZN12GPIO_Handler23GPIO_IRQInterruptConfigEhh>:
+ * @param[in] EnorDi        - Enable/Disable Flag
  *
  * @return None
  *
  */
-void GPIO_Handler::GPIO_IRQInterruptConfig(const u8 IRQNumber,
-        const u8 EnorDi) {
+void GPIO_Handler::GPIO_IRQInterruptConfig(const u8 IRQNumber, const u8 EnorDi) {
  800189c:	b480      	push	{r7}
  800189e:	b083      	sub	sp, #12
  80018a0:	af00      	add	r7, sp, #0
@@ -2830,12 +2830,12 @@ void GPIO_Handler::GPIO_IRQInterruptConfig(const u8 IRQNumber,
  8001998:	e000e100 	.word	0xe000e100
 
 0800199c <_ZN12GPIO_Handler22GPIO_IRQPriorityConfigEhh>:
+ * @param[in] IRPriority: 0->15
  *
  * @return None
  *
  */
-void GPIO_Handler::GPIO_IRQPriorityConfig(const u8 IRQNumber,
-        const u8 IRQPriority) {
+void GPIO_Handler::GPIO_IRQPriorityConfig(const u8 IRQNumber, const u8 IRQPriority) {
  800199c:	b480      	push	{r7}
  800199e:	b085      	sub	sp, #20
  80019a0:	af00      	add	r7, sp, #0

@@ -256,8 +256,7 @@ void GPIO_Handler::GPIO_ToggleOutputPin() {
  * @return None
  *
  */
-void GPIO_Handler::GPIO_IRQInterruptConfig(const u8 IRQNumber,
-        const u8 EnorDi) {
+void GPIO_Handler::GPIO_IRQInterruptConfig(const u8 IRQNumber, const u8 EnorDi) {
     if (EnorDi == ENABLE) {
         if (IRQNumber <= 31) {
             //	program ISER0 register
@@ -293,8 +292,7 @@ void GPIO_Handler::GPIO_IRQInterruptConfig(const u8 IRQNumber,
  * @return None
  *
  */
-void GPIO_Handler::GPIO_IRQPriorityConfig(const u8 IRQNumber,
-        const u8 IRQPriority) {
+void GPIO_Handler::GPIO_IRQPriorityConfig(const u8 IRQNumber, const u8 IRQPriority) {
     // 1. first lets find out the ipr register
     u8 iprx = IRQNumber >> 2;
     u8 iprx_section = IRQNumber % 4;

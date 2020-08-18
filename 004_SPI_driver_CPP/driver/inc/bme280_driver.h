@@ -13,9 +13,9 @@
 using namespace std;
 
 /**@SENSOR_MODE Sensor power modes */
-#define BME280_SLEEP_MODE               (u8)(0x00)
-#define BME280_FORCED_MODE              (u8)(0x01)
-#define BME280_NORMAL_MODE              (u8)(0x03)
+#define BME280_SLEEP_MODE               static_cast<u8>(0x00)
+#define BME280_FORCED_MODE              static_cast<u8>(0x01)
+#define BME280_NORMAL_MODE              static_cast<u8>(0x03)
 
 typedef enum {
     SENSOR_OK = 0x00U,
@@ -156,7 +156,7 @@ private:
 public:
     BMESensor_Handler(read_fnc user_read, write_fnc user_write,
             delay_ms_fnc user_delay);
-    ~BMESensor_Handler();
+    ~BMESensor_Handler() = default;
     uint8_t getChipID();
     BME280_Stat softReset();
     BME280_Stat get_calib_data();

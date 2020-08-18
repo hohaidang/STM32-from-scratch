@@ -9,40 +9,40 @@
 #define SRC_BME280_C_
 #include "../inc/bme280_driver.h"
 
-#define BME280_CHIP_ID                  (u8)(0x60)
+#define BME280_CHIP_ID                  static_cast<u8>(0x60)
 
-#define BME280_DATA_ADDR                (u8)(0xF7)
-#define BME280_CTRL_MEAS_ADDR           (u8)(0xF4)
-#define BME280_STATUS_REG_ADDR          (u8)(0xF3)
-#define BME280_CTRL_HUM_ADDR            (u8)(0xF2)
-#define BME280_CHIP_ID_ADDR             (u8)(0xD0)
-#define BME280_SOFT_RST_ADDR            (u8)(0xE0)
+#define BME280_DATA_ADDR                static_cast<u8>(0xF7)
+#define BME280_CTRL_MEAS_ADDR           static_cast<u8>(0xF4)
+#define BME280_STATUS_REG_ADDR          static_cast<u8>(0xF3)
+#define BME280_CTRL_HUM_ADDR            static_cast<u8>(0xF2)
+#define BME280_CHIP_ID_ADDR             static_cast<u8>(0xD0)
+#define BME280_SOFT_RST_ADDR            static_cast<u8>(0xE0)
 
-#define BME280_SPI_R                    (u8)(0x80)
-#define BME280_SPI_W                    (u8)(0x7F)
-#define BME280_STATUS_IM_UPDATE         (u8)(0x01)
-#define BME280_RST_COMMAND              (u8)(0xB6)
+#define BME280_SPI_R                    static_cast<u8>(0x80)
+#define BME280_SPI_W                    static_cast<u8>(0x7F)
+#define BME280_STATUS_IM_UPDATE         static_cast<u8>(0x01)
+#define BME280_RST_COMMAND              static_cast<u8>(0xB6)
 
-#define BME280_SENSOR_MODE_POS          (u8)(0x00)
-#define BME280_SENSOR_MODE_MSK          (u8)(0x03)
+#define BME280_SENSOR_MODE_POS          static_cast<u8>(0x00)
+#define BME280_SENSOR_MODE_MSK          static_cast<u8>(0x03)
 
-#define BME280_CTRL_HUM_MSK             (u8)(0x07)
-#define BME280_CTRL_HUM_POS             (u8)(0x00)
-#define BME280_CTRL_TEMPERATURE_MSK     (u8)(0xE0)
-#define BME280_CTRL_TEMPERATURE_POS     (u8)(0x05)
-#define BME280_CTRL_PRESSURE_MSK        (u8)(0x1C)
-#define BME280_CTRL_PRESSURE_POS        (u8)(0x02)
-#define BME280_FILTER_MSK               (u8)(0x1C)
-#define BME280_FILTER_POS               (u8)(0x02)
-#define BME280_STANDBY_MSK              (u8)(0xE0)
-#define BME280_STANDBY_POS              (u8)(0x05)
+#define BME280_CTRL_HUM_MSK             static_cast<u8>(0x07)
+#define BME280_CTRL_HUM_POS             static_cast<u8>(0x00)
+#define BME280_CTRL_TEMPERATURE_MSK     static_cast<u8>(0xE0)
+#define BME280_CTRL_TEMPERATURE_POS     static_cast<u8>(0x05)
+#define BME280_CTRL_PRESSURE_MSK        static_cast<u8>(0x1C)
+#define BME280_CTRL_PRESSURE_POS        static_cast<u8>(0x02)
+#define BME280_FILTER_MSK               static_cast<u8>(0x1C)
+#define BME280_FILTER_POS               static_cast<u8>(0x02)
+#define BME280_STANDBY_MSK              static_cast<u8>(0xE0)
+#define BME280_STANDBY_POS              static_cast<u8>(0x05)
 
-#define BME280_TEMP_PRESS_CALIB_DATA_LEN          (u8)(28u)
-#define BME280_HUMIDITY_CALIB_DATA_LEN            (u8)(7u)
-#define BME280_P_T_H_DATA_LEN                     (u8)(8u)
+#define BME280_TEMP_PRESS_CALIB_DATA_LEN          static_cast<u8>(28u)
+#define BME280_HUMIDITY_CALIB_DATA_LEN            static_cast<u8>(7u)
+#define BME280_P_T_H_DATA_LEN                     static_cast<u8>(8u)
 
-#define BME280_TEMP_PRESS_CALIB_DATA_ADDR         (u8)(0x88)
-#define BME280_HUMIDITY_CALIB_DATA_ADDR           (u8)(0xE1)
+#define BME280_TEMP_PRESS_CALIB_DATA_ADDR         static_cast<u8>(0x88)
+#define BME280_HUMIDITY_CALIB_DATA_ADDR           static_cast<u8>(0xE1)
 
 /**\name Macro to combine two 8 bit data's to form a 16 bit data */
 #define BME280_CONCAT_BYTES(msb, lsb)             (((uint16_t)msb << 8) | (uint16_t)lsb)
@@ -90,7 +90,7 @@ BME280_Stat BMESensor_Handler::init_BME280() {
     // try to re-read because BME sensor may not init done before MCU run
     do{
     	getRegData(regAddr, &dev_.chipID, 1);
-    	dev_.delay_ms(1000);
+    	dev_.delay_ms(200);
     }while((--try_run) || BME280_CHIP_ID != dev_.chipID);
 
     if(BME280_CHIP_ID == dev_.chipID) {
@@ -606,11 +606,11 @@ double BMESensor_Handler::compensate_humidity(const bme280_uncomp_data &uncomp_d
 }
 
 static inline u8 BME280_SET_BITS(const u8 reg, const u8 data, const u8 msk, const u8 pos) {
-    return (u8)( ( (reg & ~(msk)) | ((data << pos) & msk) ) );
+    return static_cast<u8>( ( (reg & ~(msk)) | ((data << pos) & msk) ) );
 }
 
 static inline u8 BME280_GET_BITS(const u8 reg, const u8 msk, const u8 pos) {
-    return (u8)((reg & msk) >> pos);
+    return static_cast<u8>((reg & msk) >> pos);
 }
 
 

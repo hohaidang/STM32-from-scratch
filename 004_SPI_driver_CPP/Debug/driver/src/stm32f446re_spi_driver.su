@@ -1,52 +1,212 @@
+new:168:14:void* operator new(std::size_t, void*)	16	static
 gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
-stm32f446re_spi_driver.cpp:19:1:SPI_Handler::SPI_Handler(SPI_RegDef_t*, u8, u8, u8, u8, u8, u8, u8)	24	static
-stm32f446re_spi_driver.cpp:48:1:SPI_Handler::~SPI_Handler()	16	static
-stm32f446re_spi_driver.cpp:61:6:void SPI_Handler::SPI_PeriClockControl()	16	static
-stm32f446re_spi_driver.cpp:82:6:void SPI_Handler::SPI_GPIOs_Init()	48	static
-stm32f446re_spi_driver.cpp:133:6:void SPI_Handler::SPI_Init()	24	static
-stm32f446re_spi_driver.cpp:181:6:void SPI_Handler::SPI_DeInit()	16	static
-stm32f446re_spi_driver.cpp:202:6:void SPI_Handler::SPI_PeripheralControl(u8)	16	static
-stm32f446re_spi_driver.cpp:219:11:u8 SPI_Handler::SPI_GetFlagStatus(u8)	16	static
-stm32f446re_spi_driver.cpp:233:6:void SPI_Handler::SPI_SendData(const u8*, u32)	24	static
-stm32f446re_spi_driver.cpp:271:6:void SPI_Handler::SPI_ReceiveData(u8*, u32)	24	static
-stm32f446re_spi_driver.cpp:310:6:void SPI_Handler::SPI_SendAndReceiveData(const u8*, u8*, u32)	24	static
-stm32f446re_spi_driver.cpp:361:6:void SPI_Handler::SPI_SSOEConfig(u8)	16	static
-stm32f446re_spi_driver.cpp:378:6:void SPI_Handler::SPI_SSIConfig(u8)	16	static
-stm32f446re_spi_driver.cpp:396:6:void SPI_Handler::SPI_IRQInterruptConfig(u8, u8)	16	static
-stm32f446re_spi_driver.cpp:433:6:void SPI_Handler::SPI_IRQPriorityConfig(u8, u8)	24	static
-stm32f446re_spi_driver.cpp:452:4:u8 SPI_Handler::SPI_SendDataIT(const u8*, u32)	24	static
-stm32f446re_spi_driver.cpp:482:4:u8 SPI_Handler::SPI_ReceiveDataIT(u8*, u32)	24	static
-stm32f446re_spi_driver.cpp:513:6:void SPI_Handler::SPI_IRQHandling()	24	static
-stm32f446re_spi_driver.cpp:550:6:void SPI_Handler::spi_txe_interrupt_handle()	16	static
-stm32f446re_spi_driver.cpp:584:6:void SPI_Handler::spi_rxne_interrupt_handle()	16	static
-stm32f446re_spi_driver.cpp:619:6:void SPI_Handler::spi_ovr_err_interrupt_handle()	16	static
-stm32f446re_spi_driver.cpp:634:6:void SPI_Handler::SPI_ClearOVRFlag()	24	static
-stm32f446re_spi_driver.cpp:649:6:void SPI_Handler::SPI_CloseTransmission()	16	static
-stm32f446re_spi_driver.cpp:667:6:void SPI_Handler::SPI_CloseReception()	16	static
-stm32f446re_spi_driver.cpp:674:13:void SPI_ApplicationEventCallback(SPI_Handle_t*, u8)	16	static
+ios_base.h:83:3:constexpr std::_Ios_Fmtflags std::operator&(std::_Ios_Fmtflags, std::_Ios_Fmtflags)	16	static
+ios_base.h:87:3:constexpr std::_Ios_Fmtflags std::operator|(std::_Ios_Fmtflags, std::_Ios_Fmtflags)	16	static
+ios_base.h:95:3:constexpr std::_Ios_Fmtflags std::operator~(std::_Ios_Fmtflags)	16	static
+ios_base.h:99:3:const std::_Ios_Fmtflags& std::operator|=(std::_Ios_Fmtflags&, std::_Ios_Fmtflags)	16	static
+ios_base.h:103:3:const std::_Ios_Fmtflags& std::operator&=(std::_Ios_Fmtflags&, std::_Ios_Fmtflags)	16	static
+ios_base.h:663:5:std::ios_base::fmtflags std::ios_base::setf(std::ios_base::fmtflags, std::ios_base::fmtflags)	40	static
+ios_base.h:1024:3:std::ios_base& std::hex(std::ios_base&)	16	static
+stl_deque.h:91:3:constexpr std::size_t std::__deque_buf_size(std::size_t)	16	static
+stl_queue.h:96:11:std::queue<unsigned char>::~queue()	16	static
+stm32f446re_spi_driver.cpp:12:6:void printQueue(std::queue<unsigned char>)	24	static
+stm32f446re_spi_driver.h:82:3:SPI_Handle_t::~SPI_Handle_t()	16	static
+stm32f446re_spi_driver.cpp:28:1:SPI_Handler::SPI_Handler(SPI_RegDef_t*, u8, u8, u8, u8, u8, u8, u8)	24	static
+stm32f446re_spi_driver.cpp:57:1:SPI_Handler::~SPI_Handler()	16	static
+stm32f446re_spi_driver.cpp:70:6:void SPI_Handler::SPI_PeriClockControl()	16	static
+stm32f446re_spi_driver.cpp:91:6:void SPI_Handler::SPI_GPIOs_Init()	48	static
+stm32f446re_spi_driver.cpp:142:6:void SPI_Handler::SPI_Init()	24	static
+stm32f446re_spi_driver.cpp:191:6:void SPI_Handler::SPI_DeInit()	16	static
+stm32f446re_spi_driver.cpp:212:6:void SPI_Handler::SPI_PeripheralControl(u8)	16	static
+stm32f446re_spi_driver.cpp:230:6:void SPI_Handler::SPI_SendData(const u8*, u32)	24	static
+stm32f446re_spi_driver.cpp:266:6:void SPI_Handler::SPI_ReceiveData(u8*, u32)	24	static
+stm32f446re_spi_driver.cpp:303:6:void SPI_Handler::SPI_SendAndReceiveData(const u8*, u8*, u32)	24	static
+stm32f446re_spi_driver.cpp:351:6:void SPI_Handler::SPI_SSOEConfig(u8)	16	static
+stm32f446re_spi_driver.cpp:368:6:void SPI_Handler::SPI_SSIConfig(u8)	16	static
+stm32f446re_spi_driver.cpp:386:6:void SPI_Handler::SPI_IRQInterruptConfig(u8, u8)	16	static
+stm32f446re_spi_driver.cpp:422:6:void SPI_Handler::SPI_IRQPriorityConfig(u8, u8)	24	static
+stm32f446re_spi_driver.cpp:439:4:u8 SPI_Handler::SPI_SendDataIT(std::vector<unsigned char>&, u32)	24	static
+stm32f446re_spi_driver.cpp:469:4:u8 SPI_Handler::SPI_ReceiveDataIT(std::vector<unsigned char>&, u32)	24	static
+stl_queue.h:96:11:std::queue<unsigned char>::queue(const std::queue<unsigned char>&)	16	static
+stm32f446re_spi_driver.cpp:484:4:u8 SPI_Handler::SPI_SendReceiveDataIT(std::vector<unsigned char>&, std::vector<unsigned char>&, u32)	80	static
+stm32f446re_spi_driver.cpp:530:6:void SPI_Handler::SPI_IRQHandling()	104	static
+stm32f446re_spi_driver.cpp:571:6:void SPI_Handler::spi_txe_interrupt_handle()	16	static
+stm32f446re_spi_driver.cpp:612:6:void SPI_Handler::spi_rxne_interrupt_handle()	24	static
+stm32f446re_spi_driver.cpp:655:6:void SPI_Handler::spi_ovr_err_interrupt_handle()	16	static
+stm32f446re_spi_driver.cpp:670:6:void SPI_Handler::spi_clear_OVR_flag()	24	static
+stm32f446re_spi_driver.cpp:685:6:void SPI_Handler::SPI_CloseTransmission()	16	static
+stm32f446re_spi_driver.cpp:704:6:void SPI_Handler::SPI_CloseReception()	16	static
+stm32f446re_spi_driver.cpp:713:4:u8 SPI_Handler::get_TxState()	16	static
+stm32f446re_spi_driver.cpp:717:4:u8 SPI_Handler::get_RxState()	16	static
+stm32f446re_spi_driver.cpp:729:11:u8 SPI_Handler::SPI_GetFlagStatus(u32)	16	static
+stm32f446re_spi_driver.cpp:743:11:u8 SPI_Handler::spi_check_flag(u32, u32)	24	static
+stm32f446re_spi_driver.cpp:747:13:void SPI_ApplicationEventCallback(SPI_Handle_t*, u8)	16	static
+stl_queue.h:152:2:std::queue<_Tp, _Sequence>::queue() [with _Seq = std::deque<unsigned char, std::allocator<unsigned char> >; _Requires = void; _Tp = unsigned char; _Sequence = std::deque<unsigned char, std::allocator<unsigned char> >]	16	static
+stl_deque.h:1044:7:std::deque<_Tp, _Alloc>::~deque() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	48	static
+stl_queue.h:189:7:bool std::queue<_Tp, _Sequence>::empty() const [with _Tp = unsigned char; _Sequence = std::deque<unsigned char, std::allocator<unsigned char> >]	16	static
+stl_queue.h:202:7:std::queue<_Tp, _Sequence>::reference std::queue<_Tp, _Sequence>::front() [with _Tp = unsigned char; _Sequence = std::deque<unsigned char, std::allocator<unsigned char> >]	16	static
+stl_queue.h:284:7:void std::queue<_Tp, _Sequence>::pop() [with _Tp = unsigned char; _Sequence = std::deque<unsigned char, std::allocator<unsigned char> >]	16	static
 tuple:919:17:constexpr std::tuple<_T1, _T2>::tuple() [with _U1 = GPIO_Handler*; _U2 = std::default_delete<GPIO_Handler>; typename std::enable_if<std::__and_<std::__is_implicitly_default_constructible<_U1>, std::__is_implicitly_default_constructible<_U2> >::value, bool>::type <anonymous> = 1; _T1 = GPIO_Handler*; _T2 = std::default_delete<GPIO_Handler>]	16	static
 unique_ptr.h:139:7:constexpr std::__uniq_ptr_impl<_Tp, _Dp>::__uniq_ptr_impl() [with _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	16	static
 unique_ptr.h:188:12:constexpr std::unique_ptr<_Tp, _Dp>::unique_ptr() [with _Up = std::default_delete<GPIO_Handler>; <template-parameter-2-2> = void; _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	16	static
 unique_ptr.h:264:7:std::unique_ptr<_Tp, _Dp>::~unique_ptr() [with _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	24	static
 unique_ptr.h:371:7:void std::unique_ptr<_Tp, _Dp>::reset(std::unique_ptr<_Tp, _Dp>::pointer) [with _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	16	static
+stl_vector.h:563:7:std::vector<_Tp, _Alloc>::iterator std::vector<_Tp, _Alloc>::begin() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+stl_vector.h:581:7:std::vector<_Tp, _Alloc>::iterator std::vector<_Tp, _Alloc>::end() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+stl_iterator.h:880:5:bool __gnu_cxx::operator!=(const __gnu_cxx::__normal_iterator<_Iterator, _Container>&, const __gnu_cxx::__normal_iterator<_Iterator, _Container>&) [with _Iterator = unsigned char*; _Container = std::vector<unsigned char>]	24	static
+stl_iterator.h:800:7:__gnu_cxx::__normal_iterator<_Iterator, _Container>& __gnu_cxx::__normal_iterator<_Iterator, _Container>::operator++() [with _Iterator = unsigned char*; _Container = std::vector<unsigned char>]	16	static
+stl_iterator.h:792:7:__gnu_cxx::__normal_iterator<_Iterator, _Container>::reference __gnu_cxx::__normal_iterator<_Iterator, _Container>::operator*() const [with _Iterator = unsigned char*; _Container = std::vector<unsigned char>]	16	static
+stl_queue.h:251:7:void std::queue<_Tp, _Sequence>::push(const value_type&) [with _Tp = unsigned char; _Sequence = std::deque<unsigned char, std::allocator<unsigned char> >]	16	static
+stl_deque.h:947:7:std::deque<_Tp, _Alloc>::deque(const std::deque<_Tp, _Alloc>&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	128	static
+stl_vector.h:939:7:void std::vector<_Tp, _Alloc>::push_back(const value_type&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = unsigned char&]	16	static
+stl_queue.h:256:7:void std::queue<_Tp, _Sequence>::push(std::queue<_Tp, _Sequence>::value_type&&) [with _Tp = unsigned char; _Sequence = std::deque<unsigned char, std::allocator<unsigned char> >]	24	static
+stl_deque.h:888:7:std::deque<_Tp, _Alloc>::deque() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_deque.h:549:14:std::_Deque_base<unsigned char, std::allocator<unsigned char> >::_Deque_impl::~_Deque_impl()	16	static
+stl_deque.h:660:5:std::_Deque_base<_Tp, _Alloc>::~_Deque_base() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_deque.h:1166:7:std::deque<_Tp, _Alloc>::iterator std::deque<_Tp, _Alloc>::begin() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_deque.h:1183:7:std::deque<_Tp, _Alloc>::iterator std::deque<_Tp, _Alloc>::end() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_deque.h:587:7:std::_Deque_base<_Tp, _Alloc>::_Tp_alloc_type& std::_Deque_base<_Tp, _Alloc>::_M_get_Tp_allocator() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_deque.h:151:7:std::_Deque_iterator<_Tp, _Ref, _Ptr>::_Deque_iterator(const iterator&) [with _Tp = unsigned char; _Ref = unsigned char&; _Ptr = unsigned char*]	16	static
+stl_deque.h:2068:7:void std::deque<_Tp, _Alloc>::_M_destroy_data(std::deque<_Tp, _Alloc>::iterator, std::deque<_Tp, _Alloc>::iterator, const std::allocator<_CharT>&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	56	static
+stl_deque.h:1357:7:bool std::deque<_Tp, _Alloc>::empty() const [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_deque.h:1451:7:std::deque<_Tp, _Alloc>::reference std::deque<_Tp, _Alloc>::front() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	32	static
+stl_deque.h:1578:7:void std::deque<_Tp, _Alloc>::pop_front() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
 tuple:206:17:>::_Tuple_impl() [with unsigned int _Idx = 0; _Head = GPIO_Handler*; _Tail = {std::default_delete<GPIO_Handler>}]	16	static
 unique_ptr.h:146:18:std::__uniq_ptr_impl<_Tp, _Dp>::pointer& std::__uniq_ptr_impl<_Tp, _Dp>::_M_ptr() [with _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	16	static
 unique_ptr.h:341:7:std::unique_ptr<_Tp, _Dp>::deleter_type& std::unique_ptr<_Tp, _Dp>::get_deleter() [with _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	16	static
 unique_ptr.h:72:7:void std::default_delete<_Tp>::operator()(_Tp*) const [with _Tp = GPIO_Handler]	24	static
 move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = GPIO_Handler*&]	16	static
 move.h:187:5:typename std::enable_if<std::__and_<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> >::value>::type std::swap(_Tp&, _Tp&) [with _Tp = GPIO_Handler*]	24	static
+stl_iterator.h:779:7:__gnu_cxx::__normal_iterator<_Iterator, _Container>::__normal_iterator(const _Iterator&) [with _Iterator = unsigned char*; _Container = std::vector<unsigned char>]	16	static
+stl_iterator.h:844:7:const _Iterator& __gnu_cxx::__normal_iterator<_Iterator, _Container>::base() const [with _Iterator = unsigned char*; _Container = std::vector<unsigned char>]	16	static
+stl_deque.h:1542:7:void std::deque<_Tp, _Alloc>::push_back(const value_type&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+alloc_traits.h:94:19:static _Alloc __gnu_cxx::__alloc_traits<_Alloc>::_S_select_on_copy(const _Alloc&) [with _Alloc = std::allocator<unsigned char>]	16	static
+stl_deque.h:591:7:const _Tp_alloc_type& std::_Deque_base<_Tp, _Alloc>::_M_get_Tp_allocator() const [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+allocator.h:139:7:std::allocator< <template-parameter-1-1> >::~allocator() [with _Tp = unsigned char]	16	static
+stl_deque.h:1271:7:std::deque<_Tp, _Alloc>::size_type std::deque<_Tp, _Alloc>::size() const [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_deque.h:498:7:std::_Deque_base<_Tp, _Alloc>::_Deque_base(const allocator_type&, std::size_t) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+stl_deque.h:1174:7:std::deque<_Tp, _Alloc>::const_iterator std::deque<_Tp, _Alloc>::begin() const [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_deque.h:1192:7:std::deque<_Tp, _Alloc>::const_iterator std::deque<_Tp, _Alloc>::end() const [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_uninitialized.h:287:5:_ForwardIterator std::__uninitialized_copy_a(_InputIterator, _InputIterator, _ForwardIterator, std::allocator<_Tp>&) [with _InputIterator = std::_Deque_iterator<unsigned char, const unsigned char&, const unsigned char*>; _ForwardIterator = std::_Deque_iterator<unsigned char, unsigned char&, unsigned char*>; _Tp = unsigned char]	64	static
+move.h:73:5:constexpr _Tp&& std::forward(typename std::remove_reference<_From>::type&) [with _Tp = const unsigned char&]	16	static
+alloc_traits.h:474:2:) [with _Up = unsigned char; _Args = {const unsigned char&}; _Tp = unsigned char]	24	static
+vector.tcc:394:7:) [with _Args = {const unsigned char&}; _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	56	static
+stl_deque.h:1557:7:void std::deque<_Tp, _Alloc>::push_back(std::deque<_Tp, _Alloc>::value_type&&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_deque.h:490:7:std::_Deque_base<_Tp, _Alloc>::_Deque_base() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_deque.h:738:5:void std::_Deque_base<_Tp, _Alloc>::_M_destroy_nodes(std::_Deque_base<_Tp, _Alloc>::_Map_pointer, std::_Deque_base<_Tp, _Alloc>::_Map_pointer) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	32	static
+stl_deque.h:620:7:void std::_Deque_base<_Tp, _Alloc>::_M_deallocate_map(std::_Deque_base<_Tp, _Alloc>::_Map_pointer, std::size_t) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	32	static
+stl_deque.h:267:5:bool std::operator==(const std::_Deque_iterator<_Tp, _Ref, _Ptr>&, const std::_Deque_iterator<_Tp, _Ref, _Ptr>&) [with _Tp = unsigned char; _Ref = unsigned char&; _Ptr = unsigned char*]	16	static
+stl_deque.h:160:7:std::_Deque_iterator<_Tp, _Ref, _Ptr>::reference std::_Deque_iterator<_Tp, _Ref, _Ptr>::operator*() const [with _Tp = unsigned char; _Ref = unsigned char&; _Ptr = unsigned char*]	16	static
+alloc_traits.h:486:2:static void std::allocator_traits<std::allocator<_CharT> >::destroy(std::allocator_traits<std::allocator<_CharT> >::allocator_type&, _Up*) [with _Up = unsigned char; _Tp = unsigned char]	16	static
+deque.tcc:562:10:void std::deque<_Tp, _Alloc>::_M_pop_front_aux() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
 tuple:356:17:constexpr std::_Tuple_impl<_Idx, _Head>::_Tuple_impl() [with unsigned int _Idx = 1; _Head = std::default_delete<GPIO_Handler>]	16	static
 tuple:122:17:constexpr std::_Head_base<_Idx, _Head, false>::_Head_base() [with unsigned int _Idx = 0; _Head = GPIO_Handler*]	16	static
 tuple:1314:5:>&) [with unsigned int __i = 0; _Elements = {GPIO_Handler*, std::default_delete<GPIO_Handler>}]	16	static
 unique_ptr.h:148:18:_Dp& std::__uniq_ptr_impl<_Tp, _Dp>::_M_deleter() [with _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	16	static
+deque.tcc:478:7:) [with _Args = {const unsigned char&}; _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+alloc_traits.h:504:7:static std::allocator_traits<std::allocator<_CharT> >::allocator_type std::allocator_traits<std::allocator<_CharT> >::select_on_container_copy_construction(const allocator_type&) [with _Tp = unsigned char]	16	static
+allocator.h:133:7:std::allocator< <template-parameter-1-1> >::allocator(const std::allocator< <template-parameter-1-1> >&) [with _Tp = unsigned char]	16	static
+new_allocator.h:86:7:__gnu_cxx::new_allocator<_Tp>::~new_allocator() [with _Tp = unsigned char]	16	static
+stl_deque.h:351:5:typename std::_Deque_iterator<_Tp, _Ref, _Ptr>::difference_type std::operator-(const std::_Deque_iterator<_Tp, _Ref, _Ptr>&, const std::_Deque_iterator<_Tp, _Ref, _Ptr>&) [with _Tp = unsigned char; _Ref = unsigned char&; _Ptr = unsigned char*]	16	static
+stl_deque.h:562:2:std::_Deque_base<_Tp, _Alloc>::_Deque_impl::_Deque_impl(const _Tp_alloc_type&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_deque.h:681:5:void std::_Deque_base<_Tp, _Alloc>::_M_initialize_map(std::size_t) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	48	static
+stl_deque.h:151:7:std::_Deque_iterator<_Tp, _Ref, _Ptr>::_Deque_iterator(const iterator&) [with _Tp = unsigned char; _Ref = const unsigned char&; _Ptr = const unsigned char*]	16	static
+stl_uninitialized.h:115:5:_ForwardIterator std::uninitialized_copy(_InputIterator, _InputIterator, _ForwardIterator) [with _InputIterator = std::_Deque_iterator<unsigned char, const unsigned char&, const unsigned char*>; _ForwardIterator = std::_Deque_iterator<unsigned char, unsigned char&, unsigned char*>]	72	static
+new_allocator.h:135:2:) [with _Up = unsigned char; _Args = {const unsigned char&}; _Tp = unsigned char]	32	static
+stl_vector.h:1497:7:std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_M_check_len(std::vector<_Tp, _Alloc>::size_type, const char*) const [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	40	static
+stl_iterator.h:962:5:typename __gnu_cxx::__normal_iterator<_Iterator, _Container>::difference_type __gnu_cxx::operator-(const __gnu_cxx::__normal_iterator<_Iterator, _Container>&, const __gnu_cxx::__normal_iterator<_Iterator, _Container>&) [with _Iterator = unsigned char*; _Container = std::vector<unsigned char>]	24	static
+stl_vector.h:169:7:std::_Vector_base<_Tp, _Alloc>::pointer std::_Vector_base<_Tp, _Alloc>::_M_allocate(std::size_t) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_vector.h:115:7:std::_Vector_base<_Tp, _Alloc>::_Tp_alloc_type& std::_Vector_base<_Tp, _Alloc>::_M_get_Tp_allocator() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_uninitialized.h:305:5:_ForwardIterator std::__uninitialized_move_if_noexcept_a(_InputIterator, _InputIterator, _ForwardIterator, _Allocator&) [with _InputIterator = unsigned char*; _ForwardIterator = unsigned char*; _Allocator = std::allocator<unsigned char>]	32	static
+stl_construct.h:203:5:void std::_Destroy(_ForwardIterator, _ForwardIterator, std::allocator<_T2>&) [with _ForwardIterator = unsigned char*; _Tp = unsigned char]	24	static
+stl_vector.h:176:7:void std::_Vector_base<_Tp, _Alloc>::_M_deallocate(std::_Vector_base<_Tp, _Alloc>::pointer, std::size_t) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+move.h:73:5:constexpr _Tp&& std::forward(typename std::remove_reference<_From>::type&) [with _Tp = unsigned char]	16	static
+deque.tcc:161:7:) [with _Args = {unsigned char}; _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+stl_deque.h:557:2:std::_Deque_base<_Tp, _Alloc>::_Deque_impl::_Deque_impl() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_deque.h:606:7:void std::_Deque_base<_Tp, _Alloc>::_M_deallocate_node(std::_Deque_base<_Tp, _Alloc>::_Ptr) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+stl_deque.h:595:7:std::_Deque_base<_Tp, _Alloc>::_Map_alloc_type std::_Deque_base<_Tp, _Alloc>::_M_get_map_allocator() const [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+allocator.h:139:7:std::allocator< <template-parameter-1-1> >::~allocator() [with _Tp = unsigned char*]	16	static
+alloc_traits.h:461:7:static void std::allocator_traits<std::allocator<_CharT> >::deallocate(std::allocator_traits<std::allocator<_CharT> >::allocator_type&, std::allocator_traits<std::allocator<_CharT> >::pointer, std::allocator_traits<std::allocator<_CharT> >::size_type) [with _Tp = unsigned char*]	24	static
+new_allocator.h:140:2:void __gnu_cxx::new_allocator<_Tp>::destroy(_Up*) [with _Up = unsigned char; _Tp = unsigned char]	16	static
+stl_deque.h:254:7:void std::_Deque_iterator<_Tp, _Ref, _Ptr>::_M_set_node(std::_Deque_iterator<_Tp, _Ref, _Ptr>::_Map_pointer) [with _Tp = unsigned char; _Ref = unsigned char&; _Ptr = unsigned char*]	24	static
 tuple:76:17:constexpr std::_Head_base<_Idx, _Head, true>::_Head_base() [with unsigned int _Idx = 1; _Head = std::default_delete<GPIO_Handler>]	16	static
 tuple:1303:5:>&) [with unsigned int __i = 0; _Head = GPIO_Handler*; _Tail = {std::default_delete<GPIO_Handler>}]	16	static
 tuple:1314:5:>&) [with unsigned int __i = 1; _Elements = {GPIO_Handler*, std::default_delete<GPIO_Handler>}]	16	static
+stl_deque.h:2149:7:void std::deque<_Tp, _Alloc>::_M_reserve_map_at_back(std::deque<_Tp, _Alloc>::size_type) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_deque.h:599:7:std::_Deque_base<_Tp, _Alloc>::_Ptr std::_Deque_base<_Tp, _Alloc>::_M_allocate_node() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+new_allocator.h:81:7:__gnu_cxx::new_allocator<_Tp>::new_allocator(const __gnu_cxx::new_allocator<_Tp>&) [with _Tp = unsigned char]	16	static
+stl_deque.h:128:21:static std::size_t std::_Deque_iterator<_Tp, _Ref, _Ptr>::_S_buffer_size() [with _Tp = unsigned char; _Ref = unsigned char&; _Ptr = unsigned char*]	8	static
+stl_deque.h:148:7:std::_Deque_iterator<_Tp, _Ref, _Ptr>::_Deque_iterator() [with _Tp = unsigned char; _Ref = unsigned char&; _Ptr = unsigned char*]	16	static
+stl_algobase.h:219:5:constexpr const _Tp& std::max(const _Tp&, const _Tp&) [with _Tp = unsigned int]	16	static
+stl_deque.h:613:7:std::_Deque_base<_Tp, _Alloc>::_Map_pointer std::_Deque_base<_Tp, _Alloc>::_M_allocate_map(std::size_t) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	32	static
+stl_deque.h:720:5:void std::_Deque_base<_Tp, _Alloc>::_M_create_nodes(std::_Deque_base<_Tp, _Alloc>::_Map_pointer, std::_Deque_base<_Tp, _Alloc>::_Map_pointer) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	32	static
+stl_uninitialized.h:99:9:static _ForwardIterator std::__uninitialized_copy<true>::__uninit_copy(_InputIterator, _InputIterator, _ForwardIterator) [with _InputIterator = std::_Deque_iterator<unsigned char, const unsigned char&, const unsigned char*>; _ForwardIterator = std::_Deque_iterator<unsigned char, unsigned char&, unsigned char*>]	64	static
+stl_vector.h:675:7:std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::max_size() const [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_vector.h:670:7:std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::size() const [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+alloc_traits.h:435:7:static _Tp* std::allocator_traits<std::allocator<_CharT> >::allocate(std::allocator_traits<std::allocator<_CharT> >::allocator_type&, std::allocator_traits<std::allocator<_CharT> >::size_type) [with _Tp = unsigned char]	16	static
+stl_iterator.h:1221:5:_ReturnType std::__make_move_if_noexcept_iterator(_Tp*) [with _Tp = unsigned char; _ReturnType = std::move_iterator<unsigned char*>]	24	static
+stl_uninitialized.h:287:5:_ForwardIterator std::__uninitialized_copy_a(_InputIterator, _InputIterator, _ForwardIterator, std::allocator<_Tp>&) [with _InputIterator = std::move_iterator<unsigned char*>; _ForwardIterator = unsigned char*; _Tp = unsigned char]	24	static
+stl_construct.h:127:5:void std::_Destroy(_ForwardIterator, _ForwardIterator) [with _ForwardIterator = unsigned char*]	16	static
+alloc_traits.h:461:7:static void std::allocator_traits<std::allocator<_CharT> >::deallocate(std::allocator_traits<std::allocator<_CharT> >::allocator_type&, std::allocator_traits<std::allocator<_CharT> >::pointer, std::allocator_traits<std::allocator<_CharT> >::size_type) [with _Tp = unsigned char]	24	static
+alloc_traits.h:474:2:) [with _Up = unsigned char; _Args = {unsigned char}; _Tp = unsigned char]	24	static
+deque.tcc:478:7:) [with _Args = {unsigned char}; _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+allocator.h:131:7:std::allocator< <template-parameter-1-1> >::allocator() [with _Tp = unsigned char]	16	static
+allocator.h:137:2:std::allocator< <template-parameter-1-1> >::allocator(const std::allocator<_Tp1>&) [with _Tp1 = unsigned char; _Tp = unsigned char*]	16	static
+new_allocator.h:86:7:__gnu_cxx::new_allocator<_Tp>::~new_allocator() [with _Tp = unsigned char*]	16	static
+new_allocator.h:116:7:void __gnu_cxx::new_allocator<_Tp>::deallocate(__gnu_cxx::new_allocator<_Tp>::pointer, __gnu_cxx::new_allocator<_Tp>::size_type) [with _Tp = unsigned char*]	24	static
 tuple:195:7:>&) [with unsigned int _Idx = 0; _Head = GPIO_Handler*; _Tail = {std::default_delete<GPIO_Handler>}]	16	static
 tuple:1303:5:>&) [with unsigned int __i = 1; _Head = std::default_delete<GPIO_Handler>; _Tail = {}]	16	static
+deque.tcc:917:5:void std::deque<_Tp, _Alloc>::_M_reallocate_map(std::deque<_Tp, _Alloc>::size_type, bool) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	56	static
+alloc_traits.h:435:7:static _Tp* std::allocator_traits<std::allocator<_CharT> >::allocate(std::allocator_traits<std::allocator<_CharT> >::allocator_type&, std::allocator_traits<std::allocator<_CharT> >::size_type) [with _Tp = unsigned char*]	16	static
+stl_algobase.h:446:5:_OI std::copy(_II, _II, _OI) [with _II = std::_Deque_iterator<unsigned char, const unsigned char&, const unsigned char*>; _OI = std::_Deque_iterator<unsigned char, unsigned char&, unsigned char*>]	96	static
+alloc_traits.h:495:7:static std::allocator_traits<std::allocator<_CharT> >::size_type std::allocator_traits<std::allocator<_CharT> >::max_size(const allocator_type&) [with _Tp = unsigned char]	16	static
+stl_vector.h:119:7:const _Tp_alloc_type& std::_Vector_base<_Tp, _Alloc>::_M_get_Tp_allocator() const [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+new_allocator.h:99:7:_Tp* __gnu_cxx::new_allocator<_Tp>::allocate(__gnu_cxx::new_allocator<_Tp>::size_type, const void*) [with _Tp = unsigned char]	24	static
+stl_iterator.h:1036:7:std::move_iterator<_Iterator>::move_iterator(std::move_iterator<_Iterator>::iterator_type) [with _Iterator = unsigned char*]	16	static
+stl_uninitialized.h:115:5:_ForwardIterator std::uninitialized_copy(_InputIterator, _InputIterator, _ForwardIterator) [with _InputIterator = std::move_iterator<unsigned char*>; _ForwardIterator = unsigned char*]	32	static
+stl_construct.h:117:9:static void std::_Destroy_aux<true>::__destroy(_ForwardIterator, _ForwardIterator) [with _ForwardIterator = unsigned char*]	16	static
+new_allocator.h:116:7:void __gnu_cxx::new_allocator<_Tp>::deallocate(__gnu_cxx::new_allocator<_Tp>::pointer, __gnu_cxx::new_allocator<_Tp>::size_type) [with _Tp = unsigned char]	24	static
+new_allocator.h:135:2:) [with _Up = unsigned char; _Args = {unsigned char}; _Tp = unsigned char]	32	static
+new_allocator.h:79:7:__gnu_cxx::new_allocator<_Tp>::new_allocator() [with _Tp = unsigned char]	16	static
+new_allocator.h:79:7:__gnu_cxx::new_allocator<_Tp>::new_allocator() [with _Tp = unsigned char*]	16	static
 tuple:160:7:static constexpr _Head& std::_Head_base<_Idx, _Head, false>::_M_head(std::_Head_base<_Idx, _Head, false>&) [with unsigned int _Idx = 0; _Head = GPIO_Handler*]	16	static
 tuple:351:7:static constexpr _Head& std::_Tuple_impl<_Idx, _Head>::_M_head(std::_Tuple_impl<_Idx, _Head>&) [with unsigned int _Idx = 1; _Head = std::default_delete<GPIO_Handler>]	16	static
+stl_algobase.h:446:5:_OI std::copy(_II, _II, _OI) [with _II = unsigned char**; _OI = unsigned char**]	32	static
+stl_algobase.h:622:5:_BI2 std::copy_backward(_BI1, _BI1, _BI2) [with _BI1 = unsigned char**; _BI2 = unsigned char**]	32	static
+new_allocator.h:99:7:_Tp* __gnu_cxx::new_allocator<_Tp>::allocate(__gnu_cxx::new_allocator<_Tp>::size_type, const void*) [with _Tp = unsigned char*]	24	static
+cpp_type_traits.h:408:5:_Iterator std::__miter_base(_Iterator) [with _Iterator = std::_Deque_iterator<unsigned char, const unsigned char&, const unsigned char*>]	16	static
+stl_algobase.h:420:5:_OI std::__copy_move_a2(_II, _II, _OI) [with bool _IsMove = false; _II = std::_Deque_iterator<unsigned char, const unsigned char&, const unsigned char*>; _OI = std::_Deque_iterator<unsigned char, unsigned char&, unsigned char*>]	112	static
+new_allocator.h:129:7:__gnu_cxx::new_allocator<_Tp>::size_type __gnu_cxx::new_allocator<_Tp>::max_size() const [with _Tp = unsigned char]	16	static
+stl_uninitialized.h:99:9:static _ForwardIterator std::__uninitialized_copy<true>::__uninit_copy(_InputIterator, _InputIterator, _ForwardIterator) [with _InputIterator = std::move_iterator<unsigned char*>; _ForwardIterator = unsigned char*]	24	static
 tuple:113:7:static constexpr _Head& std::_Head_base<_Idx, _Head, true>::_M_head(std::_Head_base<_Idx, _Head, true>&) [with unsigned int _Idx = 1; _Head = std::default_delete<GPIO_Handler>]	16	static
-stm32f446re_spi_driver.cpp:676:1:void __static_initialization_and_destruction_0(int, int)	16	static
-stm32f446re_spi_driver.cpp:676:1:cpp)	8	static
-stm32f446re_spi_driver.cpp:676:1:cpp)	8	static
+cpp_type_traits.h:408:5:_Iterator std::__miter_base(_Iterator) [with _Iterator = unsigned char**]	16	static
+stl_algobase.h:420:5:_OI std::__copy_move_a2(_II, _II, _OI) [with bool _IsMove = false; _II = unsigned char**; _OI = unsigned char**]	32	static
+stl_algobase.h:595:5:_BI2 std::__copy_move_backward_a2(_BI1, _BI1, _BI2) [with bool _IsMove = false; _BI1 = unsigned char**; _BI2 = unsigned char**]	32	static
+new_allocator.h:129:7:__gnu_cxx::new_allocator<_Tp>::size_type __gnu_cxx::new_allocator<_Tp>::max_size() const [with _Tp = unsigned char*]	16	static
+stl_algobase.h:277:5:_Iterator std::__niter_base(_Iterator) [with _Iterator = std::_Deque_iterator<unsigned char, const unsigned char&, const unsigned char*>]	16	static
+stl_algobase.h:277:5:_Iterator std::__niter_base(_Iterator) [with _Iterator = std::_Deque_iterator<unsigned char, unsigned char&, unsigned char*>]	16	static
+stl_algobase.h:375:5:_OI std::__copy_move_a(_II, _II, _OI) [with bool _IsMove = false; _II = std::_Deque_iterator<unsigned char, const unsigned char&, const unsigned char*>; _OI = std::_Deque_iterator<unsigned char, unsigned char&, unsigned char*>]	72	static
+stl_algobase.h:446:5:_OI std::copy(_II, _II, _OI) [with _II = std::move_iterator<unsigned char*>; _OI = unsigned char*]	32	static
+stl_algobase.h:277:5:_Iterator std::__niter_base(_Iterator) [with _Iterator = unsigned char**]	16	static
+stl_algobase.h:375:5:_OI std::__copy_move_a(_II, _II, _OI) [with bool _IsMove = false; _II = unsigned char**; _OI = unsigned char**]	32	static
+stl_algobase.h:577:5:_BI2 std::__copy_move_backward_a(_BI1, _BI1, _BI2) [with bool _IsMove = false; _BI1 = unsigned char**; _BI2 = unsigned char**]	32	static
+stl_algobase.h:319:9:static _OI std::__copy_move<false, false, std::random_access_iterator_tag>::__copy_m(_II, _II, _OI) [with _II = std::_Deque_iterator<unsigned char, const unsigned char&, const unsigned char*>; _OI = std::_Deque_iterator<unsigned char, unsigned char&, unsigned char*>]	32	static
+stl_iterator.h:1241:5:base())) std::__miter_base(std::move_iterator<_IteratorL>) [with _Iterator = unsigned char*]	16	static
+stl_algobase.h:420:5:_OI std::__copy_move_a2(_II, _II, _OI) [with bool _IsMove = true; _II = unsigned char*; _OI = unsigned char*]	32	static
+stl_algobase.h:357:9:static _Tp* std::__copy_move<_IsMove, true, std::random_access_iterator_tag>::__copy_m(const _Tp*, const _Tp*, _Tp*) [with _Tp = unsigned char*; bool _IsMove = false]	32	static
+stl_algobase.h:559:9:static _Tp* std::__copy_move_backward<_IsMove, true, std::random_access_iterator_tag>::__copy_move_b(const _Tp*, const _Tp*, _Tp*) [with _Tp = unsigned char*; bool _IsMove = false]	32	static
+stl_deque.h:351:5:typename std::_Deque_iterator<_Tp, _Ref, _Ptr>::difference_type std::operator-(const std::_Deque_iterator<_Tp, _Ref, _Ptr>&, const std::_Deque_iterator<_Tp, _Ref, _Ptr>&) [with _Tp = unsigned char; _Ref = const unsigned char&; _Ptr = const unsigned char*]	16	static
+stl_deque.h:160:7:std::_Deque_iterator<_Tp, _Ref, _Ptr>::reference std::_Deque_iterator<_Tp, _Ref, _Ptr>::operator*() const [with _Tp = unsigned char; _Ref = const unsigned char&; _Ptr = const unsigned char*]	16	static
+stl_deque.h:168:7:std::_Deque_iterator<_Tp, _Ref, _Ptr>::_Self& std::_Deque_iterator<_Tp, _Ref, _Ptr>::operator++() [with _Tp = unsigned char; _Ref = const unsigned char&; _Ptr = const unsigned char*]	16	static
+stl_deque.h:168:7:std::_Deque_iterator<_Tp, _Ref, _Ptr>::_Self& std::_Deque_iterator<_Tp, _Ref, _Ptr>::operator++() [with _Tp = unsigned char; _Ref = unsigned char&; _Ptr = unsigned char*]	16	static
+stl_iterator.h:1045:7:std::move_iterator<_Iterator>::iterator_type std::move_iterator<_Iterator>::base() const [with _Iterator = unsigned char*]	16	static
+cpp_type_traits.h:408:5:_Iterator std::__miter_base(_Iterator) [with _Iterator = unsigned char*]	16	static
+stl_algobase.h:277:5:_Iterator std::__niter_base(_Iterator) [with _Iterator = unsigned char*]	16	static
+stl_algobase.h:375:5:_OI std::__copy_move_a(_II, _II, _OI) [with bool _IsMove = true; _II = unsigned char*; _OI = unsigned char*]	32	static
+stl_deque.h:128:21:static std::size_t std::_Deque_iterator<_Tp, _Ref, _Ptr>::_S_buffer_size() [with _Tp = unsigned char; _Ref = const unsigned char&; _Ptr = const unsigned char*]	8	static
+stl_deque.h:254:7:void std::_Deque_iterator<_Tp, _Ref, _Ptr>::_M_set_node(std::_Deque_iterator<_Tp, _Ref, _Ptr>::_Map_pointer) [with _Tp = unsigned char; _Ref = const unsigned char&; _Ptr = const unsigned char*]	24	static
+stl_algobase.h:357:9:static _Tp* std::__copy_move<_IsMove, true, std::random_access_iterator_tag>::__copy_m(const _Tp*, const _Tp*, _Tp*) [with _Tp = unsigned char; bool _IsMove = true]	32	static
+stm32f446re_spi_driver.cpp:749:1:void __static_initialization_and_destruction_0(int, int)	16	static
+stm32f446re_spi_driver.cpp:749:1:cpp)	8	static
+stm32f446re_spi_driver.cpp:749:1:cpp)	8	static

@@ -34,7 +34,7 @@ bme280_driver.cpp:418:6:void BMESensor_Handler::parse_sensor_data(u8*, bme280_un
 bme280_driver.cpp:452:6:void BMESensor_Handler::parse_device_settings(const u8*, bme280_settings&)	24	static
 bme280_driver.cpp:468:13:BME280_Stat BMESensor_Handler::getRegData(u8, u8*, u32)	24	static
 bme280_driver.cpp:482:13:BME280_Stat BMESensor_Handler::setRegData(u8, const u8*, u32)	24	static
-bme280_driver.cpp:488:9:uint8_t BMESensor_Handler::getChipID()	16	static
+bme280_driver.cpp:488:4:u8 BMESensor_Handler::getChipID()	16	static
 bme280_driver.cpp:496:8:double BMESensor_Handler::compensate_temperature(const bme280_uncomp_data&)	64	static
 bme280_driver.cpp:527:8:double BMESensor_Handler::compensate_pressure(const bme280_uncomp_data&)	72	static
 bme280_driver.cpp:574:8:double BMESensor_Handler::compensate_humidity(const bme280_uncomp_data&)	96	static

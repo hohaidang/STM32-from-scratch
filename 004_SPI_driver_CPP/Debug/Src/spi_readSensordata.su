@@ -1,5 +1,12 @@
 new:168:14:void* operator new(std::size_t, void*)	16	static
 gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
+ios_base.h:83:3:constexpr std::_Ios_Fmtflags std::operator&(std::_Ios_Fmtflags, std::_Ios_Fmtflags)	16	static
+ios_base.h:87:3:constexpr std::_Ios_Fmtflags std::operator|(std::_Ios_Fmtflags, std::_Ios_Fmtflags)	16	static
+ios_base.h:95:3:constexpr std::_Ios_Fmtflags std::operator~(std::_Ios_Fmtflags)	16	static
+ios_base.h:99:3:const std::_Ios_Fmtflags& std::operator|=(std::_Ios_Fmtflags&, std::_Ios_Fmtflags)	16	static
+ios_base.h:103:3:const std::_Ios_Fmtflags& std::operator&=(std::_Ios_Fmtflags&, std::_Ios_Fmtflags)	16	static
+ios_base.h:663:5:std::ios_base::fmtflags std::ios_base::setf(std::ios_base::fmtflags, std::ios_base::fmtflags)	40	static
+ios_base.h:1024:3:std::ios_base& std::hex(std::ios_base&)	16	static
 std_function.h:106:17:void* std::_Any_data::_M_access()	16	static
 std_function.h:107:17:const void* std::_Any_data::_M_access() const	16	static
 std_function.h:271:5:std::_Function_base::_Function_base()	16	static
@@ -7,23 +14,65 @@ std_function.h:273:5:std::_Function_base::~_Function_base()	16	static
 std_function.h:389:11:std::function<unsigned char(unsigned char, unsigned char*, long unsigned int)>::~function()	16	static
 std_function.h:389:11:std::function<unsigned char(unsigned char, const unsigned char*, long unsigned int)>::~function()	16	static
 std_function.h:389:11:std::function<void(long unsigned int)>::~function()	16	static
-spi_readSensordata.cpp:39:5:int main()	56	static
+spi_readSensordata.cpp:38:5:int main()	48	static
 spi_readSensordata.cpp:72:6:void InitilizePeripheral()	96	static
-spi_readSensordata.cpp:100:6:void user_delay_us(u32)	24	static
-spi_readSensordata.cpp:108:4:u8 user_spi_read(u8, u8*, u32)	72	static
-spi_readSensordata.cpp:126:4:u8 user_spi_write(u8, const u8*, u32)	56	static
-spi_readSensordata.cpp:141:10:void SPI1_IRQHandler()	8	static
+spi_readSensordata.cpp:102:6:void user_delay_us(u32)	16	static
+spi_readSensordata.cpp:107:4:u8 user_spi_read(u8, u8*, u32)	80	static
+spi_readSensordata.cpp:128:4:u8 user_spi_write(u8, const u8*, u32)	56	static
+spi_readSensordata.cpp:177:10:void SPI1_IRQHandler()	8	static
+unique_ptr.h:264:7:std::unique_ptr<_Tp, _Dp>::~unique_ptr() [with _Tp = SysTick; _Dp = std::default_delete<SysTick>]	24	static
+unique_ptr.h:264:7:std::unique_ptr<_Tp, _Dp>::~unique_ptr() [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	24	static
+unique_ptr.h:264:7:std::unique_ptr<_Tp, _Dp>::~unique_ptr() [with _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	24	static
+unique_ptr.h:264:7:std::unique_ptr<_Tp, _Dp>::~unique_ptr() [with _Tp = BMESensor_Handler; _Dp = std::default_delete<BMESensor_Handler>]	24	static
+unique_ptr.h:328:7:std::unique_ptr<_Tp, _Dp>::pointer std::unique_ptr<_Tp, _Dp>::operator->() const [with _Tp = BMESensor_Handler; _Dp = std::default_delete<BMESensor_Handler>]	16	static
+unique_ptr.h:328:7:std::unique_ptr<_Tp, _Dp>::pointer std::unique_ptr<_Tp, _Dp>::operator->() const [with _Tp = SysTick; _Dp = std::default_delete<SysTick>]	16	static
+unique_ptr.h:371:7:void std::unique_ptr<_Tp, _Dp>::reset(std::unique_ptr<_Tp, _Dp>::pointer) [with _Tp = SysTick; _Dp = std::default_delete<SysTick>]	16	static
+unique_ptr.h:371:7:void std::unique_ptr<_Tp, _Dp>::reset(std::unique_ptr<_Tp, _Dp>::pointer) [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
+unique_ptr.h:328:7:std::unique_ptr<_Tp, _Dp>::pointer std::unique_ptr<_Tp, _Dp>::operator->() const [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
+unique_ptr.h:371:7:void std::unique_ptr<_Tp, _Dp>::reset(std::unique_ptr<_Tp, _Dp>::pointer) [with _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	16	static
+unique_ptr.h:328:7:std::unique_ptr<_Tp, _Dp>::pointer std::unique_ptr<_Tp, _Dp>::operator->() const [with _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	16	static
 move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = unsigned char (*&)(unsigned char, unsigned char*, long unsigned int)]	16	static
 std_function.h:685:7:)>::function(_Functor) [with _Functor = unsigned char (*)(unsigned char, unsigned char*, long unsigned int); <template-parameter-2-2> = void; <template-parameter-2-3> = void; _Res = unsigned char; _ArgTypes = {unsigned char, unsigned char*, long unsigned int}]	24	static
 move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = unsigned char (*&)(unsigned char, const unsigned char*, long unsigned int)]	16	static
 std_function.h:685:7:)>::function(_Functor) [with _Functor = unsigned char (*)(unsigned char, const unsigned char*, long unsigned int); <template-parameter-2-2> = void; <template-parameter-2-3> = void; _Res = unsigned char; _ArgTypes = {unsigned char, const unsigned char*, long unsigned int}]	24	static
 move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = void (*&)(long unsigned int)]	16	static
 std_function.h:685:7:)>::function(_Functor) [with _Functor = void (*)(long unsigned int); <template-parameter-2-2> = void; <template-parameter-2-3> = void; _Res = void; _ArgTypes = {long unsigned int}]	24	static
+unique_ptr.h:371:7:void std::unique_ptr<_Tp, _Dp>::reset(std::unique_ptr<_Tp, _Dp>::pointer) [with _Tp = BMESensor_Handler; _Dp = std::default_delete<BMESensor_Handler>]	16	static
 allocator.h:131:7:std::allocator< <template-parameter-1-1> >::allocator() [with _Tp = unsigned char]	16	static
 allocator.h:139:7:std::allocator< <template-parameter-1-1> >::~allocator() [with _Tp = unsigned char]	16	static
 stl_vector.h:295:7:std::vector<_Tp, _Alloc>::vector(std::vector<_Tp, _Alloc>::size_type, const value_type&, const allocator_type&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
 stl_vector.h:433:7:std::vector<_Tp, _Alloc>::~vector() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+stl_vector.h:259:7:std::vector<_Tp, _Alloc>::vector() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
 stl_vector.h:795:7:std::vector<_Tp, _Alloc>::reference std::vector<_Tp, _Alloc>::operator[](std::vector<_Tp, _Alloc>::size_type) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_vector.h:563:7:std::vector<_Tp, _Alloc>::iterator std::vector<_Tp, _Alloc>::begin() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+stl_vector.h:581:7:std::vector<_Tp, _Alloc>::iterator std::vector<_Tp, _Alloc>::end() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
+stl_iterator.h:880:5:bool __gnu_cxx::operator!=(const __gnu_cxx::__normal_iterator<_Iterator, _Container>&, const __gnu_cxx::__normal_iterator<_Iterator, _Container>&) [with _Iterator = unsigned char*; _Container = std::vector<unsigned char>]	24	static
+stl_iterator.h:800:7:__gnu_cxx::__normal_iterator<_Iterator, _Container>& __gnu_cxx::__normal_iterator<_Iterator, _Container>::operator++() [with _Iterator = unsigned char*; _Container = std::vector<unsigned char>]	16	static
+stl_iterator.h:792:7:__gnu_cxx::__normal_iterator<_Iterator, _Container>::reference __gnu_cxx::__normal_iterator<_Iterator, _Container>::operator*() const [with _Iterator = unsigned char*; _Container = std::vector<unsigned char>]	16	static
+unique_ptr.h:146:18:std::__uniq_ptr_impl<_Tp, _Dp>::pointer& std::__uniq_ptr_impl<_Tp, _Dp>::_M_ptr() [with _Tp = SysTick; _Dp = std::default_delete<SysTick>]	16	static
+unique_ptr.h:341:7:std::unique_ptr<_Tp, _Dp>::deleter_type& std::unique_ptr<_Tp, _Dp>::get_deleter() [with _Tp = SysTick; _Dp = std::default_delete<SysTick>]	16	static
+unique_ptr.h:72:7:void std::default_delete<_Tp>::operator()(_Tp*) const [with _Tp = SysTick]	24	static
+unique_ptr.h:146:18:std::__uniq_ptr_impl<_Tp, _Dp>::pointer& std::__uniq_ptr_impl<_Tp, _Dp>::_M_ptr() [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
+unique_ptr.h:341:7:std::unique_ptr<_Tp, _Dp>::deleter_type& std::unique_ptr<_Tp, _Dp>::get_deleter() [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
+unique_ptr.h:72:7:void std::default_delete<_Tp>::operator()(_Tp*) const [with _Tp = SPI_Handler]	24	static
+unique_ptr.h:146:18:std::__uniq_ptr_impl<_Tp, _Dp>::pointer& std::__uniq_ptr_impl<_Tp, _Dp>::_M_ptr() [with _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	16	static
+unique_ptr.h:341:7:std::unique_ptr<_Tp, _Dp>::deleter_type& std::unique_ptr<_Tp, _Dp>::get_deleter() [with _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	16	static
+unique_ptr.h:72:7:void std::default_delete<_Tp>::operator()(_Tp*) const [with _Tp = GPIO_Handler]	24	static
+unique_ptr.h:146:18:std::__uniq_ptr_impl<_Tp, _Dp>::pointer& std::__uniq_ptr_impl<_Tp, _Dp>::_M_ptr() [with _Tp = BMESensor_Handler; _Dp = std::default_delete<BMESensor_Handler>]	16	static
+unique_ptr.h:341:7:std::unique_ptr<_Tp, _Dp>::deleter_type& std::unique_ptr<_Tp, _Dp>::get_deleter() [with _Tp = BMESensor_Handler; _Dp = std::default_delete<BMESensor_Handler>]	16	static
+bme280_driver.h:151:7:BMESensor_Handler::bme280::~bme280()	16	static
+bme280_driver.h:159:5:BMESensor_Handler::~BMESensor_Handler()	16	static
+unique_ptr.h:72:7:void std::default_delete<_Tp>::operator()(_Tp*) const [with _Tp = BMESensor_Handler]	24	static
+unique_ptr.h:336:7:std::unique_ptr<_Tp, _Dp>::pointer std::unique_ptr<_Tp, _Dp>::get() const [with _Tp = BMESensor_Handler; _Dp = std::default_delete<BMESensor_Handler>]	16	static
+unique_ptr.h:336:7:std::unique_ptr<_Tp, _Dp>::pointer std::unique_ptr<_Tp, _Dp>::get() const [with _Tp = SysTick; _Dp = std::default_delete<SysTick>]	16	static
+move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = SysTick*&]	16	static
+move.h:187:5:typename std::enable_if<std::__and_<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> >::value>::type std::swap(_Tp&, _Tp&) [with _Tp = SysTick*]	24	static
+move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = SPI_Handler*&]	16	static
+move.h:187:5:typename std::enable_if<std::__and_<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> >::value>::type std::swap(_Tp&, _Tp&) [with _Tp = SPI_Handler*]	24	static
+unique_ptr.h:336:7:std::unique_ptr<_Tp, _Dp>::pointer std::unique_ptr<_Tp, _Dp>::get() const [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
+move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = GPIO_Handler*&]	16	static
+move.h:187:5:typename std::enable_if<std::__and_<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> >::value>::type std::swap(_Tp&, _Tp&) [with _Tp = GPIO_Handler*]	24	static
+unique_ptr.h:336:7:std::unique_ptr<_Tp, _Dp>::pointer std::unique_ptr<_Tp, _Dp>::get() const [with _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	16	static
 std_function.h:248:4:static bool std::_Function_base::_Base_manager<_Functor>::_M_not_empty_function(_Tp*) [with _Tp = unsigned char(unsigned char, unsigned char*, long unsigned int); _Functor = unsigned char (*)(unsigned char, unsigned char*, long unsigned int)]	16	static
 std_function.h:238:2:static void std::_Function_base::_Base_manager<_Functor>::_M_init_functor(std::_Any_data&, _Functor&&) [with _Functor = unsigned char (*)(unsigned char, unsigned char*, long unsigned int)]	32	static
 std_function.h:299:7:) [with _Res = unsigned char; _Functor = unsigned char (*)(unsigned char, unsigned char*, long unsigned int); _ArgTypes = {unsigned char, unsigned char*, long unsigned int}]	40	static
@@ -36,6 +85,8 @@ std_function.h:248:4:static bool std::_Function_base::_Base_manager<_Functor>::_
 std_function.h:238:2:static void std::_Function_base::_Base_manager<_Functor>::_M_init_functor(std::_Any_data&, _Functor&&) [with _Functor = void (*)(long unsigned int)]	32	static
 std_function.h:314:7:) [with _Functor = void (*)(long unsigned int); _ArgTypes = {long unsigned int}]	24	static
 std_function.h:212:2:static bool std::_Function_base::_Base_manager<_Functor>::_M_manager(std::_Any_data&, const std::_Any_data&, std::_Manager_operation) [with _Functor = void (*)(long unsigned int)]	40	static
+move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = BMESensor_Handler*&]	16	static
+move.h:187:5:typename std::enable_if<std::__and_<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> >::value>::type std::swap(_Tp&, _Tp&) [with _Tp = BMESensor_Handler*]	24	static
 new_allocator.h:79:7:__gnu_cxx::new_allocator<_Tp>::new_allocator() [with _Tp = unsigned char]	16	static
 new_allocator.h:86:7:__gnu_cxx::new_allocator<_Tp>::~new_allocator() [with _Tp = unsigned char]	16	static
 stl_vector.h:81:14:std::_Vector_base<unsigned char, std::allocator<unsigned char> >::_Vector_impl::~_Vector_impl()	16	static
@@ -44,6 +95,21 @@ stl_vector.h:161:7:std::_Vector_base<_Tp, _Alloc>::~_Vector_base() [with _Tp = u
 stl_vector.h:1334:7:void std::vector<_Tp, _Alloc>::_M_fill_initialize(std::vector<_Tp, _Alloc>::size_type, const value_type&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	32	static
 stl_vector.h:115:7:std::_Vector_base<_Tp, _Alloc>::_Tp_alloc_type& std::_Vector_base<_Tp, _Alloc>::_M_get_Tp_allocator() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
 stl_construct.h:203:5:void std::_Destroy(_ForwardIterator, _ForwardIterator, std::allocator<_T2>&) [with _ForwardIterator = unsigned char*; _Tp = unsigned char]	24	static
+stl_vector.h:126:7:std::_Vector_base<_Tp, _Alloc>::_Vector_base() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+stl_iterator.h:779:7:__gnu_cxx::__normal_iterator<_Iterator, _Container>::__normal_iterator(const _Iterator&) [with _Iterator = unsigned char*; _Container = std::vector<unsigned char>]	16	static
+stl_iterator.h:844:7:const _Iterator& __gnu_cxx::__normal_iterator<_Iterator, _Container>::base() const [with _Iterator = unsigned char*; _Container = std::vector<unsigned char>]	16	static
+tuple:1314:5:>&) [with unsigned int __i = 0; _Elements = {SysTick*, std::default_delete<SysTick>}]	16	static
+unique_ptr.h:148:18:_Dp& std::__uniq_ptr_impl<_Tp, _Dp>::_M_deleter() [with _Tp = SysTick; _Dp = std::default_delete<SysTick>]	16	static
+tuple:1314:5:>&) [with unsigned int __i = 0; _Elements = {SPI_Handler*, std::default_delete<SPI_Handler>}]	16	static
+unique_ptr.h:148:18:_Dp& std::__uniq_ptr_impl<_Tp, _Dp>::_M_deleter() [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
+tuple:1314:5:>&) [with unsigned int __i = 0; _Elements = {GPIO_Handler*, std::default_delete<GPIO_Handler>}]	16	static
+unique_ptr.h:148:18:_Dp& std::__uniq_ptr_impl<_Tp, _Dp>::_M_deleter() [with _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	16	static
+tuple:1314:5:>&) [with unsigned int __i = 0; _Elements = {BMESensor_Handler*, std::default_delete<BMESensor_Handler>}]	16	static
+unique_ptr.h:148:18:_Dp& std::__uniq_ptr_impl<_Tp, _Dp>::_M_deleter() [with _Tp = BMESensor_Handler; _Dp = std::default_delete<BMESensor_Handler>]	16	static
+unique_ptr.h:147:18:std::__uniq_ptr_impl<_Tp, _Dp>::pointer std::__uniq_ptr_impl<_Tp, _Dp>::_M_ptr() const [with _Tp = BMESensor_Handler; _Dp = std::default_delete<BMESensor_Handler>]	16	static
+unique_ptr.h:147:18:std::__uniq_ptr_impl<_Tp, _Dp>::pointer std::__uniq_ptr_impl<_Tp, _Dp>::_M_ptr() const [with _Tp = SysTick; _Dp = std::default_delete<SysTick>]	16	static
+unique_ptr.h:147:18:std::__uniq_ptr_impl<_Tp, _Dp>::pointer std::__uniq_ptr_impl<_Tp, _Dp>::_M_ptr() const [with _Tp = SPI_Handler; _Dp = std::default_delete<SPI_Handler>]	16	static
+unique_ptr.h:147:18:std::__uniq_ptr_impl<_Tp, _Dp>::pointer std::__uniq_ptr_impl<_Tp, _Dp>::_M_ptr() const [with _Tp = GPIO_Handler; _Dp = std::default_delete<GPIO_Handler>]	16	static
 std_function.h:263:2:static void std::_Function_base::_Base_manager<_Functor>::_M_init_functor(std::_Any_data&, _Functor&&, std::true_type) [with _Functor = unsigned char (*)(unsigned char, unsigned char*, long unsigned int)]	32	static
 std_function.h:170:2:static _Functor* std::_Function_base::_Base_manager<_Functor>::_M_get_pointer(const std::_Any_data&) [with _Functor = unsigned char (*)(unsigned char, unsigned char*, long unsigned int)]	24	static
 move.h:73:5:constexpr _Tp&& std::forward(typename std::remove_reference<_From>::type&) [with _Tp = unsigned char]	16	static
@@ -68,6 +134,19 @@ stl_vector.h:185:7:void std::_Vector_base<_Tp, _Alloc>::_M_create_storage(std::s
 stl_vector.h:176:7:void std::_Vector_base<_Tp, _Alloc>::_M_deallocate(std::_Vector_base<_Tp, _Alloc>::pointer, std::size_t) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	24	static
 stl_uninitialized.h:364:5:_ForwardIterator std::__uninitialized_fill_n_a(_ForwardIterator, _Size, const _Tp&, std::allocator<_Tp2>&) [with _ForwardIterator = unsigned char*; _Size = unsigned int; _Tp = unsigned char; _Tp2 = unsigned char]	24	static
 stl_construct.h:127:5:void std::_Destroy(_ForwardIterator, _ForwardIterator) [with _ForwardIterator = unsigned char*]	16	static
+stl_vector.h:88:2:std::_Vector_base<_Tp, _Alloc>::_Vector_impl::_Vector_impl() [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>]	16	static
+tuple:1303:5:>&) [with unsigned int __i = 0; _Head = SysTick*; _Tail = {std::default_delete<SysTick>}]	16	static
+tuple:1314:5:>&) [with unsigned int __i = 1; _Elements = {SysTick*, std::default_delete<SysTick>}]	16	static
+tuple:1303:5:>&) [with unsigned int __i = 0; _Head = SPI_Handler*; _Tail = {std::default_delete<SPI_Handler>}]	16	static
+tuple:1314:5:>&) [with unsigned int __i = 1; _Elements = {SPI_Handler*, std::default_delete<SPI_Handler>}]	16	static
+tuple:1303:5:>&) [with unsigned int __i = 0; _Head = GPIO_Handler*; _Tail = {std::default_delete<GPIO_Handler>}]	16	static
+tuple:1314:5:>&) [with unsigned int __i = 1; _Elements = {GPIO_Handler*, std::default_delete<GPIO_Handler>}]	16	static
+tuple:1303:5:>&) [with unsigned int __i = 0; _Head = BMESensor_Handler*; _Tail = {std::default_delete<BMESensor_Handler>}]	16	static
+tuple:1314:5:>&) [with unsigned int __i = 1; _Elements = {BMESensor_Handler*, std::default_delete<BMESensor_Handler>}]	16	static
+tuple:1320:5:>&) [with unsigned int __i = 0; _Elements = {BMESensor_Handler*, std::default_delete<BMESensor_Handler>}]	16	static
+tuple:1320:5:>&) [with unsigned int __i = 0; _Elements = {SysTick*, std::default_delete<SysTick>}]	16	static
+tuple:1320:5:>&) [with unsigned int __i = 0; _Elements = {SPI_Handler*, std::default_delete<SPI_Handler>}]	16	static
+tuple:1320:5:>&) [with unsigned int __i = 0; _Elements = {GPIO_Handler*, std::default_delete<GPIO_Handler>}]	16	static
 std_function.h:116:7:const _Tp& std::_Any_data::_M_access() const [with _Tp = unsigned char (*)(unsigned char, unsigned char*, long unsigned int)]	16	static
 move.h:47:5:constexpr _Tp* std::__addressof(_Tp&) [with _Tp = unsigned char (* const)(unsigned char, unsigned char*, long unsigned int)]	16	static
 std_function.h:111:7:_Tp& std::_Any_data::_M_access() [with _Tp = unsigned char (*)(unsigned char, unsigned char*, long unsigned int)]	16	static
@@ -82,16 +161,48 @@ stl_vector.h:169:7:std::_Vector_base<_Tp, _Alloc>::pointer std::_Vector_base<_Tp
 alloc_traits.h:461:7:static void std::allocator_traits<std::allocator<_CharT> >::deallocate(std::allocator_traits<std::allocator<_CharT> >::allocator_type&, std::allocator_traits<std::allocator<_CharT> >::pointer, std::allocator_traits<std::allocator<_CharT> >::size_type) [with _Tp = unsigned char]	24	static
 stl_uninitialized.h:244:5:_ForwardIterator std::uninitialized_fill_n(_ForwardIterator, _Size, const _Tp&) [with _ForwardIterator = unsigned char*; _Size = unsigned int; _Tp = unsigned char]	32	static
 stl_construct.h:117:9:static void std::_Destroy_aux<true>::__destroy(_ForwardIterator, _ForwardIterator) [with _ForwardIterator = unsigned char*]	16	static
+tuple:195:7:>&) [with unsigned int _Idx = 0; _Head = SysTick*; _Tail = {std::default_delete<SysTick>}]	16	static
+tuple:1303:5:>&) [with unsigned int __i = 1; _Head = std::default_delete<SysTick>; _Tail = {}]	16	static
+tuple:195:7:>&) [with unsigned int _Idx = 0; _Head = SPI_Handler*; _Tail = {std::default_delete<SPI_Handler>}]	16	static
+tuple:1303:5:>&) [with unsigned int __i = 1; _Head = std::default_delete<SPI_Handler>; _Tail = {}]	16	static
+tuple:195:7:>&) [with unsigned int _Idx = 0; _Head = GPIO_Handler*; _Tail = {std::default_delete<GPIO_Handler>}]	16	static
+tuple:1303:5:>&) [with unsigned int __i = 1; _Head = std::default_delete<GPIO_Handler>; _Tail = {}]	16	static
+tuple:195:7:>&) [with unsigned int _Idx = 0; _Head = BMESensor_Handler*; _Tail = {std::default_delete<BMESensor_Handler>}]	16	static
+tuple:1303:5:>&) [with unsigned int __i = 1; _Head = std::default_delete<BMESensor_Handler>; _Tail = {}]	16	static
+tuple:1308:5:>&) [with unsigned int __i = 0; _Head = BMESensor_Handler*; _Tail = {std::default_delete<BMESensor_Handler>}]	16	static
+tuple:1308:5:>&) [with unsigned int __i = 0; _Head = SysTick*; _Tail = {std::default_delete<SysTick>}]	16	static
+tuple:1308:5:>&) [with unsigned int __i = 0; _Head = SPI_Handler*; _Tail = {std::default_delete<SPI_Handler>}]	16	static
+tuple:1308:5:>&) [with unsigned int __i = 0; _Head = GPIO_Handler*; _Tail = {std::default_delete<GPIO_Handler>}]	16	static
 new_allocator.h:81:7:__gnu_cxx::new_allocator<_Tp>::new_allocator(const __gnu_cxx::new_allocator<_Tp>&) [with _Tp = unsigned char]	16	static
 alloc_traits.h:435:7:static _Tp* std::allocator_traits<std::allocator<_CharT> >::allocate(std::allocator_traits<std::allocator<_CharT> >::allocator_type&, std::allocator_traits<std::allocator<_CharT> >::size_type) [with _Tp = unsigned char]	16	static
 new_allocator.h:116:7:void __gnu_cxx::new_allocator<_Tp>::deallocate(__gnu_cxx::new_allocator<_Tp>::pointer, __gnu_cxx::new_allocator<_Tp>::size_type) [with _Tp = unsigned char]	24	static
 stl_uninitialized.h:226:9:static _ForwardIterator std::__uninitialized_fill_n<true>::__uninit_fill_n(_ForwardIterator, _Size, const _Tp&) [with _ForwardIterator = unsigned char*; _Size = unsigned int; _Tp = unsigned char]	24	static
+tuple:160:7:static constexpr _Head& std::_Head_base<_Idx, _Head, false>::_M_head(std::_Head_base<_Idx, _Head, false>&) [with unsigned int _Idx = 0; _Head = SysTick*]	16	static
+tuple:351:7:static constexpr _Head& std::_Tuple_impl<_Idx, _Head>::_M_head(std::_Tuple_impl<_Idx, _Head>&) [with unsigned int _Idx = 1; _Head = std::default_delete<SysTick>]	16	static
+tuple:160:7:static constexpr _Head& std::_Head_base<_Idx, _Head, false>::_M_head(std::_Head_base<_Idx, _Head, false>&) [with unsigned int _Idx = 0; _Head = SPI_Handler*]	16	static
+tuple:351:7:static constexpr _Head& std::_Tuple_impl<_Idx, _Head>::_M_head(std::_Tuple_impl<_Idx, _Head>&) [with unsigned int _Idx = 1; _Head = std::default_delete<SPI_Handler>]	16	static
+tuple:160:7:static constexpr _Head& std::_Head_base<_Idx, _Head, false>::_M_head(std::_Head_base<_Idx, _Head, false>&) [with unsigned int _Idx = 0; _Head = GPIO_Handler*]	16	static
+tuple:351:7:static constexpr _Head& std::_Tuple_impl<_Idx, _Head>::_M_head(std::_Tuple_impl<_Idx, _Head>&) [with unsigned int _Idx = 1; _Head = std::default_delete<GPIO_Handler>]	16	static
+tuple:160:7:static constexpr _Head& std::_Head_base<_Idx, _Head, false>::_M_head(std::_Head_base<_Idx, _Head, false>&) [with unsigned int _Idx = 0; _Head = BMESensor_Handler*]	16	static
+tuple:351:7:static constexpr _Head& std::_Tuple_impl<_Idx, _Head>::_M_head(std::_Tuple_impl<_Idx, _Head>&) [with unsigned int _Idx = 1; _Head = std::default_delete<BMESensor_Handler>]	16	static
+tuple:198:7:>&) [with unsigned int _Idx = 0; _Head = BMESensor_Handler*; _Tail = {std::default_delete<BMESensor_Handler>}]	16	static
+tuple:198:7:>&) [with unsigned int _Idx = 0; _Head = SysTick*; _Tail = {std::default_delete<SysTick>}]	16	static
+tuple:198:7:>&) [with unsigned int _Idx = 0; _Head = SPI_Handler*; _Tail = {std::default_delete<SPI_Handler>}]	16	static
+tuple:198:7:>&) [with unsigned int _Idx = 0; _Head = GPIO_Handler*; _Tail = {std::default_delete<GPIO_Handler>}]	16	static
 new_allocator.h:99:7:_Tp* __gnu_cxx::new_allocator<_Tp>::allocate(__gnu_cxx::new_allocator<_Tp>::size_type, const void*) [with _Tp = unsigned char]	24	static
 stl_algobase.h:784:5:_OI std::fill_n(_OI, _Size, const _Tp&) [with _OI = unsigned char*; _Size = unsigned int; _Tp = unsigned char]	24	static
+tuple:113:7:static constexpr _Head& std::_Head_base<_Idx, _Head, true>::_M_head(std::_Head_base<_Idx, _Head, true>&) [with unsigned int _Idx = 1; _Head = std::default_delete<SysTick>]	16	static
+tuple:113:7:static constexpr _Head& std::_Head_base<_Idx, _Head, true>::_M_head(std::_Head_base<_Idx, _Head, true>&) [with unsigned int _Idx = 1; _Head = std::default_delete<SPI_Handler>]	16	static
+tuple:113:7:static constexpr _Head& std::_Head_base<_Idx, _Head, true>::_M_head(std::_Head_base<_Idx, _Head, true>&) [with unsigned int _Idx = 1; _Head = std::default_delete<GPIO_Handler>]	16	static
+tuple:113:7:static constexpr _Head& std::_Head_base<_Idx, _Head, true>::_M_head(std::_Head_base<_Idx, _Head, true>&) [with unsigned int _Idx = 1; _Head = std::default_delete<BMESensor_Handler>]	16	static
+tuple:163:7:static constexpr const _Head& std::_Head_base<_Idx, _Head, false>::_M_head(const std::_Head_base<_Idx, _Head, false>&) [with unsigned int _Idx = 0; _Head = BMESensor_Handler*]	16	static
+tuple:163:7:static constexpr const _Head& std::_Head_base<_Idx, _Head, false>::_M_head(const std::_Head_base<_Idx, _Head, false>&) [with unsigned int _Idx = 0; _Head = SysTick*]	16	static
+tuple:163:7:static constexpr const _Head& std::_Head_base<_Idx, _Head, false>::_M_head(const std::_Head_base<_Idx, _Head, false>&) [with unsigned int _Idx = 0; _Head = SPI_Handler*]	16	static
+tuple:163:7:static constexpr const _Head& std::_Head_base<_Idx, _Head, false>::_M_head(const std::_Head_base<_Idx, _Head, false>&) [with unsigned int _Idx = 0; _Head = GPIO_Handler*]	16	static
 new_allocator.h:129:7:__gnu_cxx::new_allocator<_Tp>::size_type __gnu_cxx::new_allocator<_Tp>::max_size() const [with _Tp = unsigned char]	16	static
 stl_algobase.h:277:5:_Iterator std::__niter_base(_Iterator) [with _Iterator = unsigned char*]	16	static
 stl_algobase.h:761:5:typename __gnu_cxx::__enable_if<std::__is_byte<_Tp>::__value, _Tp*>::__type std::__fill_n_a(_Tp*, _Size, const _Tp&) [with _Size = unsigned int; _Tp = unsigned char]	24	static
 stl_algobase.h:703:5:typename __gnu_cxx::__enable_if<std::__is_byte<_Tp>::__value, void>::__type std::__fill_a(_Tp*, _Tp*, const _Tp&) [with _Tp = unsigned char]	32	static
-spi_readSensordata.cpp:145:1:void __static_initialization_and_destruction_0(int, int)	16	static
-spi_readSensordata.cpp:145:1:cpp)	8	static
-spi_readSensordata.cpp:145:1:cpp)	8	static
+spi_readSensordata.cpp:181:1:void __static_initialization_and_destruction_0(int, int)	16	static
+spi_readSensordata.cpp:181:1:cpp)	8	static
+spi_readSensordata.cpp:181:1:cpp)	8	static

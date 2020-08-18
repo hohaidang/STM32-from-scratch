@@ -61,8 +61,8 @@ OBJCOPY_BIN += \
 all: 004_SPI_driver_CPP.elf secondary-outputs
 
 # Tool invocations
-004_SPI_driver_CPP.elf: $(OBJS) $(USER_OBJS) /Users/hohaidang/Desktop/Coding/STM32-from-scratch/004_SPI_driver_CPP/STM32F446RETX_FLASH.ld
-	arm-none-eabi-g++ -o "004_SPI_driver_CPP.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/Users/hohaidang/Desktop/Coding/STM32-from-scratch/004_SPI_driver_CPP/STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="004_SPI_driver_CPP.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+004_SPI_driver_CPP.elf: $(OBJS) $(USER_OBJS) E:\Learning_Coding\STM32-from-scratch\004_SPI_driver_CPP\STM32F446RETX_FLASH.ld
+	arm-none-eabi-g++ -o "004_SPI_driver_CPP.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\Learning_Coding\STM32-from-scratch\004_SPI_driver_CPP\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="004_SPI_driver_CPP.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

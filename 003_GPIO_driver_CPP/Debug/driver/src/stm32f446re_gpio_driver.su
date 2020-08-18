@@ -11,9 +11,9 @@ stm32f446re_gpio_driver.cpp:217:6:void GPIO_Handler::GPIO_WriteToOutputPin(u8)	1
 stm32f446re_gpio_driver.cpp:233:6:void GPIO_Handler::GPIO_WriteToOutputPort(uint16_t)	16	static
 stm32f446re_gpio_driver.cpp:246:6:void GPIO_Handler::GPIO_ToggleOutputPin()	16	static
 stm32f446re_gpio_driver.cpp:259:6:void GPIO_Handler::GPIO_IRQInterruptConfig(u8, u8)	16	static
-stm32f446re_gpio_driver.cpp:296:6:void GPIO_Handler::GPIO_IRQPriorityConfig(u8, u8)	24	static
-stm32f446re_gpio_driver.cpp:313:6:void GPIO_IRQHandling(u8)	16	static
-stm32f446re_gpio_driver.cpp:321:28:constexpr u8 get_irq_pinNum(u8)	16	static
-stm32f446re_gpio_driver.cpp:325:1:void __static_initialization_and_destruction_0(int, int)	16	static
-stm32f446re_gpio_driver.cpp:325:1:cpp)	8	static
-stm32f446re_gpio_driver.cpp:325:1:cpp)	8	static
+stm32f446re_gpio_driver.cpp:295:6:void GPIO_Handler::GPIO_IRQPriorityConfig(u8, u8)	24	static
+stm32f446re_gpio_driver.cpp:311:6:void GPIO_IRQHandling(u8)	16	static
+stm32f446re_gpio_driver.cpp:319:28:constexpr u8 get_irq_pinNum(u8)	16	static
+stm32f446re_gpio_driver.cpp:323:1:void __static_initialization_and_destruction_0(int, int)	16	static
+stm32f446re_gpio_driver.cpp:323:1:cpp)	8	static
+stm32f446re_gpio_driver.cpp:323:1:cpp)	8	static

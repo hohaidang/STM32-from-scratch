@@ -20,8 +20,7 @@
 #include "../driver/inc/stm32f4xx.h"
 #include "../driver/inc/bme280_driver.h"
 #include "../driver/inc/sys_tick_driver.h"
-#include <queue>
-#include <vector>
+#include <array>
 
 using namespace std;
 
@@ -36,9 +35,9 @@ unique_ptr<SPI_Handler> SPI1_Handler;
 unique_ptr<GPIO_Handler> PB6;
 unique_ptr<BMESensor_Handler> bme280;
 
+
 int main(void)
 {
-
     bme280_settings temp = { 0 };
     InitilizePeripheral();
     if (bme280->get_status() == SENSOR_OK) {
@@ -104,51 +103,16 @@ void user_delay_us(u32 period)
     SystemTick->delay_ms(period);
 }
 
-//u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
-//    vector<u8> txBuffer(len + 1, 0);
-//    vector<u8> rxBuffer;
-//    txBuffer[0] = reg_addr;
-//
-//    PB6->GPIO_WriteToOutputPin(RESET);
-//
-//    SPI1_Handler->spi_transmit_receive_data_it(txBuffer, rxBuffer, len + 1);
-//
-//    PB6->GPIO_WriteToOutputPin(SET);
-//    // copy to reg_data
-//    for(u32 i = 0; i < len; ++i) {
-//        reg_data[i] = rxBuffer[i + 1];
-//    }
-//    return 0;
-//}
-//
-//u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
-//    vector<u8> txBuffer(len + 1, 0);
-//    txBuffer[0] = reg_addr;
-//    for(u32 i = 0; i < len; ++i) {
-//        txBuffer[i + 1] = reg_data[i];
-//    }
-//
-//    PB6->GPIO_WriteToOutputPin(RESET);
-//
-//    SPI1_Handler->spi_transmit_data_it(txBuffer, len + 1);
-//
-//    PB6->GPIO_WriteToOutputPin(SET);
-//
-//    return 0;
-//}
-
-
 u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
-    vector<u8> txBuffer(len + 1, 0);
-    vector<u8> rxBuffer(len + 1, 0);
+    array<u8, BME280_MAX_SIZE_WR> txBuffer{};
+    array<u8, BME280_MAX_SIZE_WR> rxBuffer{};
     txBuffer[0] = reg_addr;
 
     PB6->GPIO_WriteToOutputPin(RESET);
 
-    SPI1_Handler->spi_transmit_receive_data(&txBuffer[0], &rxBuffer[0], len + 1);
+    SPI1_Handler->spi_transmit_receive_data_it(txBuffer.data(), rxBuffer.data(), len + 1);
 
     PB6->GPIO_WriteToOutputPin(SET);
-
     // copy to reg_data
     for(u32 i = 0; i < len; ++i) {
         reg_data[i] = rxBuffer[i + 1];
@@ -157,18 +121,53 @@ u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
 }
 
 u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
-    vector<u8> txBuffer(len + 1, 0);
+    array<u8, BME280_MAX_SIZE_WR> txBuffer{};
     txBuffer[0] = reg_addr;
     for(u32 i = 0; i < len; ++i) {
         txBuffer[i + 1] = reg_data[i];
     }
 
     PB6->GPIO_WriteToOutputPin(RESET);
-    SPI1_Handler->spi_transmit_data(&txBuffer[0], len + 1);
+
+    SPI1_Handler->spi_transmit_data_it(&txBuffer[0], len + 1);
+
     PB6->GPIO_WriteToOutputPin(SET);
 
     return 0;
 }
+
+
+//u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
+//    array<u8, BME280_MAX_SIZE_WR> txBuffer{};
+//    array<u8, BME280_MAX_SIZE_WR> rxBuffer{};
+//    txBuffer[0] = reg_addr;
+//
+//    PB6->GPIO_WriteToOutputPin(RESET);
+//
+//    SPI1_Handler->spi_transmit_receive_data(&txBuffer[0], &rxBuffer[0], len + 1);
+//
+//    PB6->GPIO_WriteToOutputPin(SET);
+//
+//    // copy to reg_data
+//    for(u32 i = 0; i < len; ++i) {
+//        reg_data[i] = rxBuffer[i + 1];
+//    }
+//    return 0;
+//}
+//
+//u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
+//    array<u8, BME280_MAX_SIZE_WR> txBuffer{};
+//    txBuffer[0] = reg_addr;
+//    for(u32 i = 0; i < len; ++i) {
+//        txBuffer[i + 1] = reg_data[i];
+//    }
+//
+//    PB6->GPIO_WriteToOutputPin(RESET);
+//    SPI1_Handler->spi_transmit_data(&txBuffer[0], len + 1);
+//    PB6->GPIO_WriteToOutputPin(SET);
+//
+//    return 0;
+//}
 
 extern "C" {
     void SPI1_IRQHandler(void) {

@@ -11,8 +11,6 @@
 #include "stm32f4xx.h"
 #include "core_cm4.h"
 #include <memory>
-#include <vector>
-#include <queue>
 #include <functional>
 using namespace std;
 
@@ -74,11 +72,12 @@ typedef struct {
 } SPI_Config_t;
 
 typedef struct {
-    queue<u8> tx_buffer; /* !< To store the app. Tx buffer address > */
-    queue<u8> rx_buffer; /* !< To store the app. Rx buffer address > */
-    volatile u32 rx_len; /* !< To store Rx len > */
-    volatile u8 tx_state; /* !< To store Tx state > */
-    volatile u8 rx_state; /* !< To store Rx state > */
+    u8 *tx_buf; /* !< To store the app. Tx buffer address > */
+    u8 *rx_buf; /* !< To store the app. Rx buffer address > */
+    u32 tx_len; /* !< To store Tx len > */
+    u32 rx_len; /* !< To store Rx len > */
+    u8 tx_state; /* !< To store Tx state > */
+    u8 rx_state; /* !< To store Rx state > */
     std::function<void(void)> receive_fnc; /* Function pointer for receiving data in interrupt */
     std::function<void(void)> transmit_fnc; /* Function pointer for transmission data in interrupt */
 } SPI_Handle_t;
@@ -121,9 +120,9 @@ public:
     void spi_transmit_receive_data(const u8 *pTxBuffer, u8 *pRxBuffer, u32 len);
 
     // Data Send and Receive in interrupt mode
-    void spi_transmit_data_it(const vector<u8> &tx_buf, const u32 len);
-    void spi_receive_data_it(vector<u8> &rx_buf, const u32 len);
-    void spi_transmit_receive_data_it(const vector<u8> &tx_buf, vector<u8> &rx_buf, const u32 len);
+    void spi_transmit_data_it(u8 *p_tx_buf, const u32 len);
+    void spi_receive_data_it(u8 *p_rx_buf, const u32 len);
+    void spi_transmit_receive_data_it(u8 *p_tx_buf, u8 *p_rx_buf, const u32 len);
 
     // IRQ Configuration and ISR Handling
     void spi_ir_config(const u8 IRQNumber, const u8 EnorDi);

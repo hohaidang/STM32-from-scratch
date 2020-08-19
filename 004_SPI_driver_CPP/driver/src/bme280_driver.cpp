@@ -91,7 +91,7 @@ BME280_Stat BMESensor_Handler::init_BME280() {
     do{
     	getRegData(regAddr, &dev_.chipID, 1);
     	dev_.delay_ms(200);
-    }while((--try_run) || BME280_CHIP_ID != dev_.chipID);
+    }while((--try_run) and BME280_CHIP_ID != dev_.chipID);
 
     if(BME280_CHIP_ID == dev_.chipID) {
         // soft reset sensor

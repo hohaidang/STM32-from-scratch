@@ -12,6 +12,9 @@
 #include <functional>
 using namespace std;
 
+/* Maximum size of SPI read or write each time is 28 bytes */
+#define BME280_MAX_SIZE_WR              (28U)
+
 /**@SENSOR_MODE Sensor power modes */
 #define BME280_SLEEP_MODE               static_cast<u8>(0x00)
 #define BME280_FORCED_MODE              static_cast<u8>(0x01)

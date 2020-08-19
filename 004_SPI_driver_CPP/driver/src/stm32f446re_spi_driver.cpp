@@ -6,17 +6,9 @@
  */
 
 #include "../inc/stm32f446re_spi_driver.h"
-#include <algorithm>
 using namespace std;
 
 // TODO: build driver o ngoai
-//void printQueue(queue<u8> q) {
-//    while(!q.empty()) {
-//        cout << "  " << hex << unsigned(q.front());
-//        q.pop();
-//    }
-//    cout << " end" << endl;
-//}
 
 /*!
  * @brief Initialize SPI, GPIOs, Interrupt, etc.
@@ -234,7 +226,6 @@ void SPI_Handler::spi_transmit_data(const u8 *pTxBuffer, u32 Len) {
     if (RESET == (spix_->CR1 & SPI_CR1_SPE)) {
         spi_peripheral_control(ENABLE);
     }
-
     while (Len > 0) {
         // 1. wait util tx buffer empty
         while (RESET == spi_get_SR_reg(SPI_SR_TXE));
@@ -335,6 +326,7 @@ void SPI_Handler::spi_transmit_receive_data(const u8 *pTxBuffer, u8 *pRxBuffer, 
             (uint16_t*) pRxBuffer++;
         } else {
             //8 bit DFF
+
             *(pRxBuffer) = spix_->DR;
             pRxBuffer++;
         }
@@ -432,25 +424,24 @@ void SPI_Handler::spi_ir_prio_config(const u8 IRQNumber, const u8 IRQPriority) {
 /*!
  * @brief Send data out via SPI protocol using interrupt. Interrupt will be enable if hw shift buffer is empty
  *
- * @param[in] pTxBuffer: pointer to Txbuffer
- * @param[in] Len: length of data
+ * @param[in] p_tx_buf: pointer to Txbuffer
+ * @param[in] len: length of data
  *
  * @return u8: Transmission state
  *
  */
-void SPI_Handler::spi_transmit_data_it(const vector<u8> &tx_buf, const u32 len) {
+void SPI_Handler::spi_transmit_data_it(u8 *p_tx_buf, const u32 len) {
     if (RESET == (spix_->CR1 & SPI_CR1_SPE)) {
         spi_peripheral_control(ENABLE);
     }
 
     while (handle_.tx_state != SPI_READY or handle_.rx_state != SPI_READY);
 
-    // 1. Pass data to queue
-    for_each(tx_buf.begin(), tx_buf.end(), [=](const u8 &data){
-        handle_.tx_buffer.push(data);
-    });
+    /* 1. Pass pointer to tx buffer and assign length of transmission */
+    handle_.tx_buf = p_tx_buf;
 
-    handle_.rx_len = 0U; // no receive
+    handle_.tx_len = len;
+    handle_.rx_len = 0UL; // no receive
 
     if(spix_->CR1 & SPI_CR1_DFF) {
         /* Not Support 16bit yet */
@@ -474,15 +465,14 @@ void SPI_Handler::spi_transmit_data_it(const vector<u8> &tx_buf, const u32 len) 
  *        Interrupt will be enable if hw shift buffer is NOT empty
  *
  * @param[out] pRxBuffer: pointer to receive buffer
- * @param[in] Len: length of data
+ * @param[in] len: length of data
  *
  * @return u8: Transmission state
  *
  */
-void SPI_Handler::spi_receive_data_it(vector<u8> &rx_buf, const u32 len) {
+void SPI_Handler::spi_receive_data_it(u8 *p_rx_buf, const u32 len) {
     /* Call transmit-receive function to send Dummy data on Tx line and generate clock on CLK line */
-    vector<u8> dummy_tx(len, 0xFF);
-    spi_transmit_receive_data_it(dummy_tx, rx_buf, len);
+    spi_transmit_receive_data_it(p_rx_buf, p_rx_buf, len);
 }
 
 /*!
@@ -490,23 +480,22 @@ void SPI_Handler::spi_receive_data_it(vector<u8> &rx_buf, const u32 len) {
  *
  * @param[in] pTxBuffer: pointer to transmit buffer
  * @param[out] pRxBuffer: pointer to receive buffer
- * @param[in] Len: length of data
+ * @param[in] len: length of data
  *
  * @return u8: Transmission State
  *
  */
-void SPI_Handler::spi_transmit_receive_data_it(const vector<u8> &tx_buf, vector<u8> &rx_buf, const u32 len) {
+void SPI_Handler::spi_transmit_receive_data_it(u8 *p_tx_buf, u8 *p_rx_buf, const u32 len) {
     if (RESET == (spix_->CR1 & SPI_CR1_SPE)) {
         spi_peripheral_control(ENABLE);
     }
 
-    /* 1. Pass data to queue */
-    for_each(tx_buf.begin(), tx_buf.end(), [=](const u8 &data){
-        handle_.tx_buffer.push(data);
-    });
-
-
+    /* 1. Pass pointer to tx buffer and assign length of transmission */
+    handle_.tx_buf = p_tx_buf;
+    handle_.rx_buf = p_rx_buf;
+    handle_.tx_len = len;
     handle_.rx_len = len;
+
     if(spix_->CR1 & SPI_CR1_DFF) {
         /* Not Support 16bit yet */
         handle_.transmit_fnc = nullptr;
@@ -527,10 +516,6 @@ void SPI_Handler::spi_transmit_receive_data_it(const vector<u8> &tx_buf, vector<
     spix_->CR2 |= (SPI_CR2_RXNEIE | SPI_CR2_ERRIE | SPI_CR2_TXEIE);
 
     while(handle_.rx_state != SPI_READY or handle_.tx_state != SPI_READY); /* w8 until SPI transmit completed*/
-    while(!handle_.rx_buffer.empty()) {
-        rx_buf.push_back(handle_.rx_buffer.front());
-        handle_.rx_buffer.pop();
-    }
 }
 
 
@@ -577,12 +562,13 @@ void SPI_Handler::spi_irq_handling() {
  *
  */
 void SPI_Handler::spi_tx_8bit_it() {
-    spix_->DR = handle_.tx_buffer.front();
-    handle_.tx_buffer.pop();
+    spix_->DR = *handle_.tx_buf;
+    ++handle_.tx_buf;
+    --handle_.tx_len;
 
-    if (handle_.tx_buffer.empty()) {
+    if (!handle_.tx_len) {
         /* Receive done, transmit buffer empty */
-        if(handle_.rx_len == 0U) {
+        if(!handle_.rx_len) {
             spi_close_tx_rx_isr();
             SPI_ApplicationEventCallback(&handle_, SPI_EVENT_TX_CMPLT);
         }
@@ -599,12 +585,13 @@ void SPI_Handler::spi_tx_8bit_it() {
  *
  */
 void SPI_Handler::spi_rx_8bit_it() {
-    handle_.rx_buffer.push(spix_->DR);
-    handle_.rx_len--;
+    *handle_.rx_buf = spix_->DR;
+    ++handle_.rx_buf;
+    --handle_.rx_len;
 
     if (!handle_.rx_len) {
         /* Receive done, transmit buffer empty */
-        if(handle_.tx_buffer.empty()) {
+        if(!handle_.tx_len) {
             spi_close_tx_rx_isr();
             SPI_ApplicationEventCallback(&handle_, SPI_EVENT_RX_CMPLT);
         }

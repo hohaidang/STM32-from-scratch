@@ -1,80 +1,28 @@
-gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
-ios_base.h:83:3:constexpr std::_Ios_Fmtflags std::operator&(std::_Ios_Fmtflags, std::_Ios_Fmtflags)	16	static
-ios_base.h:87:3:constexpr std::_Ios_Fmtflags std::operator|(std::_Ios_Fmtflags, std::_Ios_Fmtflags)	16	static
-ios_base.h:95:3:constexpr std::_Ios_Fmtflags std::operator~(std::_Ios_Fmtflags)	16	static
-ios_base.h:99:3:const std::_Ios_Fmtflags& std::operator|=(std::_Ios_Fmtflags&, std::_Ios_Fmtflags)	16	static
-ios_base.h:103:3:const std::_Ios_Fmtflags& std::operator&=(std::_Ios_Fmtflags&, std::_Ios_Fmtflags)	16	static
-ios_base.h:663:5:std::ios_base::fmtflags std::ios_base::setf(std::ios_base::fmtflags, std::ios_base::fmtflags)	40	static
-ios_base.h:1041:3:std::ios_base& std::fixed(std::ios_base&)	16	static
-iomanip:195:3:std::_Setprecision std::setprecision(int)	16	static
-std_function.h:271:5:std::_Function_base::_Function_base()	16	static
-std_function.h:273:5:std::_Function_base::~_Function_base()	16	static
-std_function.h:279:10:bool std::_Function_base::_M_empty() const	16	static
-std_function.h:389:11:std::function<unsigned char(unsigned char, unsigned char*, long unsigned int)>::~function()	16	static
-std_function.h:389:11:std::function<unsigned char(unsigned char, const unsigned char*, long unsigned int)>::~function()	16	static
-std_function.h:389:11:std::function<void(long unsigned int)>::~function()	16	static
-bme280_driver.cpp:64:1:BMESensor_Handler::BMESensor_Handler(BMESensor_Handler::read_fnc, BMESensor_Handler::write_fnc, BMESensor_Handler::delay_ms_fnc)	24	static
-bme280_driver.cpp:85:13:BME280_Stat BMESensor_Handler::init_BME280()	24	static
-bme280_driver.cpp:118:13:BME280_Stat BMESensor_Handler::softReset()	24	static
-bme280_driver.cpp:148:13:BME280_Stat BMESensor_Handler::get_calib_data()	48	static
-bme280_driver.cpp:165:6:void BMESensor_Handler::parse_temp_calib_data(const u8*)	16	static
-bme280_driver.cpp:189:6:void BMESensor_Handler::parse_humidity_calib_data(const u8*)	24	static
-bme280_driver.cpp:214:13:bme280_data BMESensor_Handler::get_sensor_data()	48	static
-bme280_driver.cpp:235:6:void BMESensor_Handler::print_sensor_data()	40	static
-bme280_driver.cpp:256:13:BME280_Stat BMESensor_Handler::setSensorMode(u8)	24	static
-bme280_driver.cpp:283:13:BME280_Stat BMESensor_Handler::put_device_to_sleep(u8&)	24	static
-bme280_driver.cpp:291:13:BME280_Stat BMESensor_Handler::get_status()	16	static
+locale_facets.h:1082:7:virtual std::ctype<char>::char_type std::ctype<char>::do_widen(char) const	0	static
+bme280_driver.cpp:118:13:BME280_Stat BMESensor_Handler::softReset()	48	static
+bme280_driver.cpp:148:13:BME280_Stat BMESensor_Handler::get_calib_data()	80	static
+bme280_driver.cpp:85:13:BME280_Stat BMESensor_Handler::init_BME280()	40	static
+bme280_driver.cpp:64:1:BMESensor_Handler::BMESensor_Handler(BMESensor_Handler::read_fnc, BMESensor_Handler::write_fnc, BMESensor_Handler::delay_ms_fnc)	72	static
+bme280_driver.cpp:165:6:void BMESensor_Handler::parse_temp_calib_data(const u8*)	0	static
+bme280_driver.cpp:189:6:void BMESensor_Handler::parse_humidity_calib_data(const u8*)	0	static
+bme280_driver.cpp:214:13:bme280_data BMESensor_Handler::get_sensor_data()	88	static
+bme280_driver.cpp:235:6:void BMESensor_Handler::print_sensor_data()	24	static
+bme280_driver.cpp:256:13:BME280_Stat BMESensor_Handler::setSensorMode(u8)	56	static
+bme280_driver.cpp:283:13:BME280_Stat BMESensor_Handler::put_device_to_sleep(u8&)	32	static
+bme280_driver.cpp:291:13:BME280_Stat BMESensor_Handler::get_status()	0	static
 bme280_driver.cpp:303:13:BME280_Stat BMESensor_Handler::write_power_mode(u8, u8&)	24	static
-bme280_driver.cpp:319:13:BME280_Stat BMESensor_Handler::getSensorMode(u8&)	24	static
-bme280_driver.cpp:334:13:BME280_Stat BMESensor_Handler::set_sensor_settings(const bme280_settings&)	24	static
-bme280_driver.cpp:372:6:void BMESensor_Handler::set_osr_temp_pres_settings(u8&, bme280_settings)	24	static
-bme280_driver.cpp:385:6:void BMESensor_Handler::set_osr_humidity_settings(u8)	24	static
-bme280_driver.cpp:405:13:BME280_Stat BMESensor_Handler::get_sensor_settings(bme280_settings&)	24	static
-bme280_driver.cpp:418:6:void BMESensor_Handler::parse_sensor_data(u8*, bme280_uncomp_data&)	40	static
-bme280_driver.cpp:452:6:void BMESensor_Handler::parse_device_settings(const u8*, bme280_settings&)	24	static
+bme280_driver.cpp:319:13:BME280_Stat BMESensor_Handler::getSensorMode(u8&)	32	static
+bme280_driver.cpp:372:6:void BMESensor_Handler::set_osr_temp_pres_settings(u8&, bme280_settings)	32	static
+bme280_driver.cpp:385:6:void BMESensor_Handler::set_osr_humidity_settings(u8)	56	static
+bme280_driver.cpp:334:13:BME280_Stat BMESensor_Handler::set_sensor_settings(const bme280_settings&)	56	static
+bme280_driver.cpp:405:13:BME280_Stat BMESensor_Handler::get_sensor_settings(bme280_settings&)	40	static
+bme280_driver.cpp:418:6:void BMESensor_Handler::parse_sensor_data(u8*, bme280_uncomp_data&)	4	static
+bme280_driver.cpp:452:6:void BMESensor_Handler::parse_device_settings(const u8*, bme280_settings&)	0	static
 bme280_driver.cpp:468:13:BME280_Stat BMESensor_Handler::getRegData(u8, u8*, u32)	24	static
 bme280_driver.cpp:482:13:BME280_Stat BMESensor_Handler::setRegData(u8, const u8*, u32)	24	static
-bme280_driver.cpp:488:4:u8 BMESensor_Handler::getChipID()	16	static
-bme280_driver.cpp:496:8:double BMESensor_Handler::compensate_temperature(const bme280_uncomp_data&)	64	static
-bme280_driver.cpp:527:8:double BMESensor_Handler::compensate_pressure(const bme280_uncomp_data&)	72	static
-bme280_driver.cpp:574:8:double BMESensor_Handler::compensate_humidity(const bme280_uncomp_data&)	96	static
-bme280_driver.cpp:608:18:u8 BME280_SET_BITS(u8, u8, u8, u8)	16	static
-bme280_driver.cpp:612:18:u8 BME280_GET_BITS(u8, u8, u8)	16	static
-std_function.h:414:7:)>::function() [with _Res = unsigned char; _ArgTypes = {unsigned char, unsigned char*, long unsigned int}]	16	static
-std_function.h:414:7:)>::function() [with _Res = unsigned char; _ArgTypes = {unsigned char, const unsigned char*, long unsigned int}]	16	static
-std_function.h:414:7:)>::function() [with _Res = void; _ArgTypes = {long unsigned int}]	16	static
-std_function.h:764:5:)>&, std::nullptr_t) [with _Res = unsigned char; _Args = {unsigned char, unsigned char*, long unsigned int}]	16	static
-std_function.h:764:5:)>&, std::nullptr_t) [with _Res = unsigned char; _Args = {unsigned char, const unsigned char*, long unsigned int}]	16	static
-std_function.h:764:5:)>&, std::nullptr_t) [with _Res = void; _Args = {long unsigned int}]	16	static
-std_function.h:480:7:)>&) [with _Res = unsigned char; _ArgTypes = {unsigned char, unsigned char*, long unsigned int}]	32	static
-std_function.h:480:7:)>&) [with _Res = unsigned char; _ArgTypes = {unsigned char, const unsigned char*, long unsigned int}]	32	static
-std_function.h:480:7:)>&) [with _Res = void; _ArgTypes = {long unsigned int}]	32	static
-std_function.h:701:5:) const [with _Res = void; _ArgTypes = {long unsigned int}]	24	static
-std_function.h:701:5:) const [with _Res = unsigned char; _ArgTypes = {unsigned char, unsigned char*, long unsigned int}]	40	static
-std_function.h:701:5:) const [with _Res = unsigned char; _ArgTypes = {unsigned char, const unsigned char*, long unsigned int}]	40	static
-std_function.h:582:16:)>::operator bool() const [with _Res = unsigned char; _ArgTypes = {unsigned char, unsigned char*, long unsigned int}]	16	static
-std_function.h:582:16:)>::operator bool() const [with _Res = unsigned char; _ArgTypes = {unsigned char, const unsigned char*, long unsigned int}]	16	static
-std_function.h:582:16:)>::operator bool() const [with _Res = void; _ArgTypes = {long unsigned int}]	16	static
-std_function.h:671:5:)>&) [with _Res = unsigned char; _ArgTypes = {unsigned char, unsigned char*, long unsigned int}]	16	static
-std_function.h:565:12:)>&) [with _Res = unsigned char; _ArgTypes = {unsigned char, unsigned char*, long unsigned int}]	16	static
-std_function.h:671:5:)>&) [with _Res = unsigned char; _ArgTypes = {unsigned char, const unsigned char*, long unsigned int}]	16	static
-std_function.h:565:12:)>&) [with _Res = unsigned char; _ArgTypes = {unsigned char, const unsigned char*, long unsigned int}]	16	static
-std_function.h:671:5:)>&) [with _Res = void; _ArgTypes = {long unsigned int}]	16	static
-std_function.h:565:12:)>&) [with _Res = void; _ArgTypes = {long unsigned int}]	16	static
-move.h:73:5:constexpr _Tp&& std::forward(typename std::remove_reference<_From>::type&) [with _Tp = long unsigned int]	16	static
-move.h:73:5:constexpr _Tp&& std::forward(typename std::remove_reference<_From>::type&) [with _Tp = unsigned char]	16	static
-move.h:73:5:constexpr _Tp&& std::forward(typename std::remove_reference<_From>::type&) [with _Tp = unsigned char*]	16	static
-move.h:73:5:constexpr _Tp&& std::forward(typename std::remove_reference<_From>::type&) [with _Tp = const unsigned char*]	16	static
-move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = std::_Any_data&]	16	static
-move.h:187:5:typename std::enable_if<std::__and_<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> >::value>::type std::swap(_Tp&, _Tp&) [with _Tp = std::_Any_data]	24	static
-move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = bool (*&)(std::_Any_data&, const std::_Any_data&, std::_Manager_operation)]	16	static
-move.h:187:5:typename std::enable_if<std::__and_<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> >::value>::type std::swap(_Tp&, _Tp&) [with _Tp = bool (*)(std::_Any_data&, const std::_Any_data&, std::_Manager_operation)]	24	static
-move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = unsigned char (*&)(const std::_Any_data&, unsigned char&&, unsigned char*&&, long unsigned int&&)]	16	static
-move.h:187:5:typename std::enable_if<std::__and_<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> >::value>::type std::swap(_Tp&, _Tp&) [with _Tp = unsigned char (*)(const std::_Any_data&, unsigned char&&, unsigned char*&&, long unsigned int&&)]	24	static
-move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = unsigned char (*&)(const std::_Any_data&, unsigned char&&, const unsigned char*&&, long unsigned int&&)]	16	static
-move.h:187:5:typename std::enable_if<std::__and_<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> >::value>::type std::swap(_Tp&, _Tp&) [with _Tp = unsigned char (*)(const std::_Any_data&, unsigned char&&, const unsigned char*&&, long unsigned int&&)]	24	static
-move.h:98:5:constexpr typename std::remove_reference< <template-parameter-1-1> >::type&& std::move(_Tp&&) [with _Tp = void (*&)(const std::_Any_data&, long unsigned int&&)]	16	static
-move.h:187:5:typename std::enable_if<std::__and_<std::__not_<std::__is_tuple_like<_Tp> >, std::is_move_constructible<_Tp>, std::is_move_assignable<_Tp> >::value>::type std::swap(_Tp&, _Tp&) [with _Tp = void (*)(const std::_Any_data&, long unsigned int&&)]	24	static
-bme280_driver.cpp:614:1:void __static_initialization_and_destruction_0(int, int)	16	static
-bme280_driver.cpp:614:1:cpp)	8	static
-bme280_driver.cpp:614:1:cpp)	8	static
+bme280_driver.cpp:488:4:u8 BMESensor_Handler::getChipID()	0	static
+bme280_driver.cpp:496:8:double BMESensor_Handler::compensate_temperature(const bme280_uncomp_data&)	32	static
+bme280_driver.cpp:527:8:double BMESensor_Handler::compensate_pressure(const bme280_uncomp_data&)	40	static
+bme280_driver.cpp:574:8:double BMESensor_Handler::compensate_humidity(const bme280_uncomp_data&)	40	static
+bme280_driver.cpp:614:1:cpp)	0	static
+bme280_driver.cpp:614:1:cpp)	0	static

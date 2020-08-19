@@ -1,8 +1,6 @@
-gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
-sys_tick_driver.cpp:28:1:SysTick::SysTick()	16	static
-sys_tick_driver.cpp:52:1:SysTick::~SysTick()	16	static
-sys_tick_driver.cpp:66:6:void SysTick::delay_ms(u32) const	16	static
-sys_tick_driver.cpp:80:10:void SysTick_Handler()	4	static
-sys_tick_driver.cpp:83:1:void __static_initialization_and_destruction_0(int, int)	16	static
-sys_tick_driver.cpp:83:1:cpp)	8	static
-sys_tick_driver.cpp:83:1:cpp)	8	static
+sys_tick_driver.cpp:28:1:SysTick::SysTick()	4	static
+sys_tick_driver.cpp:52:1:SysTick::~SysTick()	0	static
+sys_tick_driver.cpp:66:6:void SysTick::delay_ms(u32) const	0	static
+sys_tick_driver.cpp:80:10:void SysTick_Handler()	0	static
+sys_tick_driver.cpp:83:1:cpp)	0	static
+sys_tick_driver.cpp:83:1:cpp)	0	static

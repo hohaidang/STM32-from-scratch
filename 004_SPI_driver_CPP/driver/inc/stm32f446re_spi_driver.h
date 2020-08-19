@@ -101,40 +101,42 @@ public:
     ~SPI_Handler();
 
     // peripheral clock setup
-    void SPI_PeriClockControl(); // EnorDi: enable or disable
-    void SPI_Init();
-    void SPI_DeInit();
 
-    inline u8 SPI_GetFlagStatus(const u32 FlagName);
-    void SPI_PeripheralControl(u8 EnOrDi);
+    void spi_init();
+    void spi_deinit();
+
+    inline u8 spi_get_SR_reg(const u32 FlagName);
 
     // Data Send and Receive
-    void SPI_SendData(const u8 *pTxBuffer, u32 Len);
-    void SPI_ReceiveData(u8 *pRxBuffer, u32 Len);
-    void SPI_SendAndReceiveData(const u8 *pTxBuffer, u8 *pRxBuffer, u32 len);
+    void spi_transmit_data(const u8 *pTxBuffer, u32 Len);
+    void spi_receive_data(u8 *pRxBuffer, u32 Len);
+    void spi_transmit_receive_data(const u8 *pTxBuffer, u8 *pRxBuffer, u32 len);
 
     // Data Send and Receive in interrupt mode
-    u8 SPI_SendDataIT(vector<u8> &TxBuffer, const u32 Len);
-    u8 SPI_ReceiveDataIT(vector<u8> &RxBuffer, const u32 Len);
-    u8 SPI_SendReceiveDataIT(vector<u8> &pTxBuffer, vector<u8> &pRxBuffer, const u32 Len);
+    // TODO: Remove u8
+    u8 spi_transmit_data_it(vector<u8> &TxBuffer, const u32 Len);
+    u8 spi_receive_data_it(vector<u8> &RxBuffer, const u32 Len);
+    u8 spi_transmit_receive_data_it(vector<u8> &pTxBuffer, vector<u8> &pRxBuffer, const u32 Len);
 
     // IRQ Configuration and ISR Handling
-    void SPI_IRQInterruptConfig(const u8 IRQNumber, const u8 EnorDi);
-    void SPI_IRQPriorityConfig(const u8 IRQNumber, const u8 IRQPriority);
-    void SPI_IRQHandling();
+    void spi_ir_config(const u8 IRQNumber, const u8 EnorDi);
+    void spi_ir_prio_config(const u8 IRQNumber, const u8 IRQPriority);
+    void spi_irq_handling();
     void spi_clear_OVR_flag();
-    void SPI_CloseTransmission();
-    void SPI_CloseReception();
-    u8 get_TxState();
-    u8 get_RxState();
+
+    u8 spi_get_tx_state();
+    u8 spi_get_rx_state();
 
 private:
-    void SPI_GPIOs_Init();
-    void SPI_SSIConfig(const u8 EnOrDi);
-    void SPI_SSOEConfig(const u8 EnOrDi);
+    void spi_peripheral_control(u8 EnOrDi); // EnorDi: enable or disable
+    void spi_peripheral_clock_init();
+    void spi_gpios_init();
+    void spi_ssi_config(const u8 EnOrDi);
+    void spi_ssoe_config(const u8 EnOrDi);
     void spi_txe_interrupt_handle();
     void spi_rxne_interrupt_handle();
     void spi_ovr_err_interrupt_handle();
+    void spi_close_tx_rx_isr();
     inline u8 spi_check_flag(const u32 __REG__, u32 __FLAG__);
 };
 

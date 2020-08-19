@@ -83,8 +83,8 @@ void InitilizePeripheral(void) {
                                     SPI_SSM_EN) );
 
     // TODO: design interrupt for SPI connect with sensor
-    SPI1_Handler->SPI_IRQInterruptConfig(SPI1_IRQn, ENABLE);
-    SPI1_Handler->SPI_IRQPriorityConfig(SPI1_IRQn, IRQ_Prio_NO_15);
+    SPI1_Handler->spi_ir_config(SPI1_IRQn, ENABLE);
+    SPI1_Handler->spi_ir_prio_config(SPI1_IRQn, IRQ_Prio_NO_15);
 
     PB6.reset( new GPIO_Handler(GPIOB,
                            GPIO_PIN_NO_6,
@@ -95,8 +95,8 @@ void InitilizePeripheral(void) {
     PB6->GPIO_WriteToOutputPin(SET);
 
     bme280.reset( new BMESensor_Handler(user_spi_read,
-                                   user_spi_write,
-                                   user_delay_us) );
+                                        user_spi_write,
+                                        user_delay_us) );
 }
 
 void user_delay_us(u32 period)
@@ -111,13 +111,13 @@ u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
 
     PB6->GPIO_WriteToOutputPin(RESET);
 
-    SPI1_Handler->SPI_SendReceiveDataIT(txBuffer, rxBuffer, len + 1);
+    SPI1_Handler->spi_transmit_receive_data_it(txBuffer, rxBuffer, len + 1);
 
     PB6->GPIO_WriteToOutputPin(SET);
-    cout << "RxBuffer = " << endl;
-    for(auto it = rxBuffer.begin(); it != rxBuffer.end(); ++it) {
-        cout << " " << hex << unsigned(*it);
-    }
+//    cout << "RxBuffer = " << endl;
+//    for(auto it = rxBuffer.begin(); it != rxBuffer.end(); ++it) {
+//        cout << " " << hex << unsigned(*it);
+//    }
     // copy to reg_data
     for(u32 i = 0; i < len; ++i) {
         reg_data[i] = rxBuffer[i + 1];
@@ -133,8 +133,8 @@ u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
     }
 
     PB6->GPIO_WriteToOutputPin(RESET);
-    SPI1_Handler->SPI_SendDataIT(txBuffer, len + 1);
-    while(SPI1_Handler->get_TxState() != SPI_READY);
+    SPI1_Handler->spi_transmit_data_it(txBuffer, len + 1);
+    while(SPI1_Handler->spi_get_tx_state() != SPI_READY);
     PB6->GPIO_WriteToOutputPin(SET);
 
     return 0;
@@ -148,7 +148,7 @@ u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
 
     PB6->GPIO_WriteToOutputPin(RESET);
 
-    SPI1_Handler->SPI_SendAndReceiveData(&txBuffer[0], &rxBuffer[0], len + 1);
+    SPI1_Handler->spi_transmit_receive_data(&txBuffer[0], &rxBuffer[0], len + 1);
 
     PB6->GPIO_WriteToOutputPin(SET);
 
@@ -167,7 +167,7 @@ u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
     }
 
     PB6->GPIO_WriteToOutputPin(RESET);
-    SPI1_Handler->SPI_SendData(&txBuffer[0], len + 1);
+    SPI1_Handler->spi_transmit_data(&txBuffer[0], len + 1);
     PB6->GPIO_WriteToOutputPin(SET);
 
     return 0;
@@ -176,6 +176,6 @@ u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
 extern "C" {
     void SPI1_IRQHandler(void) {
         // handle the interrupt
-        SPI1_Handler->SPI_IRQHandling();
+        SPI1_Handler->spi_irq_handling();
     }
 }

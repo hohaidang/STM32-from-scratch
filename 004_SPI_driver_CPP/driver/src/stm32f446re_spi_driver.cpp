@@ -9,13 +9,13 @@
 #include <iostream>
 using namespace std;
 
-void printQueue(queue<u8> q) {
-    while(!q.empty()) {
-        cout << "  " << hex << unsigned(q.front());
-        q.pop();
-    }
-    cout << " end" << endl;
-}
+//void printQueue(queue<u8> q) {
+//    while(!q.empty()) {
+//        cout << "  " << hex << unsigned(q.front());
+//        q.pop();
+//    }
+//    cout << " end" << endl;
+//}
 
 /*!
  * @brief Initialize SPI, GPIOs, Interrupt, etc.
@@ -34,14 +34,14 @@ SPI_Handler::SPI_Handler(SPI_RegDef_t *SPIx_ADDR,
                         u8 CPHA,
                         u8 SSM) : SPIx_(SPIx_ADDR),
                                   config_({device_mode, bus_config, sclk_speed, DFF, CPOL, CPOL, SSM}){
-    SPI_GPIOs_Init();
-    SPI_PeriClockControl();
-    SPI_Init();
-    SPI_SSIConfig(ENABLE);
+    spi_gpios_init();
+    spi_peripheral_clock_init();
+    spi_init();
+    spi_ssi_config(ENABLE);
     if (SPI_SSM_EN == config_.SPI_SSM) {
-        SPI_SSOEConfig(DISABLE);
+        spi_ssoe_config(DISABLE);
     } else {
-        SPI_SSOEConfig(ENABLE);
+        spi_ssoe_config(ENABLE);
     }
 }
 
@@ -55,7 +55,7 @@ SPI_Handler::SPI_Handler(SPI_RegDef_t *SPIx_ADDR,
  *
  */
 SPI_Handler::~SPI_Handler() {
-    SPI_DeInit();
+    spi_deinit();
 }
 
 
@@ -67,7 +67,7 @@ SPI_Handler::~SPI_Handler() {
  * @return None
  *
  */
-void SPI_Handler::SPI_PeriClockControl() {
+void SPI_Handler::spi_peripheral_clock_init() {
     if (SPI1 == SPIx_) {
         SPI1_PCLK_EN();
     } else if (SPI2 == SPIx_) {
@@ -88,7 +88,7 @@ void SPI_Handler::SPI_PeriClockControl() {
  * @return None
  *
  */
-void SPI_Handler::SPI_GPIOs_Init() {
+void SPI_Handler::spi_gpios_init() {
     if (SPIx_ == SPI1) {
         SPI_Sck.reset(new GPIO_Handler( GPIOA,
                                         GPIO_PIN_NO_5,
@@ -139,7 +139,7 @@ void SPI_Handler::SPI_GPIOs_Init() {
  * @return None
  *
  */
-void SPI_Handler::SPI_Init() {
+void SPI_Handler::spi_init() {
     // Lets configure the SPI_CR1 register
     u32 tempReg = 0;
 
@@ -188,7 +188,7 @@ void SPI_Handler::SPI_Init() {
  * @return None
  *
  */
-void SPI_Handler::SPI_DeInit() {
+void SPI_Handler::spi_deinit() {
     if (SPI1 == SPIx_) {
         SPI1_REG_RESET();
     } else if (SPI2 == SPIx_) {
@@ -209,7 +209,8 @@ void SPI_Handler::SPI_DeInit() {
  * @return None
  *
  */
-void SPI_Handler::SPI_PeripheralControl(u8 EnOrDi) {
+// TODO: consider inline
+void SPI_Handler::spi_peripheral_control(u8 EnOrDi) {
     if (ENABLE == EnOrDi) {
         SPIx_->CR1 |= (1 << SPI_CR1_SPE);
     } else {
@@ -227,14 +228,14 @@ void SPI_Handler::SPI_PeripheralControl(u8 EnOrDi) {
  * @return None
  *
  */
-void SPI_Handler::SPI_SendData(const u8 *pTxBuffer, u32 Len) {
+void SPI_Handler::spi_transmit_data(const u8 *pTxBuffer, u32 Len) {
     if ((SPIx_->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
-        SPI_PeripheralControl(ENABLE);
+        spi_peripheral_control(ENABLE);
     }
 
     while (Len > 0) {
         // 1. wait util tx buffer empty
-        while (RESET == SPI_GetFlagStatus(SPI_SR_TXE));
+        while (RESET == spi_get_SR_reg(SPI_SR_TXE));
 
         // 2. check the DFF bit in CR1
         if (SPIx_->CR1 & (1 << SPI_CR1_DFF)) {
@@ -249,7 +250,7 @@ void SPI_Handler::SPI_SendData(const u8 *pTxBuffer, u32 Len) {
             pTxBuffer++;
         }
     }
-    while (SPI_GetFlagStatus(SPI_SR_BSY)); // w8 until SPI done
+    while (spi_get_SR_reg(SPI_SR_BSY)); // w8 until SPI done
     spi_clear_OVR_flag(); // because in 2 lines mode, write data does not need to read
 }
 
@@ -263,14 +264,14 @@ void SPI_Handler::SPI_SendData(const u8 *pTxBuffer, u32 Len) {
  * @return None
  *
  */
-void SPI_Handler::SPI_ReceiveData(u8 *pRxBuffer, u32 Len) {
+void SPI_Handler::spi_receive_data(u8 *pRxBuffer, u32 Len) {
     if ((SPIx_->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
-        SPI_PeripheralControl(ENABLE);
+        spi_peripheral_control(ENABLE);
     }
 
     while (Len > 0) {
         //1. wait until RXNE is set
-        while (RESET == SPI_GetFlagStatus(SPI_SR_RXNE));
+        while (RESET == spi_get_SR_reg(SPI_SR_RXNE));
 
         //2. check the DFF bit in CR1
         if ((SPIx_->CR1 & (1 << SPI_CR1_DFF))) {
@@ -287,7 +288,7 @@ void SPI_Handler::SPI_ReceiveData(u8 *pRxBuffer, u32 Len) {
             pRxBuffer++;
         }
     }
-    while (SPI_GetFlagStatus(SPI_SR_BSY)); // w8 until SPI done
+    while (spi_get_SR_reg(SPI_SR_BSY)); // w8 until SPI done
 }
 
 /*!
@@ -300,14 +301,13 @@ void SPI_Handler::SPI_ReceiveData(u8 *pRxBuffer, u32 Len) {
  * @return None
  *
  */
-void SPI_Handler::SPI_SendAndReceiveData(const u8 *pTxBuffer, u8 *pRxBuffer,
-        u32 len) {
+void SPI_Handler::spi_transmit_receive_data(const u8 *pTxBuffer, u8 *pRxBuffer, u32 len) {
     if ((SPIx_->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
-        SPI_PeripheralControl(ENABLE);
+        spi_peripheral_control(ENABLE);
     }
     while (len > 0) {
         // 1. wait util tx buffer empty
-        while (RESET == SPI_GetFlagStatus(SPI_SR_TXE));
+        while (RESET == spi_get_SR_reg(SPI_SR_TXE));
 
         // 2. check the DFF bit in CR1
         if (SPIx_->CR1 & (1 << SPI_CR1_DFF)) {
@@ -323,7 +323,7 @@ void SPI_Handler::SPI_SendAndReceiveData(const u8 *pTxBuffer, u8 *pRxBuffer,
         }
 
         //1. wait until RXNE is set
-        while (RESET == SPI_GetFlagStatus(SPI_SR_RXNE));
+        while (RESET == spi_get_SR_reg(SPI_SR_RXNE));
 
         //2. check the DFF bit in CR1
         if ((SPIx_->CR1 & (1 << SPI_CR1_DFF))) {
@@ -337,7 +337,7 @@ void SPI_Handler::SPI_SendAndReceiveData(const u8 *pTxBuffer, u8 *pRxBuffer,
             pRxBuffer++;
         }
     }
-    while (SPI_GetFlagStatus(SPI_SR_BSY)); // w8 until SPI done
+    while (spi_get_SR_reg(SPI_SR_BSY)); // w8 until SPI done
 }
 
 /*!
@@ -348,7 +348,7 @@ void SPI_Handler::SPI_SendAndReceiveData(const u8 *pTxBuffer, u8 *pRxBuffer,
  * @return None
  *
  */
-void SPI_Handler::SPI_SSOEConfig(const u8 EnOrDi) {
+void SPI_Handler::spi_ssoe_config(const u8 EnOrDi) {
     if (EnOrDi == ENABLE) {
         SPIx_->CR2 |= SPI_CR2_SSOE;
     } else {
@@ -365,7 +365,8 @@ void SPI_Handler::SPI_SSOEConfig(const u8 EnOrDi) {
  * @return None
  *
  */
-void SPI_Handler::SPI_SSIConfig(const u8 EnOrDi) {
+// TODO: consider to be inline function
+void SPI_Handler::spi_ssi_config(const u8 EnOrDi) {
     if (EnOrDi == ENABLE) {
         SPIx_->CR1 |= (1 << SPI_CR1_SSI);
     } else {
@@ -383,7 +384,7 @@ void SPI_Handler::SPI_SSIConfig(const u8 EnOrDi) {
  * @return None
  *
  */
-void SPI_Handler::SPI_IRQInterruptConfig(const u8 IRQNumber, const u8 EnorDi) {
+void SPI_Handler::spi_ir_config(const u8 IRQNumber, const u8 EnorDi) {
     if (EnorDi == ENABLE) {
         if (IRQNumber <= 31) {
             //  program ISER0 register
@@ -419,7 +420,7 @@ void SPI_Handler::SPI_IRQInterruptConfig(const u8 IRQNumber, const u8 EnorDi) {
  * @return None
  *
  */
-void SPI_Handler::SPI_IRQPriorityConfig(const u8 IRQNumber, const u8 IRQPriority) {
+void SPI_Handler::spi_ir_prio_config(const u8 IRQNumber, const u8 IRQPriority) {
     // 1. first lets find out the ipr register
     u8 iprx = IRQNumber >> 2;
     u8 iprx_section = IRQNumber % 4;
@@ -436,24 +437,28 @@ void SPI_Handler::SPI_IRQPriorityConfig(const u8 IRQNumber, const u8 IRQPriority
  * @return u8: Transmission state
  *
  */
-u8 SPI_Handler::SPI_SendDataIT(vector<u8> &TxBuffer, const u32 Len) {
-//    if ((SPIx_->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
-//        SPI_PeripheralControl(ENABLE);
-//    }
-//
-//    while (handle_.TxState != SPI_READY || handle_.RxState != SPI_READY);
-//
-//    // 1. Save the Tx buffer address and Len information in some global variables
+u8 SPI_Handler::spi_transmit_data_it(vector<u8> &TxBuffer, const u32 Len) {
+    if ((SPIx_->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
+        spi_peripheral_control(ENABLE);
+    }
+
+    while (handle_.TxState != SPI_READY or handle_.RxState != SPI_READY);
+
+    // 1. Save the Tx buffer address and Len information in some global variables
+    for(auto it = TxBuffer.begin(); it != TxBuffer.end(); ++it) {
+        handle_.TxBuffer.push(*it);
+    }
 //    handle_.pTxBuffer = TxBuffer.begin();
-//    handle_.TxLen = Len;
-//
-//    // 2. Mark the SPI state as busy in transmission so that no other code
-//    // can take over same SPI peripheral until transmission is over
-//    handle_.TxState = SPI_BUSY_IN_TX;
-//
-//    SPIx_->CR2 |= (SPI_CR2_TXEIE | SPI_CR2_ERRIE);
-//
-//    return handle_.TxState;
+
+    handle_.TxLen = Len;
+
+    // 2. Mark the SPI state as busy in transmission so that no other code
+    // can take over same SPI peripheral until transmission is over
+    handle_.TxState = SPI_BUSY_IN_TX;
+
+    SPIx_->CR2 |= (SPI_CR2_TXEIE | SPI_CR2_ERRIE);
+
+    return handle_.TxState;
 }
 
 /*!
@@ -466,9 +471,9 @@ u8 SPI_Handler::SPI_SendDataIT(vector<u8> &TxBuffer, const u32 Len) {
  * @return u8: Transmission state
  *
  */
-u8 SPI_Handler::SPI_ReceiveDataIT(vector<u8> &RxBuffer, const u32 Len) {
+u8 SPI_Handler::spi_receive_data_it(vector<u8> &RxBuffer, const u32 Len) {
     /* Call transmit-receive function to send Dummy data on Tx line and generate clock on CLK line */
-    return SPI_SendReceiveDataIT(RxBuffer, RxBuffer, Len);
+    return spi_transmit_receive_data_it(RxBuffer, RxBuffer, Len);
 }
 
 /*!
@@ -481,10 +486,10 @@ u8 SPI_Handler::SPI_ReceiveDataIT(vector<u8> &RxBuffer, const u32 Len) {
  * @return u8: Transmission State
  *
  */
-u8 SPI_Handler::SPI_SendReceiveDataIT(vector<u8> &pTxBuffer, vector<u8> &pRxBuffer, const u32 Len) {
+u8 SPI_Handler::spi_transmit_receive_data_it(vector<u8> &pTxBuffer, vector<u8> &pRxBuffer, const u32 Len) {
     while (handle_.TxState != SPI_READY || handle_.RxState != SPI_READY);
     if ((SPIx_->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
-        SPI_PeripheralControl(ENABLE);
+        spi_peripheral_control(ENABLE);
     }
 
     for(auto it = pTxBuffer.begin(); it != pTxBuffer.end(); ++it) {
@@ -492,6 +497,7 @@ u8 SPI_Handler::SPI_SendReceiveDataIT(vector<u8> &pTxBuffer, vector<u8> &pRxBuff
     }
 //    handle_.TxBuffer.assign(pTxBuffer.begin(), pTxBuffer.end());
 //    handle_.pTxBuffer = pTxBuffer.begin();
+    // TODO: considering replace Len with queue size
     handle_.TxLen = Len;
 
 //    handle_.RxBuffer.assign(pRxBuffer.begin(), pRxBuffer.end());
@@ -507,8 +513,9 @@ u8 SPI_Handler::SPI_SendReceiveDataIT(vector<u8> &pTxBuffer, vector<u8> &pRxBuff
     /* Enable TXEIE control bit to get interrupt whenever TXE flag is set in SR */
     SPIx_->CR2 |= (SPI_CR2_RXNEIE | SPI_CR2_ERRIE | SPI_CR2_TXEIE);
 
+    // TODO: considering remove later
     while(handle_.RxState != SPI_READY or handle_.TxState != SPI_READY);
-    printQueue(handle_.RxBuffer);
+//    printQueue(handle_.RxBuffer);
     while(!handle_.RxBuffer.empty()) {
         pRxBuffer.push_back(handle_.RxBuffer.front());
         handle_.RxBuffer.pop();
@@ -527,7 +534,7 @@ u8 SPI_Handler::SPI_SendReceiveDataIT(vector<u8> &pTxBuffer, vector<u8> &pRxBuff
  * @return None
  *
  */
-void SPI_Handler::SPI_IRQHandling() {
+void SPI_Handler::spi_irq_handling() {
     volatile u32 SR_reg = SPIx_->SR;
     volatile u32 CR2_reg = SPIx_->CR2;
 
@@ -535,17 +542,17 @@ void SPI_Handler::SPI_IRQHandling() {
      * If overrun occurs, transmission may on going or overrun's previous transmission*/
     if (spi_check_flag(SR_reg, SPI_SR_RXNE) and spi_check_flag(CR2_reg, SPI_CR2_RXNEIE)
                                             and !spi_check_flag(SR_reg, SPI_SR_OVR)) {
-        cout << "rx interrupt is called\n";
+//        cout << "rx interrupt is called\n";
 
         spi_rxne_interrupt_handle();
-        printQueue(handle_.RxBuffer);
+//        printQueue(handle_.RxBuffer);
         return;
     }
 
     /* Transmit Interrupt */
     if (spi_check_flag(SR_reg, SPI_SR_TXE) and spi_check_flag(CR2_reg, SPI_CR2_TXEIE)) {
-        cout << "tx interrupt is called\n";
-        printQueue(handle_.TxBuffer);
+//        cout << "tx interrupt is called\n";
+//        printQueue(handle_.TxBuffer);
         spi_txe_interrupt_handle();
 
         return;
@@ -570,7 +577,7 @@ void SPI_Handler::SPI_IRQHandling() {
  */
 void SPI_Handler::spi_txe_interrupt_handle() {
     if ((SPIx_->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
-        SPI_PeripheralControl(ENABLE);
+        spi_peripheral_control(ENABLE);
     }
 
     // 2. check the DFF bit in CR1
@@ -589,12 +596,12 @@ void SPI_Handler::spi_txe_interrupt_handle() {
 
 //        handle_.pTxBuffer++;
     }
-    cout << "RxLen = " << unsigned(handle_.RxLen) << ", TxLen = " << handle_.TxLen << endl;
+//    cout << "RxLen = " << unsigned(handle_.RxLen) << ", TxLen = " << handle_.TxLen << endl;
     if (!handle_.TxLen) {
         // TxLen is zero, close the spi transmission and inform the application
         // Tx is over
         if(handle_.RxLen == 0U) {
-            SPI_CloseTransmission();
+            spi_close_tx_rx_isr();
             SPI_ApplicationEventCallback(&handle_, SPI_EVENT_TX_CMPLT);
         }
 
@@ -611,7 +618,7 @@ void SPI_Handler::spi_txe_interrupt_handle() {
  */
 void SPI_Handler::spi_rxne_interrupt_handle() {
     if ((SPIx_->CR1 & SPI_CR1_SPE_MSK) != SPI_CR1_SPE_MSK) {
-        SPI_PeripheralControl(ENABLE);
+        spi_peripheral_control(ENABLE);
     }
 
     //2. check the DFF bit in CR1
@@ -632,12 +639,12 @@ void SPI_Handler::spi_rxne_interrupt_handle() {
 //        handle_.RxLen--;
 //        handle_.pRxBuffer++;
     }
-    cout << "RxLen = " << unsigned(handle_.RxLen) << ", TxLen = " << handle_.TxLen << endl;
+//    cout << "RxLen = " << unsigned(handle_.RxLen) << ", TxLen = " << handle_.TxLen << endl;
     if (!handle_.RxLen) {
         // TxLen is zero, close the spi transmission and inform the application
         // Tx is over
         if(handle_.TxLen == 0U) {
-            SPI_CloseReception();
+            spi_close_tx_rx_isr();
             SPI_ApplicationEventCallback(&handle_, SPI_EVENT_RX_CMPLT);
         }
 
@@ -675,46 +682,42 @@ void SPI_Handler::spi_clear_OVR_flag() {
 }
 
 /*!
- * @brief Close Interrupt SPI transmission
+ * @brief Close Transmission and Receive in Interrupt mode
  *
  * @param: None
  *
  * @return None
  *
  */
-void SPI_Handler::SPI_CloseTransmission() {
-    while(SPI_GetFlagStatus(SPI_SR_BSY)); /* w8 until SPI transmit done */
-    while(SPI_GetFlagStatus(SPI_SR_TXE) == RESET);
-    SPIx_->CR2 &= ~(SPI_CR2_TXEIE | SPI_CR2_ERRIE);
-//    handle_.pTxBuffer = nullptr;
-    handle_.TxLen = 0;
+void SPI_Handler::spi_close_tx_rx_isr() {
+    while(spi_get_SR_reg(SPI_SR_BSY)); /* w8 until SPI transmit done */
+    SPIx_->CR2 &= ~(SPI_CR2_TXEIE | SPI_CR2_RXNEIE | SPI_CR2_ERRIE);
     handle_.TxState = SPI_READY;
     handle_.RxState = SPI_READY;
     spi_clear_OVR_flag();
 }
 
 /*!
- * @brief Close Interrupt SPI Reception
+ * @brief Get transmission state
  *
  * @param: None
  *
- * @return None
+ * @return u8: transmission state
  *
  */
-void SPI_Handler::SPI_CloseReception() {
-    SPIx_->CR2 &= ~(SPI_CR2_RXNEIE | SPI_CR2_ERRIE);
-//    handle_.pRxBuffer = nullptr;
-    handle_.RxLen = 0;
-    handle_.RxState = SPI_READY;
-    handle_.TxState = SPI_READY;
-    spi_clear_OVR_flag();
-}
-
-u8 SPI_Handler::get_TxState() {
+u8 SPI_Handler::spi_get_tx_state() {
     return handle_.TxState;
 }
 
-u8 SPI_Handler::get_RxState() {
+/*!
+ * @brief Get receive state
+ *
+ * @param: None
+ *
+ * @return u8: receoption state
+ *
+ */
+u8 SPI_Handler::spi_get_rx_state() {
     return handle_.RxState;
 }
 
@@ -726,7 +729,7 @@ u8 SPI_Handler::get_RxState() {
  * @return None
  *
  */
-inline u8 SPI_Handler::SPI_GetFlagStatus(const u32 FlagName) {
+inline u8 SPI_Handler::spi_get_SR_reg(const u32 FlagName) {
     return (SPIx_->SR & FlagName) ? SET : RESET;
 }
 

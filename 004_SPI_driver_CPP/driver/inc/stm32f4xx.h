@@ -293,11 +293,11 @@ typedef struct {
 #define SPI4_REG_RESET()                do{ (RCC->APB2RSTR |= (1 << 13)); (RCC->APB2RSTR &= ~(1 << 13)); }while(0);
 
 // @GPIO_IRQ_Priority
-#define IRQ_Prio_NO_14          14UL
-#define IRQ_Prio_NO_15          15UL
+#define IRQ_Prio_NO_14          14
+#define IRQ_Prio_NO_15          15
 
-#define ENABLE          static_cast<u8>(1u)
-#define DISABLE         static_cast<u8>(0u)
+#define ENABLE          1u
+#define DISABLE         0
 #define SET             static_cast<u8>(1u)
 #define RESET           static_cast<u8>(0u)
 
@@ -307,45 +307,22 @@ typedef struct {
 /*
  * Bit position definitions SPI_CR1
  */
-#define SPI_CR1_CPHA_Pos        0U
-#define SPI_CR1_CPOL_Pos        1U
+#define SPI_CR1_CPHA        0u
+#define SPI_CR1_CPOL        1u
+#define SPI_CR1_MSTR        2u
+#define SPI_CR1_BR          3u
+#define SPI_CR1_SPE         6u
+#define SPI_CR1_LSBFIRST    7u
+#define SPI_CR1_SSI         8u
+#define SPI_CR1_SSM         9u
+#define SPI_CR1_RXONLY      10u
+#define SPI_CR1_DFF         11u
+#define SPI_CR1_CRCNEXT     12u
+#define SPI_CR1_CRCEN       13u
+#define SPI_CR1_BIDIOE      14u
+#define SPI_CR1_BIDIMODE    15u
 
-#define SPI_CR1_MSTR_Pos        2U
-
-#define SPI_CR1_BR_Pos          3U
-
-#define SPI_CR1_SPE_Pos         6U
-#define SPI_CR1_SPE_Msk         (static_cast<u32>(1UL << SPI_CR1_SPE_Pos))
-#define SPI_CR1_SPE             (SPI_CR1_SPE_Msk)
-
-#define SPI_CR1_LSBFIRST_Pos    7U
-
-#define SPI_CR1_SSI_Pos         8U
-#define SPI_CR1_SSI_Msk         (static_cast<u32>(1UL << SPI_CR1_SSI_Pos))
-#define SPI_CR1_SSI             (SPI_CR1_SSI_Msk)
-
-#define SPI_CR1_SSM_Pos         9U
-
-#define SPI_CR1_RXONLY_Pos      10U
-#define SPI_CR1_RXONLY_Msk      (static_cast<u32>(1UL << SPI_CR1_RXONLY_Pos))
-#define SPI_CR1_RXONLY          (SPI_CR1_RXONLY_Msk)
-
-#define SPI_CR1_DFF_Pos         11U
-#define SPI_CR1_DFF_Msk         (static_cast<u32>(1UL << SPI_CR1_DFF_Pos))
-#define SPI_CR1_DFF             (SPI_CR1_DFF_Msk)
-
-#define SPI_CR1_CRCNEXT_Pos     12U
-#define SPI_CR1_CRCEN_Pos       13U
-
-#define SPI_CR1_BIDIOE_Pos      14U
-#define SPI_CR1_BIDIOE_Msk      (static_cast<u32>(1UL << SPI_CR1_BIDIOE_Pos))
-#define SPI_CR1_BIDIOE          (SPI_CR1_BIDIOE_Msk)
-
-#define SPI_CR1_BIDIMODE_Pos    15U
-#define SPI_CR1_BIDIMODE_Msk    (static_cast<u32>(1UL << SPI_CR1_BIDIMODE_Pos))
-#define SPI_CR1_BIDIMODE        (SPI_CR1_BIDIMODE_Msk)
-
-
+#define SPI_CR1_SPE_MSK     (1U << SPI_CR1_SPE)
 
 /*
  * Bit position definitions SPI_CR2

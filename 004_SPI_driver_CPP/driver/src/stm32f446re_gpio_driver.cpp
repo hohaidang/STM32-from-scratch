@@ -16,15 +16,10 @@ constexpr static inline u8 get_irq_pinNum(u8);
  * @return None
  *
  */
-GPIO_Handler::GPIO_Handler(GPIO_RegDef_t *GPIOx_addr,
-                           u8 pin_number,
-                           u8 pin_mode,
-                           u8 pin_speed,
-                           u8 output_type,
-                           u8 pupd_control,
-                           u8 IRQ_priority,
-                           u8 alt_func_mode) : GPIOx_(GPIOx_addr),
-                                               config_( { pin_number, pin_mode, pin_speed, pupd_control, output_type, alt_func_mode })
+GPIO_Handler::GPIO_Handler(GPIO_RegDef_t *GPIOx_addr, u8 pin_number,
+        u8 pin_mode, u8 pin_speed, u8 output_type, u8 pupd_control,
+        u8 IRQ_priority, u8 alt_func_mode) : GPIOx_(GPIOx_addr),
+                                             config_( { pin_number, pin_mode, pin_speed, pupd_control, output_type, alt_func_mode })
 {
     GPIO_PeriClockControl();
     GPIO_Init();

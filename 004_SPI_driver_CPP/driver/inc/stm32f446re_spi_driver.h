@@ -72,12 +72,12 @@ typedef struct {
 } SPI_Config_t;
 
 typedef struct {
-    u8 *tx_buf; /* !< To store the app. Tx buffer address > */
-    u8 *rx_buf; /* !< To store the app. Rx buffer address > */
-    u32 tx_len; /* !< To store Tx len > */
-    u32 rx_len; /* !< To store Rx len > */
-    u8 tx_state; /* !< To store Tx state > */
-    u8 rx_state; /* !< To store Rx state > */
+    volatile u8 *tx_buf; /* !< To store the app. Tx buffer address > */
+    volatile u8 *rx_buf; /* !< To store the app. Rx buffer address > */
+    volatile u32 tx_len; /* !< To store Tx len > */
+    volatile u32 rx_len; /* !< To store Rx len > */
+    volatile u8 tx_state; /* !< To store Tx state > */
+    volatile u8 rx_state; /* !< To store Rx state > */
     std::function<void(void)> receive_fnc; /* Function pointer for receiving data in interrupt */
     std::function<void(void)> transmit_fnc; /* Function pointer for transmission data in interrupt */
 } SPI_Handle_t;

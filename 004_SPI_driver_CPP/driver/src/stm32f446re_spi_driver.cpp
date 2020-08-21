@@ -531,6 +531,12 @@ void SPI_Handler::spi_transmit_receive_data_it(u8 *p_tx_buf, u8 *p_rx_buf, const
 void SPI_Handler::spi_irq_handling() {
     volatile u32 SR_reg = spix_->SR;
     volatile u32 CR2_reg = spix_->CR2;
+//    cout << "sr_reg = " << hex << unsigned(SR_reg) << endl;
+//    cout << "cr2_reg = " << hex << unsigned(CR2_reg) << endl;
+
+    if(spi_check_flag(SR_reg, SPI_SR_BSY) == SET) {
+        return;
+    }
 
     /* Receive Interrupt
      * If overrun occurs, transmission may on going or overrun's previous transmission*/
@@ -562,9 +568,11 @@ void SPI_Handler::spi_irq_handling() {
  *
  */
 void SPI_Handler::spi_tx_8bit_it() {
-    spix_->DR = *handle_.tx_buf;
+    cout << "tx:" << hex << unsigned(*handle_.tx_buf);
+    *(volatile uint8_t *)&spix_->DR = *handle_.tx_buf;
     ++handle_.tx_buf;
     --handle_.tx_len;
+//    cout << "tx len: " << handle_.tx_len << endl;
 
     if (!handle_.tx_len) {
         /* Receive done, transmit buffer empty */
@@ -574,6 +582,7 @@ void SPI_Handler::spi_tx_8bit_it() {
         }
 
     }
+
 }
 
 /*!
@@ -585,9 +594,11 @@ void SPI_Handler::spi_tx_8bit_it() {
  *
  */
 void SPI_Handler::spi_rx_8bit_it() {
-    *handle_.rx_buf = spix_->DR;
+    *handle_.rx_buf = *((volatile uint8_t *)&spix_->DR);
+//    cout << "rx:" << hex << unsigned(*handle_.rx_buf) << endl;
     ++handle_.rx_buf;
     --handle_.rx_len;
+//    cout << "rx len: " << handle_.rx_len << endl;
 
     if (!handle_.rx_len) {
         /* Receive done, transmit buffer empty */
@@ -639,6 +650,7 @@ void SPI_Handler::spi_clear_ovr_flag() {
  */
 void SPI_Handler::spi_close_tx_rx_isr() {
     while(spi_get_SR_reg(SPI_SR_BSY)); /* w8 until SPI transmit done */
+    cout << "called close tx rx" << endl;
     spix_->CR2 &= ~(SPI_CR2_TXEIE | SPI_CR2_RXNEIE | SPI_CR2_ERRIE);
     handle_.tx_state = SPI_READY;
     handle_.rx_state = SPI_READY;

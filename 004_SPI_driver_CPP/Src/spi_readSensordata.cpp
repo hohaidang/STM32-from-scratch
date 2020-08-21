@@ -76,7 +76,7 @@ void InitilizePeripheral(void) {
     SPI1_Handler.reset( new SPI_Handler(SPI1,
                                         SPI_DEVICE_MODE_MASTER,
                                         SPI_BUS_CONFIG_FD,
-                                        SPI_SCLK_SPEED_DIV32,
+                                        SPI_SCLK_SPEED_DIV8,
                                         SPI_DFF_8BITS,
                                         SPI_CPOL_LOW,
                                         SPI_CPHA_LOW,

@@ -16974,31 +16974,31 @@ LOAD c:/st/stm32cubeide_1.3.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
                 0x00000000000025bd       0x1e c:/st/stm32cubeide_1.3.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.7-2018-q2-update.win32_1.4.0.202007081208/tools/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7e-m/crtn.o
 OUTPUT(004_SPI_driver_CPP.elf elf32-littlearm)
 
-.debug_info     0x0000000000000000    0x26f7e
- .debug_info    0x0000000000000000     0xc2ac Src/spi_readSensordata.o
- .debug_info    0x000000000000c2ac      0xefd Src/syscalls.o
- .debug_info    0x000000000000d1a9      0x91c Src/sysmem.o
- .debug_info    0x000000000000dac5       0x22 Startup/startup_stm32f446retx.o
- .debug_info    0x000000000000dae7     0x8015 driver/src/bme280_driver.o
- .debug_info    0x0000000000015afc     0x4223 driver/src/stm32f446re_gpio_driver.o
- .debug_info    0x0000000000019d1f     0x9f37 driver/src/stm32f446re_spi_driver.o
- .debug_info    0x0000000000023c56     0x3328 driver/src/sys_tick_driver.o
+.debug_info     0x0000000000000000    0x26ff3
+ .debug_info    0x0000000000000000     0xc2ce Src/spi_readSensordata.o
+ .debug_info    0x000000000000c2ce      0xefd Src/syscalls.o
+ .debug_info    0x000000000000d1cb      0x91c Src/sysmem.o
+ .debug_info    0x000000000000dae7       0x22 Startup/startup_stm32f446retx.o
+ .debug_info    0x000000000000db09     0x8015 driver/src/bme280_driver.o
+ .debug_info    0x0000000000015b1e     0x4254 driver/src/stm32f446re_gpio_driver.o
+ .debug_info    0x0000000000019d72     0x9f59 driver/src/stm32f446re_spi_driver.o
+ .debug_info    0x0000000000023ccb     0x3328 driver/src/sys_tick_driver.o
 
-.debug_abbrev   0x0000000000000000     0x38d3
+.debug_abbrev   0x0000000000000000     0x38eb
  .debug_abbrev  0x0000000000000000      0xce2 Src/spi_readSensordata.o
  .debug_abbrev  0x0000000000000ce2      0x279 Src/syscalls.o
  .debug_abbrev  0x0000000000000f5b      0x1bb Src/sysmem.o
  .debug_abbrev  0x0000000000001116       0x12 Startup/startup_stm32f446retx.o
  .debug_abbrev  0x0000000000001128      0xb38 driver/src/bme280_driver.o
- .debug_abbrev  0x0000000000001c60      0x871 driver/src/stm32f446re_gpio_driver.o
- .debug_abbrev  0x00000000000024d1      0xd53 driver/src/stm32f446re_spi_driver.o
- .debug_abbrev  0x0000000000003224      0x6af driver/src/sys_tick_driver.o
+ .debug_abbrev  0x0000000000001c60      0x873 driver/src/stm32f446re_gpio_driver.o
+ .debug_abbrev  0x00000000000024d3      0xd69 driver/src/stm32f446re_spi_driver.o
+ .debug_abbrev  0x000000000000323c      0x6af driver/src/sys_tick_driver.o
 
-.debug_loc      0x0000000000000000     0x6d58
+.debug_loc      0x0000000000000000     0x6d3e
  .debug_loc     0x0000000000000000      0x7be Src/spi_readSensordata.o
  .debug_loc     0x00000000000007be     0x389a driver/src/bme280_driver.o
  .debug_loc     0x0000000000004058      0xd76 driver/src/stm32f446re_gpio_driver.o
- .debug_loc     0x0000000000004dce     0x1f8a driver/src/stm32f446re_spi_driver.o
+ .debug_loc     0x0000000000004dce     0x1f70 driver/src/stm32f446re_spi_driver.o
 
 .debug_aranges  0x0000000000000000      0x440
  .debug_aranges
@@ -17148,32 +17148,32 @@ OUTPUT(004_SPI_driver_CPP.elf elf32-littlearm)
  .debug_macro   0x0000000000006b30      0x868 driver/src/stm32f446re_spi_driver.o
  .debug_macro   0x0000000000007398      0x855 driver/src/sys_tick_driver.o
 
-.debug_line     0x0000000000000000     0x865e
+.debug_line     0x0000000000000000     0x8668
  .debug_line    0x0000000000000000     0x16f8 Src/spi_readSensordata.o
  .debug_line    0x00000000000016f8      0x758 Src/syscalls.o
  .debug_line    0x0000000000001e50      0x559 Src/sysmem.o
  .debug_line    0x00000000000023a9       0x84 Startup/startup_stm32f446retx.o
  .debug_line    0x000000000000242d     0x1ba3 driver/src/bme280_driver.o
- .debug_line    0x0000000000003fd0     0x1634 driver/src/stm32f446re_gpio_driver.o
- .debug_line    0x0000000000005604     0x1bfc driver/src/stm32f446re_spi_driver.o
- .debug_line    0x0000000000007200     0x145e driver/src/sys_tick_driver.o
+ .debug_line    0x0000000000003fd0     0x163e driver/src/stm32f446re_gpio_driver.o
+ .debug_line    0x000000000000560e     0x1bfc driver/src/stm32f446re_spi_driver.o
+ .debug_line    0x000000000000720a     0x145e driver/src/sys_tick_driver.o
 
-.debug_str      0x0000000000000000    0x1e917
- .debug_str     0x0000000000000000    0x1b0f9 Src/spi_readSensordata.o
-                                      0x1baa5 (size before relaxing)
- .debug_str     0x000000000001b0f9      0xec1 Src/syscalls.o
+.debug_str      0x0000000000000000    0x1e93b
+ .debug_str     0x0000000000000000    0x1b12c Src/spi_readSensordata.o
+                                      0x1bad8 (size before relaxing)
+ .debug_str     0x000000000001b12c      0xec1 Src/syscalls.o
                                        0x8945 (size before relaxing)
- .debug_str     0x000000000001bfba       0x31 Src/sysmem.o
+ .debug_str     0x000000000001bfed       0x31 Src/sysmem.o
                                        0x7ae3 (size before relaxing)
- .debug_str     0x000000000001bfeb       0x31 Startup/startup_stm32f446retx.o
+ .debug_str     0x000000000001c01e       0x31 Startup/startup_stm32f446retx.o
                                          0x70 (size before relaxing)
- .debug_str     0x000000000001c01c     0x1666 driver/src/bme280_driver.o
+ .debug_str     0x000000000001c04f     0x1666 driver/src/bme280_driver.o
                                       0x13bd6 (size before relaxing)
- .debug_str     0x000000000001d682      0x2f9 driver/src/stm32f446re_gpio_driver.o
-                                      0x11918 (size before relaxing)
- .debug_str     0x000000000001d97b      0xefa driver/src/stm32f446re_spi_driver.o
-                                      0x15c6c (size before relaxing)
- .debug_str     0x000000000001e875       0xa2 driver/src/sys_tick_driver.o
+ .debug_str     0x000000000001d6b5      0x2ea driver/src/stm32f446re_gpio_driver.o
+                                      0x1193c (size before relaxing)
+ .debug_str     0x000000000001d99f      0xefa driver/src/stm32f446re_spi_driver.o
+                                      0x15c9f (size before relaxing)
+ .debug_str     0x000000000001e899       0xa2 driver/src/sys_tick_driver.o
                                       0x10d58 (size before relaxing)
 
 .comment        0x0000000000000000       0x7b

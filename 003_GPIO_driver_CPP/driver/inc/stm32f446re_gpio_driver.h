@@ -114,9 +114,13 @@ private:
 
     // IRQ Configuration and ISR Handling
     void GPIO_IRQInterruptConfig(const uint8_t IRQNumber, const uint8_t EnorDi);
-    void GPIO_IRQPriorityConfig(const uint8_t IRQNumber,
-            const uint8_t IRQPriority);
+    void GPIO_IRQPriorityConfig(const uint8_t IRQNumber, const uint8_t IRQPriority);
+    inline u8 get_irq_pinNum(u8 PinNumber);
 
 };
-
+inline u8 GPIO_Handler::get_irq_pinNum(u8 PinNumber) {
+    return (PinNumber < 5) ? PinNumber + 6 :
+           (PinNumber < 10) ? EXTI9_5_IRQn :
+           (PinNumber < 16) ? EXTI15_10_IRQn : 0;
+}
 #endif /* INC_STM32F446RE_GPIO_DRIVER_H_ */

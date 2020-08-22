@@ -180,7 +180,6 @@ constexpr void SPI_Handler::spi_ir_config() {
     }
 }
 
-// TODO: optimize GPIO_Handler driver
 template<size_t SIZE>
 void SPI_Handler::spi_transmit_data(array<u8, SIZE> &p_tx_buffer) {
     if (RESET == (spix_->CR1 & SPI_CR1_SPE)) {

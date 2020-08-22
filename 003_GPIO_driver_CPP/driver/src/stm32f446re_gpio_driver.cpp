@@ -6,7 +6,6 @@
  */
 
 #include "../inc/stm32f446re_gpio_driver.h"
-constexpr static inline u8 get_irq_pinNum(u8);
 
 /*!
  * @brief Constructor, initialize GPIO, clock, IRQ, Alt Function
@@ -314,10 +313,4 @@ void GPIO_IRQHandling(u8 PinNumber) {
         // clear by set to 1
         EXTI->PR |= (1 << PinNumber);
     }
-}
-
-constexpr static inline u8 get_irq_pinNum(u8 PinNumber) {
-    return (PinNumber < 5) ? PinNumber + 6 :
-           (PinNumber < 10) ? EXTI9_5_IRQn :
-           (PinNumber < 16) ? EXTI15_10_IRQn : 0;
 }

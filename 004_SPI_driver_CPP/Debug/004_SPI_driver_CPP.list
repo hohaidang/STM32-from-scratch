@@ -27,25 +27,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 0000002a  00000000  00000000  000402c8  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00026f7e  00000000  00000000  000402f2  2**0
+ 12 .debug_info   00026ff3  00000000  00000000  000402f2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_abbrev 000038d3  00000000  00000000  00067270  2**0
+ 13 .debug_abbrev 000038eb  00000000  00000000  000672e5  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_loc    00006d58  00000000  00000000  0006ab43  2**0
+ 14 .debug_loc    00006d3e  00000000  00000000  0006abd0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_aranges 00000440  00000000  00000000  000718a0  2**3
+ 15 .debug_aranges 00000440  00000000  00000000  00071910  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_ranges 00001210  00000000  00000000  00071ce0  2**3
+ 16 .debug_ranges 00001210  00000000  00000000  00071d50  2**3
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_macro  00007bed  00000000  00000000  00072ef0  2**0
+ 17 .debug_macro  00007bed  00000000  00000000  00072f60  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_line   0000865e  00000000  00000000  0007aadd  2**0
+ 18 .debug_line   00008668  00000000  00000000  0007ab4d  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .debug_str    0001e917  00000000  00000000  0008313b  2**0
+ 19 .debug_str    0001e93b  00000000  00000000  000831b5  2**0
                   CONTENTS, READONLY, DEBUGGING
- 20 .comment      0000007b  00000000  00000000  000a1a52  2**0
+ 20 .comment      0000007b  00000000  00000000  000a1af0  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00015c48  00000000  00000000  000a1ad0  2**2
+ 21 .debug_frame  00015c48  00000000  00000000  000a1b6c  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -4340,9 +4340,9 @@ void GPIO_Handler::GPIO_Init() {
     if (pin_mode >= GPIO_MODE_IT_FT) {
  800246e:	2b03      	cmp	r3, #3
  8002470:	d91d      	bls.n	80024ae <_ZN12GPIO_HandlerC1EP13GPIO_RegDef_thhhhhhh+0x156>
-}
+};
 
-constexpr static inline u8 get_irq_pinNum(u8 PinNumber) {
+inline u8 GPIO_Handler::get_irq_pinNum(u8 PinNumber) {
     return (PinNumber < 5) ? PinNumber + 6 :
            (PinNumber < 10) ? EXTI9_5_IRQn :
            (PinNumber < 16) ? EXTI15_10_IRQn : 0;
@@ -4356,6 +4356,11 @@ constexpr static inline u8 get_irq_pinNum(u8 PinNumber) {
  8002484:	fa01 f403 	lsl.w	r4, r1, r3
  8002488:	3204      	adds	r2, #4
  800248a:	109b      	asrs	r3, r3, #2
+void GPIO_Handler::GPIO_IRQInterruptConfig(const u8 IRQNumber,
+        const u8 EnorDi) {
+    if (EnorDi == ENABLE) {
+        if (IRQNumber <= 31) {
+            //  program ISER0 register
             NVIC->ISER[0] |= (1 << IRQNumber);
  800248c:	4d97      	ldr	r5, [pc, #604]	; (80026ec <_ZN12GPIO_HandlerC1EP13GPIO_RegDef_thhhhhhh+0x394>)
  800248e:	6829      	ldr	r1, [r5, #0]
@@ -4363,6 +4368,11 @@ constexpr static inline u8 get_irq_pinNum(u8 PinNumber) {
  8002492:	6029      	str	r1, [r5, #0]
  8002494:	009b      	lsls	r3, r3, #2
  8002496:	f103 4360 	add.w	r3, r3, #3758096384	; 0xe0000000
+        const u8 IRQPriority) {
+    // 1. first lets find out the ipr register
+    u8 iprx = IRQNumber >> 2;
+    u8 iprx_section = IRQNumber % 4;
+    u8 shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
     NVIC->IPR[iprx] |= (IRQPriority << shift_amount);
  800249a:	9902      	ldr	r1, [sp, #8]
  800249c:	f503 4361 	add.w	r3, r3, #57600	; 0xe100
@@ -4461,7 +4471,6 @@ constexpr static inline u8 get_irq_pinNum(u8 PinNumber) {
 }
  8002582:	b005      	add	sp, #20
  8002584:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
-           (PinNumber < 16) ? EXTI15_10_IRQn : 0;
  8002588:	2a09      	cmp	r2, #9
  800258a:	d90f      	bls.n	80025ac <_ZN12GPIO_HandlerC1EP13GPIO_RegDef_thhhhhhh+0x254>
  800258c:	2a0f      	cmp	r2, #15
@@ -4476,7 +4485,6 @@ constexpr static inline u8 get_irq_pinNum(u8 PinNumber) {
  80025a2:	f044 0404 	orr.w	r4, r4, #4
  80025a6:	f8cc 4030 	str.w	r4, [ip, #48]	; 0x30
  80025aa:	e723      	b.n	80023f4 <_ZN12GPIO_HandlerC1EP13GPIO_RegDef_thhhhhhh+0x9c>
-           (PinNumber < 16) ? EXTI15_10_IRQn : 0;
  80025ac:	221c      	movs	r2, #28
  80025ae:	2305      	movs	r3, #5
  80025b0:	f44f 0400 	mov.w	r4, #8388608	; 0x800000

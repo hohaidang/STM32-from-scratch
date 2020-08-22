@@ -89,19 +89,19 @@ typedef struct
  * Bit position definitions SysTick_CSR
  * */
 #define SYSTICK_CSR_ENA_Pos             (0u)
-#define SYSTICK_CSR_ENA_Msk             (0x1UL << SYSTICK_CSR_ENA_Pos)
+#define SYSTICK_CSR_ENA_Msk             ( static_cast<u32>(0x1UL << SYSTICK_CSR_ENA_Pos) )
 #define SYSTICK_CSR_ENA                 (SYSTICK_CSR_ENA_Msk)
 
 #define SYSTICK_CSR_TICKINT_Pos         (1u)
-#define SYSTICK_CSR_TICKINT_Msk         (0x1UL << SYSTICK_CSR_TICKINT_Pos)
+#define SYSTICK_CSR_TICKINT_Msk         ( static_cast<u32>(0x1UL << SYSTICK_CSR_TICKINT_Pos))
 #define SYSTICK_CSR_TICKINT             (SYSTICK_CSR_TICKINT_Msk)
 
 #define SYSTICK_CSR_CLKSOURCE_Pos       (2u)
-#define SYSTICK_CSR_CLKSOURCE_Msk       (0x1UL << SYSTICK_CSR_CLKSOURCE_Pos)
+#define SYSTICK_CSR_CLKSOURCE_Msk       ( static_cast<u32>(0x1UL << SYSTICK_CSR_CLKSOURCE_Pos) )
 #define SYSTICK_CSR_CLKSOURCE           (SYSTICK_CSR_CLKSOURCE_Msk)
 
 #define SYSTICK_CSR_COUNTFLAG_Pos       (16u)
-#define SYSTICK_CSR_COUNTFLAG_Msk       (0x1UL << SYSTICK_CSR_COUNTFLAG_Pos)
+#define SYSTICK_CSR_COUNTFLAG_Msk       ( static_cast<u32>(0x1UL << SYSTICK_CSR_COUNTFLAG_Pos) )
 #define SYSTICK_CSR_COUNTFLAG           (SYSTICK_CSR_COUNTFLAG_Msk)
 
 // Cortex M4 just have 16 priorities NVIC (4 most significant bits)

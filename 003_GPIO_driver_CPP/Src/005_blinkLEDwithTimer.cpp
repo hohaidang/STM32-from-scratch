@@ -7,22 +7,19 @@
 
 
 
-#include "../driver/stm32f446re_gpio_driver.h"
-#include "../driver/sys_tick_driver.h"
+#include "../driver/inc/stm32f446re_gpio_driver.h"
+#include "../driver/inc/sys_tick_driver.h"
 
-SysTick SysTick;
-GPIO_Handler<GPIO_PIN_NO_5,
-                 GPIO_MODE_OUT,
-                 GPIO_SPEED_LOW,
-                 GPIO_OP_TYPE_PP,
-                 GPIO_NO_PUPD,
-                 IRQ_Prio_NO_15,
-                 DISABLE> LED2(GPIOA);
 
 int main(void)
 {
-
-
+    SysTick SysTick;
+    GPIO_Handler LED2 = GPIO_Handler(GPIOA,
+                                    GPIO_PIN_NO_5,
+                                    GPIO_MODE_OUT,
+                                    GPIO_SPEED_LOW,
+                                    GPIO_OP_TYPE_PP,
+                                    GPIO_NO_PUPD);
 
     while(1)
     {

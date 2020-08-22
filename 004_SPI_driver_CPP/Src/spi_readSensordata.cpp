@@ -33,8 +33,7 @@ u8 user_spi_write(const u8, const u8 *, u32);
 
 
 unique_ptr<SysTick> SystemTick;
-unique_ptr<SPI_Handler> SPI1_Handler;
-unique_ptr<GPIO_Handler> PB6;
+unique_ptr<SPI_Handler> spi1;
 unique_ptr<BMESensor_Handler> bme280;
 
 
@@ -76,7 +75,7 @@ void InitilizePeripheral(void) {
     // HSI Clock 16 MHz
     SystemTick.reset( new SysTick() );
 
-    SPI1_Handler.reset( new SPI_Handler(SPI1,
+    spi1.reset( new SPI_Handler(SPI1,
                                         SPI_DEVICE_MODE_MASTER,
                                         SPI_BUS_CONFIG_FD,
                                         SPI_SCLK_SPEED_DIV2,
@@ -85,16 +84,10 @@ void InitilizePeripheral(void) {
                                         SPI_CPHA_LOW,
                                         SPI_SSM_EN) );
 
-    SPI1_Handler->spi_ir_config<SPI1_IRQn, ENABLE>();
-    SPI1_Handler->spi_ir_prio_config<SPI1_IRQn, IRQ_Prio_NO_15>();
-
-    PB6.reset( new GPIO_Handler(GPIOB,
-                               GPIO_PIN_NO_6,
-                               GPIO_MODE_OUT,
-                               GPIO_SPEED_FAST,
-                               GPIO_OP_TYPE_PP,
-                               GPIO_NO_PUPD) );
-    PB6->GPIO_WriteToOutputPin(SET);
+    spi1->spi_ir_config<SPI1_IRQn, ENABLE>();
+    spi1->spi_ir_prio_config<SPI1_IRQn, IRQ_Prio_NO_15>();
+    spi1->spi_init_nss_sw(GPIOB, GPIO_PIN_NO_6);
+    spi1->spi_nss_->gpio_write_to_output_pin(SET);
 
     bme280.reset( new BMESensor_Handler(user_spi_read,
                                         user_spi_write,
@@ -112,11 +105,11 @@ u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
 
     txBuffer[0] = reg_addr;
 
-    PB6->GPIO_WriteToOutputPin(RESET);
+    spi1->spi_nss_->gpio_write_to_output_pin(RESET);
 
-    SPI1_Handler->spi_transmit_receive_data_it(txBuffer.data(), rxBuffer.data(), len + 1);
+    spi1->spi_transmit_receive_data_it(txBuffer.data(), rxBuffer.data(), len + 1);
 
-    PB6->GPIO_WriteToOutputPin(SET);
+    spi1->spi_nss_->gpio_write_to_output_pin(SET);
     // copy to reg_data
     for(u32 i = 0; i < len; ++i) {
         reg_data[i] = rxBuffer[i + 1];
@@ -131,11 +124,11 @@ u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
         txBuffer[i + 1] = reg_data[i];
     }
 
-    PB6->GPIO_WriteToOutputPin(RESET);
+    spi1->spi_nss_->gpio_write_to_output_pin(RESET);
 
-    SPI1_Handler->spi_transmit_data_it(txBuffer.data(), len + 1);
+    spi1->spi_transmit_data_it(txBuffer.data(), len + 1);
 
-    PB6->GPIO_WriteToOutputPin(SET);
+    spi1->spi_nss_->gpio_write_to_output_pin(SET);
 
     return 0;
 }
@@ -147,11 +140,11 @@ u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
 //
 //    txBuffer[0] = reg_addr;
 //
-//    PB6->GPIO_WriteToOutputPin(RESET);
+//    spi1->spi_nss_->gpio_write_to_output_pin(RESET);
 //
-//    SPI1_Handler->spi_transmit_receive_data(txBuffer.data(), rxBuffer.data(), len + 1);
+//    spi1->spi_transmit_receive_data(txBuffer.data(), rxBuffer.data(), len + 1);
 //
-//    PB6->GPIO_WriteToOutputPin(SET);
+//    spi1->spi_nss_->gpio_write_to_output_pin(SET);
 //
 //    // copy to reg_data
 //    for(u32 i = 0; i < len; ++i) {
@@ -161,16 +154,16 @@ u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
 //}
 //
 //u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
-//    array<u8, 29> txBuffer = {};
+//    array<u8, BME280_MAX_SIZE_WR> txBuffer = {};
 //
 //    txBuffer[0] = reg_addr;
 //    for(u32 i = 0; i < len; ++i) {
 //        txBuffer[i + 1] = reg_data[i];
 //    }
 //
-//    PB6->GPIO_WriteToOutputPin(RESET);
-//    SPI1_Handler->spi_transmit_data(txBuffer.data(), len + 1);
-//    PB6->GPIO_WriteToOutputPin(SET);
+//    spi1->spi_nss_->gpio_write_to_output_pin(RESET);
+//    spi1->spi_transmit_data(txBuffer.data(), len + 1);
+//    spi1->spi_nss_->gpio_write_to_output_pin(SET);
 //
 //    return 0;
 //}
@@ -178,6 +171,6 @@ u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
 extern "C" {
     void SPI1_IRQHandler(void) {
         // handle the interrupt
-        SPI1_Handler->spi_irq_handling();
+        spi1->spi_irq_handling();
     }
 }

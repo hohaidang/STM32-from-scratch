@@ -31,4 +31,5 @@ CPP_DEPS :=
 SUBDIRS := \
 Src \
 Startup \
+driver/src \
 

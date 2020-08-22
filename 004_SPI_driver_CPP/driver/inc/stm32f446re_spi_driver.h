@@ -95,6 +95,7 @@ protected:
     std::unique_ptr<GPIO_Handler> spi_sck_;
     std::unique_ptr<GPIO_Handler> spi_mosi_;
     std::unique_ptr<GPIO_Handler> spi_miso_;
+public:
     std::unique_ptr<GPIO_Handler> spi_nss_;
 
 public:
@@ -111,12 +112,12 @@ public:
 
     void spi_init();
     void spi_deinit();
+    void spi_init_nss_sw(GPIO_RegDef_t *GPIOx_addr, const uint8_t pin_number);
 
     // Data Send and Receive
     void spi_transmit_data(const u8 *pTxBuffer, u32 Len);
     void spi_receive_data(u8 *pRxBuffer, u32 Len);
     void spi_transmit_receive_data(const u8 *p_tx_buffer, u8 *p_rx_buffer, u32 len);
-
 
     template<size_t SIZE> void spi_transmit_data(array<u8, SIZE> &p_tx_buffer);
 

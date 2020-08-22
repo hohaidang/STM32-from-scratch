@@ -13,7 +13,7 @@
 
 #define DEBUG_EN
 #ifdef DEBUG_EN
-//#include <iostream>
+#include <iostream>
 #include <iomanip>
 #endif
 
@@ -261,21 +261,21 @@ typedef struct {
 #define SPI4                        ( reinterpret_cast<SPI_RegDef_t *>      (SPI4_BASEADDR) )
 
 // RCC CLOCK ENABLE
-#define GPIOA_PCLK_EN()             (RCC->AHB1ENR |=  (1u << 0u))
-#define GPIOB_PCLK_EN()             (RCC->AHB1ENR |=  (1u << 1u))
-#define GPIOC_PCLK_EN()             (RCC->AHB1ENR |=  (1u << 2u))
-#define GPIOD_PCLK_EN()             (RCC->AHB1ENR |=  (1u << 3u))
-#define GPIOE_PCLK_EN()             (RCC->AHB1ENR |=  (1u << 4u))
-#define GPIOF_PCLK_EN()             (RCC->AHB1ENR |=  (1u << 5u))
-#define GPIOG_PCLK_EN()             (RCC->AHB1ENR |=  (1u << 6u))
-#define GPIOH_PCLK_EN()             (RCC->AHB1ENR |=  (1u << 7u))
+#define GPIOA_PCLK_EN()             (RCC->AHB1ENR |=  (1 << 0u))
+#define GPIOB_PCLK_EN()             (RCC->AHB1ENR |=  (1 << 1u))
+#define GPIOC_PCLK_EN()             (RCC->AHB1ENR |=  (1 << 2u))
+#define GPIOD_PCLK_EN()             (RCC->AHB1ENR |=  (1 << 3u))
+#define GPIOE_PCLK_EN()             (RCC->AHB1ENR |=  (1 << 4u))
+#define GPIOF_PCLK_EN()             (RCC->AHB1ENR |=  (1 << 5u))
+#define GPIOG_PCLK_EN()             (RCC->AHB1ENR |=  (1 << 6u))
+#define GPIOH_PCLK_EN()             (RCC->AHB1ENR |=  (1 << 7u))
 
 #define SYSCFG_PCLK_EN()            (RCC->APB2ENR |= (1 << 14u))
 
-#define SPI1_PCLK_EN()              (RCC->APB2ENR |= (1u << 12u))
-#define SPI2_PCLK_EN()              (RCC->APB1ENR |= (1u << 14u))
-#define SPI3_PCLK_EN()              (RCC->APB1ENR |= (1u << 15u))
-#define SPI4_PCLK_EN()              (RCC->APB2ENR |= (1u << 13u))
+#define SPI1_PCLK_EN()              (RCC->APB2ENR |= (1 << 12u))
+#define SPI2_PCLK_EN()              (RCC->APB1ENR |= (1 << 14u))
+#define SPI3_PCLK_EN()              (RCC->APB1ENR |= (1 << 15u))
+#define SPI4_PCLK_EN()              (RCC->APB2ENR |= (1 << 13u))
 
 // RCC RESET
 #define GPIOA_REG_RESET()               do{ (RCC->AHB1RSTR |= (1 << 0)); (RCC->AHB1RSTR &= ~(1 << 0)); }while(0)

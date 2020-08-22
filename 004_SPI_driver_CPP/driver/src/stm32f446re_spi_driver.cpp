@@ -120,7 +120,7 @@ void SPI_Handler::spi_gpios_init() {
                                             GPIO_OP_TYPE_PP,
                                             GPIO_NO_PUPD,
                                             IRQ_Prio_NO_15,
-                                            5));
+                                            GPIO_ALT_5));
         }
     }
 }
@@ -195,6 +195,22 @@ void SPI_Handler::spi_deinit() {
     }
 }
 
+/*!
+ * @brief Init nss pin for sw chip select control
+ *
+ * @param: None
+ *
+ * @return None
+ *
+ */
+void SPI_Handler::spi_init_nss_sw(GPIO_RegDef_t *GPIOx_addr, const u8 pin_number) {
+    spi_nss_.reset( new GPIO_Handler(GPIOx_addr,
+                                pin_number,
+                                GPIO_MODE_OUT,
+                                GPIO_SPEED_FAST,
+                                GPIO_OP_TYPE_PP,
+                                GPIO_NO_PUPD) );
+}
 
 /*!
  * @brief Send data via SPI protocol.

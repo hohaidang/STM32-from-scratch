@@ -1,4 +1,6 @@
-"Src/005_blinkLEDwithTimer.o"
+"Src/004_btm_interrupt.o"
 "Src/syscalls.o"
 "Src/sysmem.o"
 "Startup/startup_stm32f446retx.o"
+"driver/src/stm32f446re_gpio_driver.o"
+"driver/src/sys_tick_driver.o"

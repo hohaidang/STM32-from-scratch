@@ -1,5 +1,0 @@
-sys_tick_driver.h:84:10:void SysTick_Handler()	0	static
-005_blinkLEDwithTimer.cpp:22:5:int main()	0	static
-stm32f446re_gpio_driver.h:324:10:void GPIO_Handler<pin_number, pin_mode, pin_speed, output_type, pupd_control, irq_priority, alt_func_mode>::gpio_de_init() [with unsigned char pin_number = 5; unsigned char pin_mode = 1; unsigned char pin_speed = 0; unsigned char output_type = 0; unsigned char pupd_control = 0; unsigned char irq_priority = 15; unsigned char alt_func_mode = 0]	0	static
-005_blinkLEDwithTimer.cpp:33:1:cpp)	16	static
-005_blinkLEDwithTimer.cpp:33:1:cpp)	8	static

@@ -308,6 +308,7 @@ void GPIO_Handler::gpio_irq_priority_config(const uint8_t irq_number, const uint
  *
  */
 void GPIO_Handler::gpio_irq_handling() {
+    // clear the EXIT PR register corresponding to the pin number
     if (EXTI->PR & (1UL << config_.GPIO_PinNumber)) {
         // clear by set to 1
         EXTI->PR |= (1UL << config_.GPIO_PinNumber);

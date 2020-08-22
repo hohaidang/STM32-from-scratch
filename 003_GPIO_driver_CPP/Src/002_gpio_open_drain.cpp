@@ -6,7 +6,7 @@
  */
 
 
-#include "../driver/stm32f446re_gpio_driver.h"
+#include "../driver/inc/stm32f446re_gpio_driver.h"
 
 
 void delay(void) {
@@ -19,7 +19,7 @@ void small_delay(void) {
 
 int main(void)
 {
-	GPIO_Handler<GPIO_PIN_NO_5, GPIO_MODE_OUT, GPIO_SPEED_LOW, GPIO_OP_TYPE_OD, GPIO_NO_PUPD, IRQ_Prio_NO_15, DISABLE> LED2(GPIOA);
+	GPIO_Handler LED2 = GPIO_Handler(GPIOA, GPIO_PIN_NO_5, GPIO_MODE_OUT, GPIO_SPEED_LOW, GPIO_OP_TYPE_OD, GPIO_NO_PUPD);
 	LED2.gpio_write_to_output_pin(1);
 	for(;;) {
 		delay();

@@ -22,11 +22,11 @@ int main(void)
 {
 	GPIO_Handler LED2 = GPIO_Handler(GPIOA, GPIO_PIN_NO_5, GPIO_MODE_OUT, GPIO_SPEED_LOW, GPIO_OP_TYPE_PP, GPIO_NO_PUPD);
 	GPIO_Handler user_button = GPIO_Handler(GPIOC, GPIO_PIN_NO_13, GPIO_MODE_IN, GPIO_SPEED_LOW);
-	LED2.GPIO_WriteToOutputPin(1);
+	LED2.gpio_write_to_output_pin(1);
 	for(;;) {
-		if(!user_button.GPIO_ReadFromInputPin()) {
+		if(!user_button.gpio_read_from_input_pin()) {
 			small_delay(); // remove debouncing for Botton
-			LED2.GPIO_ToggleOutputPin();
+			LED2.gpio_toggle_output_pin();
 		}
 	}
 

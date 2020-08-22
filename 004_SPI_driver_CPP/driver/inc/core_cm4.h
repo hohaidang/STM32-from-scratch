@@ -79,6 +79,13 @@ typedef struct
 #define SCB                 ( reinterpret_cast<SCB_Reg_t *>      (SCB_BASEADDR)      )   /*!< SCB configuration struct */
 
 /*
+ * Bit position definitions SCK_SHPR
+ * */
+#define SCB_SHPR_SYSTICK_Pos            (24U)
+#define SCB_SHPR_SYSTICK_Msk            (static_cast<u32>(1U << SCB_SHPR_SYSTICK_Pos))
+#define SCB_SHPR_SYSTICK                (SCB_SHPR_SYSTICK_Msk)
+
+/*
  * Bit position definitions SysTick_CSR
  * */
 #define SYSTICK_CSR_ENA_Pos             (0u)

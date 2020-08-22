@@ -30,7 +30,7 @@ SysTick::SysTick() {
 
     SYSTICK->RVR = compute_reload_tick<HSI_CLOCK>::value; /* set reload register */
 
-    SCB->SHPR[3] |= 0; /* Set priority 0 for system tick */
+    SCB->SHPR[2] |= static_cast<u32>(IRQ_Prio_NO_0 << SCB_SHPR_SYSTICK_Pos); /* Set priority 0 for system tick */
 
     // Reset Systick counter value
     SYSTICK->CVR = 0;

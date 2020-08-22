@@ -11,12 +11,8 @@
 #include "stm32f4xx.h"
 #include "core_cm4.h"
 #include <memory>
-<<<<<<< HEAD
 #include <functional>
-=======
-#include <vector>
-#include <queue>
->>>>>>> parent of d7aa2b3... Clean code SPI interrupt
+#include <array>
 using namespace std;
 
 // @SPI_DeviceMode
@@ -67,98 +63,236 @@ typedef enum {
 #define SPI_EVENT_OVR_ERR   static_cast<u8>(3)
 
 typedef struct {
-    u8 SPI_DeviceMode; /*!<possible values from @SPI_DeviceMode>*/
-    u8 SPI_BusConfig; /*!<possible values from @SPI_BusConfig>*/
-    u8 SPI_SclkSpeed; /*!<possible values from @SPI_SclkSpeed>*/
-    u8 SPI_DFF; /*!<possible values from @SPI_DFF>*/
-    u8 SPI_CPOL; /*!<possible values from @SPI_CPOL>*/
-    u8 SPI_CPHA; /*!<possible values from @SPI_CPHA>*/
-    u8 SPI_SSM; /*!<possible values from @SPI_SSM>*/
+    u8 spi_device_mode; /*!<possible values from @SPI_DeviceMode>*/
+    u8 spi_bus_config; /*!<possible values from @SPI_BusConfig>*/
+    u8 spi_sclk_speed; /*!<possible values from @SPI_SclkSpeed>*/
+    u8 spi_dff; /*!<possible values from @SPI_DFF>*/
+    u8 spi_cpol; /*!<possible values from @SPI_CPOL>*/
+    u8 spi_cpha; /*!<possible values from @SPI_CPHA>*/
+    u8 spi_ssm; /*!<possible values from @SPI_SSM>*/
 } SPI_Config_t;
 
 typedef struct {
-<<<<<<< HEAD
-    volatile u8 *tx_buf; /* !< To store the app. Tx buffer address > */
-    volatile u8 *rx_buf; /* !< To store the app. Rx buffer address > */
-    volatile u32 tx_len; /* !< To store Tx len > */
-    volatile u32 rx_len; /* !< To store Rx len > */
-    volatile u8 tx_state; /* !< To store Tx state > */
-    volatile u8 rx_state; /* !< To store Rx state > */
-    std::function<void(void)> receive_fnc; /* Function pointer for receiving data in interrupt */
+    volatile u8 *tx_buf;                    /* !< To store the app. Tx buffer address > */
+    volatile u8 *rx_buf;                    /* !< To store the app. Rx buffer address > */
+    volatile u32 tx_len;                    /* !< To store Tx len > */
+    volatile u32 init_tx_len;               /* !< To store Tx len of initial transmission> */
+    volatile u32 rx_len;                    /* !< To store Rx len > */
+    volatile u8 tx_state;                   /* !< To store Tx state > */
+    volatile u8 rx_state;                   /* !< To store Rx state > */
+    std::function<void(void)> receive_fnc;  /* Function pointer for receiving data in interrupt */
     std::function<void(void)> transmit_fnc; /* Function pointer for transmission data in interrupt */
-=======
-    queue<u8> TxBuffer; /* !< To store the app. Tx buffer address > */
-    queue<u8> RxBuffer; /* !< To store the app. Rx buffer address > */
-    u32 TxLen; /* !< To store Tx len > */
-    u32 RxLen; /* !< To store Tx len > */
-    u8 TxState; /* !< To store Tx state > */
-    u8 RxState; /* !< To store Rx state > */
->>>>>>> parent of d7aa2b3... Clean code SPI interrupt
 } SPI_Handle_t;
 
 void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle, u8 AppEv);
-
 class GPIO_Handler;
 
 class SPI_Handler {
 protected:
-    SPI_RegDef_t *SPIx_; /*!< This holds the base address of SPIx(x:0,1,2) peripheral >*/
+    volatile SPI_RegDef_t *spix_; /*!< This holds the base address of SPIx(x:0,1,2) peripheral >*/
     SPI_Config_t config_ = { };
     SPI_Handle_t handle_ = { };
-    std::unique_ptr<GPIO_Handler> SPI_Sck;
-    std::unique_ptr<GPIO_Handler> SPI_MOSI;
-    std::unique_ptr<GPIO_Handler> SPI_MISO;
-    std::unique_ptr<GPIO_Handler> SPI_NSS;
+    std::unique_ptr<GPIO_Handler> spi_sck_;
+    std::unique_ptr<GPIO_Handler> spi_mosi_;
+    std::unique_ptr<GPIO_Handler> spi_miso_;
+    std::unique_ptr<GPIO_Handler> spi_nss_;
 
 public:
-    SPI_Handler(SPI_RegDef_t *SPIx_ADDR, u8 device_mode, u8 bus_config,
-                u8 sclk_speed, u8 DFF, u8 CPOL, u8 CPHA, u8 SSM);
-    ~SPI_Handler();
+    SPI_Handler(SPI_RegDef_t *spix_addr,
+                u8 device_mode,
+                u8 bus_config,
+                u8 sclk_speed,
+                u8 dff,
+                u8 cpol,
+                u8 cpha,
+                u8 ssm);
 
-    // peripheral clock setup
+    ~SPI_Handler();
 
     void spi_init();
     void spi_deinit();
 
-    inline u8 spi_get_SR_reg(const u32 FlagName);
-
     // Data Send and Receive
     void spi_transmit_data(const u8 *pTxBuffer, u32 Len);
     void spi_receive_data(u8 *pRxBuffer, u32 Len);
-    void spi_transmit_receive_data(const u8 *pTxBuffer, u8 *pRxBuffer, u32 len);
+    void spi_transmit_receive_data(const u8 *p_tx_buffer, u8 *p_rx_buffer, u32 len);
+
+
+    template<size_t SIZE> void spi_transmit_data(array<u8, SIZE> &p_tx_buffer);
 
     // Data Send and Receive in interrupt mode
-<<<<<<< HEAD
     void spi_transmit_data_it(u8 *p_tx_buf, const u32 len);
     void spi_receive_data_it(u8 *p_rx_buf, const u32 len);
     void spi_transmit_receive_data_it(u8 *p_tx_buf, u8 *p_rx_buf, const u32 len);
-=======
-    // TODO: Remove u8
-    u8 spi_transmit_data_it(vector<u8> &TxBuffer, const u32 Len);
-    u8 spi_receive_data_it(vector<u8> &RxBuffer, const u32 Len);
-    u8 spi_transmit_receive_data_it(vector<u8> &pTxBuffer, vector<u8> &pRxBuffer, const u32 Len);
->>>>>>> parent of d7aa2b3... Clean code SPI interrupt
+    void spi_irq_handling();
 
     // IRQ Configuration and ISR Handling
-    void spi_ir_config(const u8 IRQNumber, const u8 EnorDi);
-    void spi_ir_prio_config(const u8 IRQNumber, const u8 IRQPriority);
-    void spi_irq_handling();
-    void spi_clear_OVR_flag();
+    template<u8 irq_number, u8 en_or_di> constexpr void spi_ir_config();
+    template<u8 irq_number, u8 irq_priority> constexpr void spi_ir_prio_config();
 
-    u8 spi_get_tx_state();
-    u8 spi_get_rx_state();
+    u8 spi_get_tx_state() const
+    { return handle_.tx_state; }
+    u8 spi_get_rx_state() const
+    { return handle_.rx_state; }
+
+    template<u32 flag_name> constexpr inline u8 spi_get_SR_reg();
 
 private:
-    void spi_peripheral_control(u8 EnOrDi); // EnorDi: enable or disable
+    void spi_clear_ovr_flag();
     void spi_peripheral_clock_init();
     void spi_gpios_init();
-    void spi_ssi_config(const u8 EnOrDi);
-    void spi_ssoe_config(const u8 EnOrDi);
-    void spi_txe_interrupt_handle();
-    void spi_rxne_interrupt_handle();
+
+    void spi_rx_8bit_it();
+    void spi_tx_8bit_it();
     void spi_ovr_err_interrupt_handle();
     void spi_close_tx_rx_isr();
+    template<u8 en_or_di> constexpr inline void spi_ssi_config();
+    template<u8 en_or_di> constexpr inline void spi_ssoe_config();
+    template<u8 en_or_di> constexpr inline void spi_peripheral_control();
     inline u8 spi_check_flag(const u32 __REG__, u32 __FLAG__);
 };
 
+
+template<u8 irq_number, u8 en_or_di>
+constexpr void SPI_Handler::spi_ir_config() {
+    if (en_or_di == ENABLE) {
+        if (irq_number <= 31) {
+            //  program ISER0 register
+            NVIC->ISER[0] |= (1 << irq_number);
+        } else if (irq_number > 31 && irq_number < 64) {
+            // program ISER1 register
+            NVIC->ISER[1] |= (1 << (irq_number % 32));
+        } else if (irq_number >= 64 && irq_number < 96) {
+            // program ISER2 register
+            NVIC->ISER[2] |= (1 << (irq_number % 64));
+        }
+    } else {
+        if (irq_number <= 31) {
+            // program ICER0 register
+            NVIC->ICER[0] |= (1 << irq_number);
+        } else if (irq_number > 31 && irq_number < 64) {
+            // program ICER1 register
+            NVIC->ICER[1] |= (1 << (irq_number % 32));
+        } else if (irq_number >= 64 && irq_number < 96) {
+            // program ICE2 register
+            NVIC->ICER[2] |= (1 << (irq_number % 64));
+        }
+    }
+}
+
+// TODO: optimize GPIO_Handler driver
+template<size_t SIZE>
+void SPI_Handler::spi_transmit_data(array<u8, SIZE> &p_tx_buffer) {
+    if (RESET == (spix_->CR1 & SPI_CR1_SPE)) {
+        spi_peripheral_control<ENABLE>();
+    }
+    auto it = p_tx_buffer.begin();
+    while(it != p_tx_buffer.end()) {
+        /* Wait until tx buffer empty */
+        while (RESET == spi_get_SR_reg<SPI_SR_TXE>());
+
+        if(spix_->CR1 & SPI_CR1_DFF) {
+            /* 16 BIT DFF*/
+            // TODO: develop later
+
+//            spix_->DR = *
+        }
+        else {
+            spix_->DR = *it;
+            ++it;
+        }
+    }
+    while(spi_get_SR_reg<SPI_SR_BSY>());
+    spi_clear_ovr_flag();
+}
+
+/*!
+ * @brief peripheral clock control
+ *
+ * @param: None
+ *
+ * @return None
+ *
+ */
+template<u8 en_or_di>
+constexpr inline void SPI_Handler::spi_peripheral_control() {
+    if (ENABLE == en_or_di) {
+        spix_->CR1 |= SPI_CR1_SPE;
+    } else {
+        spix_->CR1 &= ~SPI_CR1_SPE;
+    }
+}
+
+
+template<u8 irq_number, u8 irq_priority>
+constexpr void SPI_Handler::spi_ir_prio_config() {
+        // 1. first lets find out the ipr register
+        u8 iprx = irq_number >> 2;
+        u8 iprx_section = irq_number % 4;
+        u8 shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
+        NVIC->IPR[iprx] |= (irq_priority << shift_amount);
+}
+
+/*!
+ * @brief Get Flag register status
+ *
+ * @param[in]         - FlagName: check @FLAG_NAME_STATUS
+ *
+ * @return None
+ *
+ */
+template<u32 flag_name>
+constexpr inline u8 SPI_Handler::spi_get_SR_reg() {
+    return (spix_->SR & flag_name) ? SET : RESET;
+}
+
+/*!
+ * @brief Configure software slave output enable
+ *
+ * @param[in]: Enable/Disable
+ *
+ * @return None
+ *
+ */
+template<u8 en_or_di>
+constexpr inline void SPI_Handler::spi_ssoe_config() {
+    if (en_or_di == ENABLE) {
+        spix_->CR2 |= SPI_CR2_SSOE;
+    } else {
+        spix_->CR2 &= ~(SPI_CR2_SSOE);
+    }
+}
+
+
+/*!
+ * @brief Configure internal slave select
+ *
+ * @param[in]: Enable/Disable
+ *
+ * @return None
+ *
+ */
+template<u8 en_or_di>
+constexpr inline void SPI_Handler::spi_ssi_config() {
+    if (en_or_di == ENABLE) {
+        spix_->CR1 |= SPI_CR1_SSI;
+    } else {
+        spix_->CR1 &= ~SPI_CR1_SSI;
+    }
+}
+
+
+/** @brief  Check whether the specified SPI flag is set or not.
+  * @param  __REG__  copy of SPI registers.
+  * @param  __FLAG__ specifies the flag to check.
+  *         This parameter can be one of the following values:
+  *            @arg SPI_SR_RXNE: Receive buffer not empty flag
+  *            @arg SPI_SR_TXE: Transmit buffer empty flag
+  *            @arg SPI_SR_OVR: Overrun flag
+  *            @arg SPI_SR_BSY: Busy flag
+  * @retval SET or RESET.
+  */
+inline u8 SPI_Handler::spi_check_flag(const u32 __REG__, const u32 __FLAG__) {
+    return ((__REG__ & __FLAG__) != RESET) ? SET : RESET;
+}
 #endif /* INC_STM32F446RE_SPI_DRIVER_H_ */

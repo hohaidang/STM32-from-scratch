@@ -1,5 +1,5 @@
 gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
-stm32f4xx.h:261:16:uint8_t gpio_baseAddr_to_code(GPIO_RegDef_t*)	16	static
+stm32f4xx.h:420:16:uint8_t gpio_baseAddr_to_code(GPIO_RegDef_t*)	16	static
 stm32f446re_gpio_driver.cpp:19:1:GPIO_Handler::GPIO_Handler(GPIO_RegDef_t*, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t)	32	static
 stm32f446re_gpio_driver.cpp:43:1:GPIO_Handler::~GPIO_Handler()	16	static
 stm32f446re_gpio_driver.cpp:55:6:void GPIO_Handler::GPIO_PeriClockControl()	16	static

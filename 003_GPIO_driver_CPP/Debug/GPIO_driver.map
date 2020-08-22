@@ -927,8 +927,8 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x41 driver/src/stm32f446re_gpio_driver.o
  .debug_macro   0x0000000000000000       0x40 driver/src/stm32f446re_gpio_driver.o
  .debug_macro   0x0000000000000000       0x20 driver/src/stm32f446re_gpio_driver.o
- .debug_macro   0x0000000000000000      0x2ef driver/src/stm32f446re_gpio_driver.o
- .debug_macro   0x0000000000000000       0x88 driver/src/stm32f446re_gpio_driver.o
+ .debug_macro   0x0000000000000000      0x3f2 driver/src/stm32f446re_gpio_driver.o
+ .debug_macro   0x0000000000000000       0x9a driver/src/stm32f446re_gpio_driver.o
  .debug_macro   0x0000000000000000      0x11e driver/src/stm32f446re_gpio_driver.o
  .group         0x0000000000000000        0xc driver/src/sys_tick_driver.o
  .group         0x0000000000000000        0xc driver/src/sys_tick_driver.o
@@ -1108,8 +1108,8 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x41 driver/src/sys_tick_driver.o
  .debug_macro   0x0000000000000000       0x40 driver/src/sys_tick_driver.o
  .debug_macro   0x0000000000000000       0x20 driver/src/sys_tick_driver.o
- .debug_macro   0x0000000000000000      0x2ef driver/src/sys_tick_driver.o
- .debug_macro   0x0000000000000000       0x88 driver/src/sys_tick_driver.o
+ .debug_macro   0x0000000000000000      0x3f2 driver/src/sys_tick_driver.o
+ .debug_macro   0x0000000000000000       0x9a driver/src/sys_tick_driver.o
  .debug_macro   0x0000000000000000      0x11e driver/src/sys_tick_driver.o
  .text          0x0000000000000000        0x0 c:/st/stm32cubeide_1.3.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.7-2018-q2-update.win32_1.4.0.202007081208/tools/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libstdc++_nano.a(ios_init.o)
  .data          0x0000000000000000        0x0 c:/st/stm32cubeide_1.3.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.7-2018-q2-update.win32_1.4.0.202007081208/tools/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libstdc++_nano.a(ios_init.o)
@@ -16358,21 +16358,21 @@ LOAD c:/st/stm32cubeide_1.3.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
                 0x00000000000024cd       0x1e c:/st/stm32cubeide_1.3.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.7-2018-q2-update.win32_1.4.0.202007081208/tools/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7e-m/crtn.o
 OUTPUT(GPIO_driver.elf elf32-littlearm)
 
-.debug_info     0x0000000000000000     0xb419
+.debug_info     0x0000000000000000     0xb671
  .debug_info    0x0000000000000000     0x3207 Src/005_blinkLEDwithTimer.o
  .debug_info    0x0000000000003207      0xefd Src/syscalls.o
  .debug_info    0x0000000000004104      0x91c Src/sysmem.o
  .debug_info    0x0000000000004a20       0x22 Startup/startup_stm32f446retx.o
- .debug_info    0x0000000000004a42     0x39d1 driver/src/stm32f446re_gpio_driver.o
- .debug_info    0x0000000000008413     0x3006 driver/src/sys_tick_driver.o
+ .debug_info    0x0000000000004a42     0x3c1f driver/src/stm32f446re_gpio_driver.o
+ .debug_info    0x0000000000008661     0x3010 driver/src/sys_tick_driver.o
 
-.debug_abbrev   0x0000000000000000     0x1801
+.debug_abbrev   0x0000000000000000     0x181f
  .debug_abbrev  0x0000000000000000      0x60e Src/005_blinkLEDwithTimer.o
  .debug_abbrev  0x000000000000060e      0x279 Src/syscalls.o
  .debug_abbrev  0x0000000000000887      0x1bb Src/sysmem.o
  .debug_abbrev  0x0000000000000a42       0x12 Startup/startup_stm32f446retx.o
- .debug_abbrev  0x0000000000000a54      0x763 driver/src/stm32f446re_gpio_driver.o
- .debug_abbrev  0x00000000000011b7      0x64a driver/src/sys_tick_driver.o
+ .debug_abbrev  0x0000000000000a54      0x781 driver/src/stm32f446re_gpio_driver.o
+ .debug_abbrev  0x00000000000011d5      0x64a driver/src/sys_tick_driver.o
 
 .debug_aranges  0x0000000000000000      0x240
  .debug_aranges
@@ -16396,7 +16396,7 @@ OUTPUT(GPIO_driver.elf elf32-littlearm)
  .debug_ranges  0x0000000000000100       0xa0 driver/src/stm32f446re_gpio_driver.o
  .debug_ranges  0x00000000000001a0       0x48 driver/src/sys_tick_driver.o
 
-.debug_macro    0x0000000000000000     0x6404
+.debug_macro    0x0000000000000000     0x6519
  .debug_macro   0x0000000000000000      0x76d Src/005_blinkLEDwithTimer.o
  .debug_macro   0x000000000000076d      0xb38 Src/005_blinkLEDwithTimer.o
  .debug_macro   0x00000000000012a5      0x17b Src/005_blinkLEDwithTimer.o
@@ -16479,33 +16479,33 @@ OUTPUT(GPIO_driver.elf elf32-littlearm)
  .debug_macro   0x00000000000033d1       0x41 Src/005_blinkLEDwithTimer.o
  .debug_macro   0x0000000000003412       0x40 Src/005_blinkLEDwithTimer.o
  .debug_macro   0x0000000000003452       0x20 Src/005_blinkLEDwithTimer.o
- .debug_macro   0x0000000000003472      0x2ef Src/005_blinkLEDwithTimer.o
- .debug_macro   0x0000000000003761       0x88 Src/005_blinkLEDwithTimer.o
- .debug_macro   0x00000000000037e9      0x11e Src/005_blinkLEDwithTimer.o
- .debug_macro   0x0000000000003907      0x255 Src/syscalls.o
- .debug_macro   0x0000000000003b5c      0xa66 Src/syscalls.o
- .debug_macro   0x00000000000045c2       0x40 Src/syscalls.o
- .debug_macro   0x0000000000004602       0x94 Src/syscalls.o
- .debug_macro   0x0000000000004696       0x34 Src/syscalls.o
- .debug_macro   0x00000000000046ca       0x57 Src/syscalls.o
- .debug_macro   0x0000000000004721      0x174 Src/syscalls.o
- .debug_macro   0x0000000000004895      0x330 Src/syscalls.o
- .debug_macro   0x0000000000004bc5       0x43 Src/syscalls.o
- .debug_macro   0x0000000000004c08       0x10 Src/syscalls.o
- .debug_macro   0x0000000000004c18       0x35 Src/syscalls.o
- .debug_macro   0x0000000000004c4d       0x10 Src/syscalls.o
- .debug_macro   0x0000000000004c5d       0x35 Src/syscalls.o
- .debug_macro   0x0000000000004c92      0x122 Src/syscalls.o
- .debug_macro   0x0000000000004db4       0x10 Src/syscalls.o
- .debug_macro   0x0000000000004dc4      0x145 Src/syscalls.o
- .debug_macro   0x0000000000004f09      0x189 Src/syscalls.o
- .debug_macro   0x0000000000005092       0x16 Src/syscalls.o
- .debug_macro   0x00000000000050a8       0x88 Src/syscalls.o
- .debug_macro   0x0000000000005130      0x1ae Src/sysmem.o
- .debug_macro   0x00000000000052de      0x23b Src/sysmem.o
- .debug_macro   0x0000000000005519       0x16 Src/sysmem.o
- .debug_macro   0x000000000000552f      0x762 driver/src/stm32f446re_gpio_driver.o
- .debug_macro   0x0000000000005c91      0x773 driver/src/sys_tick_driver.o
+ .debug_macro   0x0000000000003472      0x3f2 Src/005_blinkLEDwithTimer.o
+ .debug_macro   0x0000000000003864       0x9a Src/005_blinkLEDwithTimer.o
+ .debug_macro   0x00000000000038fe      0x11e Src/005_blinkLEDwithTimer.o
+ .debug_macro   0x0000000000003a1c      0x255 Src/syscalls.o
+ .debug_macro   0x0000000000003c71      0xa66 Src/syscalls.o
+ .debug_macro   0x00000000000046d7       0x40 Src/syscalls.o
+ .debug_macro   0x0000000000004717       0x94 Src/syscalls.o
+ .debug_macro   0x00000000000047ab       0x34 Src/syscalls.o
+ .debug_macro   0x00000000000047df       0x57 Src/syscalls.o
+ .debug_macro   0x0000000000004836      0x174 Src/syscalls.o
+ .debug_macro   0x00000000000049aa      0x330 Src/syscalls.o
+ .debug_macro   0x0000000000004cda       0x43 Src/syscalls.o
+ .debug_macro   0x0000000000004d1d       0x10 Src/syscalls.o
+ .debug_macro   0x0000000000004d2d       0x35 Src/syscalls.o
+ .debug_macro   0x0000000000004d62       0x10 Src/syscalls.o
+ .debug_macro   0x0000000000004d72       0x35 Src/syscalls.o
+ .debug_macro   0x0000000000004da7      0x122 Src/syscalls.o
+ .debug_macro   0x0000000000004ec9       0x10 Src/syscalls.o
+ .debug_macro   0x0000000000004ed9      0x145 Src/syscalls.o
+ .debug_macro   0x000000000000501e      0x189 Src/syscalls.o
+ .debug_macro   0x00000000000051a7       0x16 Src/syscalls.o
+ .debug_macro   0x00000000000051bd       0x88 Src/syscalls.o
+ .debug_macro   0x0000000000005245      0x1ae Src/sysmem.o
+ .debug_macro   0x00000000000053f3      0x23b Src/sysmem.o
+ .debug_macro   0x000000000000562e       0x16 Src/sysmem.o
+ .debug_macro   0x0000000000005644      0x762 driver/src/stm32f446re_gpio_driver.o
+ .debug_macro   0x0000000000005da6      0x773 driver/src/sys_tick_driver.o
 
 .debug_line     0x0000000000000000     0x48e5
  .debug_line    0x0000000000000000     0x130e Src/005_blinkLEDwithTimer.o
@@ -16515,19 +16515,19 @@ OUTPUT(GPIO_driver.elf elf32-littlearm)
  .debug_line    0x0000000000002043     0x1548 driver/src/stm32f446re_gpio_driver.o
  .debug_line    0x000000000000358b     0x135a driver/src/sys_tick_driver.o
 
-.debug_str      0x0000000000000000    0x1033b
- .debug_str     0x0000000000000000     0xefe6 Src/005_blinkLEDwithTimer.o
-                                       0xf68f (size before relaxing)
- .debug_str     0x000000000000efe6      0xeb8 Src/syscalls.o
+.debug_str      0x0000000000000000    0x111a2
+ .debug_str     0x0000000000000000     0xf92d Src/005_blinkLEDwithTimer.o
+                                       0xffd6 (size before relaxing)
+ .debug_str     0x000000000000f92d      0xeb8 Src/syscalls.o
                                        0x8946 (size before relaxing)
- .debug_str     0x000000000000fe9e       0x31 Src/sysmem.o
+ .debug_str     0x00000000000107e5       0x31 Src/sysmem.o
                                        0x7ae4 (size before relaxing)
- .debug_str     0x000000000000fecf       0x31 Startup/startup_stm32f446retx.o
+ .debug_str     0x0000000000010816       0x31 Startup/startup_stm32f446retx.o
                                          0x71 (size before relaxing)
- .debug_str     0x000000000000ff00      0x392 driver/src/stm32f446re_gpio_driver.o
-                                       0xf9e0 (size before relaxing)
- .debug_str     0x0000000000010292       0xa9 driver/src/sys_tick_driver.o
-                                       0xf364 (size before relaxing)
+ .debug_str     0x0000000000010847      0x8b2 driver/src/stm32f446re_gpio_driver.o
+                                      0x1086b (size before relaxing)
+ .debug_str     0x00000000000110f9       0xa9 driver/src/sys_tick_driver.o
+                                       0xfcab (size before relaxing)
 
 .comment        0x0000000000000000       0x7b
  .comment       0x0000000000000000       0x7b Src/005_blinkLEDwithTimer.o

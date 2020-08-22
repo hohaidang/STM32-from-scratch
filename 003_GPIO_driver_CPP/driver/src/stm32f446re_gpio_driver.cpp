@@ -318,6 +318,6 @@ void GPIO_IRQHandling(u8 PinNumber) {
 
 constexpr static inline u8 get_irq_pinNum(u8 PinNumber) {
     return (PinNumber < 5) ? PinNumber + 6 :
-           (PinNumber < 10) ? IRQ_NO_EXTI9_5 :
-           (PinNumber < 16) ? IRQ_NO_EXTI15_10 : 0;
+           (PinNumber < 10) ? EXTI9_5_IRQn :
+           (PinNumber < 16) ? EXTI15_10_IRQn : 0;
 }

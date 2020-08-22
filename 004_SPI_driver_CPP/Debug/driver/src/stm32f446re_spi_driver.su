@@ -7,25 +7,21 @@ stm32f446re_spi_driver.cpp:63:6:void SPI_Handler::spi_peripheral_clock_init()	0	
 stm32f446re_spi_driver.cpp:84:6:void SPI_Handler::spi_gpios_init()	40	static
 stm32f446re_spi_driver.cpp:137:6:void SPI_Handler::spi_init()	8	static
 stm32f446re_spi_driver.cpp:186:6:void SPI_Handler::spi_deinit()	0	static
-stm32f446re_spi_driver.cpp:225:6:void SPI_Handler::spi_transmit_data(const u8*, u32)	16	static
-stm32f446re_spi_driver.cpp:260:6:void SPI_Handler::spi_receive_data(u8*, u32)	8	static
-stm32f446re_spi_driver.cpp:297:6:void SPI_Handler::spi_transmit_receive_data(const u8*, u8*, u32)	12	static
-stm32f446re_spi_driver.cpp:380:6:void SPI_Handler::spi_ir_config(u8, u8)	0	static
-stm32f446re_spi_driver.cpp:416:6:void SPI_Handler::spi_ir_prio_config(u8, u8)	0	static
-stm32f446re_spi_driver.cpp:433:6:void SPI_Handler::spi_transmit_data_it(u8*, u32)	32	static
-stm32f446re_spi_driver.cpp:473:6:void SPI_Handler::spi_receive_data_it(u8*, u32)	40	static
-stm32f446re_spi_driver.cpp:488:6:void SPI_Handler::spi_transmit_receive_data_it(u8*, u8*, u32)	40	static
-stm32f446re_spi_driver.cpp:625:6:void SPI_Handler::spi_clear_ovr_flag()	8	static
-stm32f446re_spi_driver.cpp:640:6:void SPI_Handler::spi_close_tx_rx_isr()	8	static
-stm32f446re_spi_driver.cpp:656:4:u8 SPI_Handler::spi_get_tx_state()	0	static
-stm32f446re_spi_driver.cpp:668:4:u8 SPI_Handler::spi_get_rx_state()	0	static
-stm32f446re_spi_driver.cpp:698:13:void SPI_ApplicationEventCallback(SPI_Handle_t*, u8)	0	static
-stm32f446re_spi_driver.cpp:564:6:void SPI_Handler::spi_tx_8bit_it()	16	static
-stm32f446re_spi_driver.cpp:587:6:void SPI_Handler::spi_rx_8bit_it()	16	static
-stm32f446re_spi_driver.cpp:610:6:void SPI_Handler::spi_ovr_err_interrupt_handle()	16	static
+stm32f446re_spi_driver.cpp:208:6:void SPI_Handler::spi_transmit_data(const u8*, u32)	16	static
+stm32f446re_spi_driver.cpp:240:6:void SPI_Handler::spi_receive_data(u8*, u32)	8	static
+stm32f446re_spi_driver.cpp:277:6:void SPI_Handler::spi_transmit_receive_data(const u8*, u8*, u32)	32	static
+stm32f446re_spi_driver.cpp:334:6:void SPI_Handler::spi_transmit_data_it(u8*, u32)	48	static
+stm32f446re_spi_driver.cpp:375:6:void SPI_Handler::spi_receive_data_it(u8*, u32)	40	static
+stm32f446re_spi_driver.cpp:390:6:void SPI_Handler::spi_transmit_receive_data_it(u8*, u8*, u32)	40	static
+stm32f446re_spi_driver.cpp:537:6:void SPI_Handler::spi_clear_ovr_flag()	8	static
+stm32f446re_spi_driver.cpp:552:6:void SPI_Handler::spi_close_tx_rx_isr()	8	static
+stm32f446re_spi_driver.cpp:560:13:void SPI_ApplicationEventCallback(SPI_Handle_t*, u8)	0	static
+stm32f446re_spi_driver.cpp:499:6:void SPI_Handler::spi_rx_8bit_it()	16	static
+stm32f446re_spi_driver.cpp:522:6:void SPI_Handler::spi_ovr_err_interrupt_handle()	16	static
+stm32f446re_spi_driver.cpp:471:6:void SPI_Handler::spi_tx_8bit_it()	16	static
 std_function.h:314:7:) [with _Functor = SPI_Handler::spi_transmit_receive_data_it(u8*, u8*, u32)::<lambda()>; _ArgTypes = {}]	16	static
-stm32f446re_spi_driver.cpp:531:6:void SPI_Handler::spi_irq_handling()	24	static
+stm32f446re_spi_driver.cpp:434:6:void SPI_Handler::spi_irq_handling()	24	static
 std_function.h:314:7:) [with _Functor = SPI_Handler::spi_transmit_receive_data_it(u8*, u8*, u32)::<lambda()>; _ArgTypes = {}]	16	static
 std_function.h:314:7:) [with _Functor = SPI_Handler::spi_transmit_data_it(u8*, u32)::<lambda()>; _ArgTypes = {}]	16	static
-stm32f446re_spi_driver.cpp:700:1:cpp)	0	static
-stm32f446re_spi_driver.cpp:700:1:cpp)	0	static
+stm32f446re_spi_driver.cpp:562:1:cpp)	0	static
+stm32f446re_spi_driver.cpp:562:1:cpp)	0	static

@@ -37,9 +37,7 @@
 #define BME280_STANDBY_MSK              static_cast<u8>(0xE0)
 #define BME280_STANDBY_POS              static_cast<u8>(0x05)
 
-#define BME280_TEMP_PRESS_CALIB_DATA_LEN          static_cast<u8>(28u)
-#define BME280_HUMIDITY_CALIB_DATA_LEN            static_cast<u8>(7u)
-#define BME280_P_T_H_DATA_LEN                     static_cast<u8>(8u)
+
 
 #define BME280_TEMP_PRESS_CALIB_DATA_ADDR         static_cast<u8>(0x88)
 #define BME280_HUMIDITY_CALIB_DATA_ADDR           static_cast<u8>(0xE1)

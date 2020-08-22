@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 0000002a  00000000  00000000  000402c8  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0000b419  00000000  00000000  000402f2  2**0
+ 12 .debug_info   0000b671  00000000  00000000  000402f2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_abbrev 00001801  00000000  00000000  0004b70b  2**0
+ 13 .debug_abbrev 0000181f  00000000  00000000  0004b963  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_aranges 00000240  00000000  00000000  0004cf10  2**3
+ 14 .debug_aranges 00000240  00000000  00000000  0004d188  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_ranges 000001e8  00000000  00000000  0004d150  2**3
+ 15 .debug_ranges 000001e8  00000000  00000000  0004d3c8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  00006404  00000000  00000000  0004d338  2**0
+ 16 .debug_macro  00006519  00000000  00000000  0004d5b0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   000048e5  00000000  00000000  0005373c  2**0
+ 17 .debug_line   000048e5  00000000  00000000  00053ac9  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    0001033b  00000000  00000000  00058021  2**0
+ 18 .debug_str    000111a2  00000000  00000000  000583ae  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  0006835c  2**0
+ 19 .comment      0000007b  00000000  00000000  00069550  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  0001559c  00000000  00000000  000683d8  2**2
+ 20 .debug_frame  0001559c  00000000  00000000  000695cc  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -1957,10 +1957,10 @@ Infinite_Loop:
 	...
 
 080013b0 <_Z21gpio_baseAddr_to_codeP13GPIO_RegDef_t>:
-#define SPI_SR_MODF                     5
-#define SPI_SR_OVR                      6
-#define SPI_SR_BSY                      7
-#define SPI_SR_FRE                      8
+#define SPI_SR_BSY_Msk                      (static_cast<u32>(0x1UL << SPI_SR_BSY_Pos))
+#define SPI_SR_BSY                          SPI_SR_BSY_Msk
+
+#define SPI_SR_FRE_Pos                      (8U)
 
 inline uint8_t gpio_baseAddr_to_code(GPIO_RegDef_t *Port) {
  80013b0:	b480      	push	{r7}
@@ -2895,8 +2895,8 @@ constexpr static inline u8 get_irq_pinNum(u8 PinNumber) {
  80019fa:	4603      	mov	r3, r0
  80019fc:	71fb      	strb	r3, [r7, #7]
     return (PinNumber < 5) ? PinNumber + 6 :
-           (PinNumber < 10) ? IRQ_NO_EXTI9_5 :
-           (PinNumber < 16) ? IRQ_NO_EXTI15_10 : 0;
+           (PinNumber < 10) ? EXTI9_5_IRQn :
+           (PinNumber < 16) ? EXTI15_10_IRQn : 0;
  80019fe:	79fb      	ldrb	r3, [r7, #7]
  8001a00:	2b04      	cmp	r3, #4
  8001a02:	d803      	bhi.n	8001a0c <_ZL14get_irq_pinNumh+0x18>
@@ -2990,11 +2990,11 @@ SysTick::SysTick() {
  8001aa0:	f643 627f 	movw	r2, #15999	; 0x3e7f
  8001aa4:	605a      	str	r2, [r3, #4]
 
-    SCB->SHPR[3] |= 0; /* Set priority 0 for system tick */
+    SCB->SHPR[2] |= static_cast<u32>(IRQ_Prio_NO_0 << SCB_SHPR_SYSTICK_Pos); /* Set priority 0 for system tick */
  8001aa6:	4b0a      	ldr	r3, [pc, #40]	; (8001ad0 <_ZN7SysTickC1Ev+0x40>)
  8001aa8:	4a09      	ldr	r2, [pc, #36]	; (8001ad0 <_ZN7SysTickC1Ev+0x40>)
- 8001aaa:	6a5b      	ldr	r3, [r3, #36]	; 0x24
- 8001aac:	6253      	str	r3, [r2, #36]	; 0x24
+ 8001aaa:	6a1b      	ldr	r3, [r3, #32]
+ 8001aac:	6213      	str	r3, [r2, #32]
 
     // Reset Systick counter value
     SYSTICK->CVR = 0;

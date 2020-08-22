@@ -4,11 +4,11 @@ std_function.h:299:7:) [with _Res = unsigned char; _Functor = unsigned char (*)(
 std_function.h:212:2:static bool std::_Function_base::_Base_manager<_Functor>::_M_manager(std::_Any_data&, const std::_Any_data&, std::_Manager_operation) [with _Functor = unsigned char (*)(unsigned char, const unsigned char*, long unsigned int)]	0	static
 std_function.h:314:7:) [with _Functor = void (*)(long unsigned int); _ArgTypes = {long unsigned int}]	0	static
 std_function.h:212:2:static bool std::_Function_base::_Base_manager<_Functor>::_M_manager(std::_Any_data&, const std::_Any_data&, std::_Manager_operation) [with _Functor = void (*)(long unsigned int)]	0	static
-spi_readSensordata.cpp:101:6:void user_delay_us(u32)	0	static
-spi_readSensordata.cpp:106:4:u8 user_spi_read(u8, u8*, u32)	72	static
-spi_readSensordata.cpp:123:4:u8 user_spi_write(u8, const u8*, u32)	48	static
-spi_readSensordata.cpp:72:6:void InitilizePeripheral()	96	static
-spi_readSensordata.cpp:39:5:int main()	56	static
-spi_readSensordata.cpp:173:10:void SPI1_IRQHandler()	0	static
-spi_readSensordata.cpp:177:1:cpp)	0	static
-spi_readSensordata.cpp:177:1:cpp)	8	static
+spi_readSensordata.cpp:104:6:void user_delay_us(u32)	0	static
+spi_readSensordata.cpp:109:4:u8 user_spi_read(u8, u8*, u32)	88	static
+spi_readSensordata.cpp:127:4:u8 user_spi_write(u8, const u8*, u32)	48	static
+spi_readSensordata.cpp:75:6:void InitilizePeripheral()	96	static
+spi_readSensordata.cpp:41:5:int main()	56	static
+spi_readSensordata.cpp:179:10:void SPI1_IRQHandler()	0	static
+spi_readSensordata.cpp:183:1:cpp)	0	static
+spi_readSensordata.cpp:183:1:cpp)	8	static

@@ -12,13 +12,17 @@
 #include <functional>
 using namespace std;
 
-/* Maximum size of SPI read or write each time is 28 bytes */
-#define BME280_MAX_SIZE_WR              (28U)
+#define BME280_TEMP_PRESS_CALIB_DATA_LEN          static_cast<u8>(28u)
+#define BME280_HUMIDITY_CALIB_DATA_LEN            static_cast<u8>(7u)
+#define BME280_P_T_H_DATA_LEN                     static_cast<u8>(8u)
 
 /**@SENSOR_MODE Sensor power modes */
 #define BME280_SLEEP_MODE               static_cast<u8>(0x00)
 #define BME280_FORCED_MODE              static_cast<u8>(0x01)
 #define BME280_NORMAL_MODE              static_cast<u8>(0x03)
+
+/* Maximum size of SPI read or write each time is 29 bytes, 28 bytes calibration and 1 byte address*/
+#define BME280_MAX_SIZE_WR              (BME280_TEMP_PRESS_CALIB_DATA_LEN + 1)
 
 typedef enum {
     SENSOR_OK = 0x00U,

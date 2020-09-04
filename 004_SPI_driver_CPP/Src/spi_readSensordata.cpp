@@ -16,10 +16,10 @@
  *
  ******************************************************************************
  */
-//#include "driver/inc/stm32f4xx.h"
-#include "../driver/inc/stm32f4xx.h"
-#include "../driver/inc/bme280_driver.h"
-#include "../Inc/spi_readSensordata.h"
+#include "../driver/stm32f4xx.h"
+#include "../driver/stm32f446re_spi_driver.h"
+#include "../driver/bme280_driver.h"
+#include "spi_readSensordata.h"
 #include <array>
 
 using namespace std;

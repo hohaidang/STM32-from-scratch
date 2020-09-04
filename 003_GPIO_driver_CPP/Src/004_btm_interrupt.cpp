@@ -17,7 +17,7 @@
  ******************************************************************************
  */
 
-#include "../driver/inc/stm32f446re_gpio_driver.h"
+#include "../driver/stm32f446re_gpio_driver.h"
 
 GPIO_Handler *led2;
 GPIO_Handler *user_botton;

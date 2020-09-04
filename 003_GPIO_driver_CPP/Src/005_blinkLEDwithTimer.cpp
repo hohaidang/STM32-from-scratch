@@ -7,8 +7,8 @@
 
 
 
-#include "../driver/inc/stm32f446re_gpio_driver.h"
-#include "../driver/inc/sys_tick_driver.h"
+#include "../driver/stm32f446re_gpio_driver.h"
+#include "../driver/sys_tick_driver.h"
 
 
 int main(void)

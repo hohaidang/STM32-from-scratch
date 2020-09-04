@@ -1,0 +1,4 @@
+cpplib.cpp:6:8:std::__cxx11::string cpp_lib::print_hello_world()	16	static
+cpplib.cpp:10:5:int cpp_lib::find_max(const std::vector<int>&)	0	static
+cpplib.cpp:21:1:cpp)	0	static
+cpplib.cpp:21:1:cpp)	0	static

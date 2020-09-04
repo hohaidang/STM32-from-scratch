@@ -7,7 +7,7 @@
 
 
 
-#include "../driver/inc/stm32f446re_gpio_driver.h"
+#include "../driver/stm32f446re_gpio_driver.h"
 
 
 void delay(void) {

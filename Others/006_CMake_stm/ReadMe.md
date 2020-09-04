@@ -2,6 +2,7 @@
 
 This project is using cmake for build code for STM32 boards, the tested board is nucleo-f446re. If users use the different board,
 you need to change the CMakeLists.txt file
+
 Haven't Test on board for working or not :)
 
 Reference: https://dev.to/younup/cmake-on-stm32-the-beginning-3766

@@ -19,7 +19,8 @@ void small_delay(void) {
 
 int main(void)
 {
-	GPIO_Handler LED2 = GPIO_Handler(GPIOA, GPIO_PIN_NO_5, GPIO_MODE_OUT, GPIO_SPEED_LOW, GPIO_OP_TYPE_OD, GPIO_NO_PUPD);
+    gpio_handler LED2(GPIOA);
+    LED2.gpio_init(GPIO_PIN_NO_5, GPIO_MODE_OUT, GPIO_SPEED_LOW, GPIO_OP_TYPE_OD, GPIO_NO_PUPD);
 	LED2.gpio_write_to_output_pin(1);
 	for(;;) {
 		delay();

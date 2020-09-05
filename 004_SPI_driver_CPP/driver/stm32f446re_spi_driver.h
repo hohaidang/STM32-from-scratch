@@ -160,24 +160,24 @@ constexpr void SPI_Handler::spi_ir_config() {
     if (en_or_di == ENABLE) {
         if (irq_number <= 31) {
             //  program ISER0 register
-            NVIC->ISER[0] |= (1 << irq_number);
+            NVIC->ISER[0] |= static_cast<u32>(1UL << irq_number);
         } else if (irq_number > 31 && irq_number < 64) {
             // program ISER1 register
-            NVIC->ISER[1] |= (1 << (irq_number % 32));
+            NVIC->ISER[1] |= static_cast<u32>(1UL << (irq_number % 32));
         } else if (irq_number >= 64 && irq_number < 96) {
             // program ISER2 register
-            NVIC->ISER[2] |= (1 << (irq_number % 64));
+            NVIC->ISER[2] |= static_cast<u32>(1UL << (irq_number % 64));
         }
     } else {
         if (irq_number <= 31) {
             // program ICER0 register
-            NVIC->ICER[0] |= (1 << irq_number);
+            NVIC->ICER[0] |= static_cast<u32>(1UL << irq_number);
         } else if (irq_number > 31 && irq_number < 64) {
             // program ICER1 register
-            NVIC->ICER[1] |= (1 << (irq_number % 32));
+            NVIC->ICER[1] |= static_cast<u32>(1UL << (irq_number % 32));
         } else if (irq_number >= 64 && irq_number < 96) {
             // program ICE2 register
-            NVIC->ICER[2] |= (1 << (irq_number % 64));
+            NVIC->ICER[2] |= static_cast<u32>(1UL << (irq_number % 64));
         }
     }
 }

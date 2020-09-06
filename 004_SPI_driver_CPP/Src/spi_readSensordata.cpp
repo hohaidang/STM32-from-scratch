@@ -19,9 +19,8 @@
 #include "../driver/stm32f4xx.h"
 #include "../driver/stm32f446re_spi_driver.h"
 #include "../driver/bme280_driver.h"
-#include "spi_readSensordata.h"
+#include "../driver/sys_tick_driver.h"
 #include <array>
-
 using namespace std;
 
 
@@ -98,73 +97,73 @@ void user_delay_ms(u32 period)
 }
 
 u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
-    array<u8, BME280_MAX_SIZE_WR> txBuffer{};
-    array<u8, BME280_MAX_SIZE_WR> rxBuffer{};
+   array<u8, BME280_MAX_SIZE_WR> txBuffer{};
+   array<u8, BME280_MAX_SIZE_WR> rxBuffer{};
 
-    txBuffer[0] = reg_addr;
+   txBuffer[0] = reg_addr;
 
-    spi1.spi_nss_.gpio_write_to_output_pin(RESET);
+   spi1.spi_nss_.gpio_write_to_output_pin(RESET);
 
-    spi1.spi_transmit_receive_data_it(txBuffer.data(), rxBuffer.data(), len + 1);
+   spi1.spi_transmit_receive_data_it(txBuffer.data(), rxBuffer.data(), len + 1);
 
-    spi1.spi_nss_.gpio_write_to_output_pin(SET);
-    // copy to reg_data
-    for(u32 i = 0; i < len; ++i) {
-        reg_data[i] = rxBuffer[i + 1];
-    }
-    return 0;
+   spi1.spi_nss_.gpio_write_to_output_pin(SET);
+   // copy to reg_data
+   for(u32 i = 0; i < len; ++i) {
+       reg_data[i] = rxBuffer[i + 1];
+   }
+   return 0;
 }
 
 u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
-    array<u8, BME280_MAX_SIZE_WR> txBuffer{};
-    txBuffer[0] = reg_addr;
-    for(u32 i = 0; i < len; ++i) {
-        txBuffer[i + 1] = reg_data[i];
-    }
+   array<u8, BME280_MAX_SIZE_WR> txBuffer{};
+   txBuffer[0] = reg_addr;
+   for(u32 i = 0; i < len; ++i) {
+       txBuffer[i + 1] = reg_data[i];
+   }
 
-    spi1.spi_nss_.gpio_write_to_output_pin(RESET);
+   spi1.spi_nss_.gpio_write_to_output_pin(RESET);
 
-    spi1.spi_transmit_data_it(txBuffer.data(), len + 1);
+   spi1.spi_transmit_data_it(txBuffer.data(), len + 1);
 
-    spi1.spi_nss_.gpio_write_to_output_pin(SET);
+   spi1.spi_nss_.gpio_write_to_output_pin(SET);
 
-    return 0;
+   return 0;
 }
 
 
-//u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
-//    array<u8, BME280_MAX_SIZE_WR> txBuffer = {};
-//    array<u8, BME280_MAX_SIZE_WR> rxBuffer = {};
-//
-//    txBuffer[0] = reg_addr;
-//
-//    spi1->spi_nss_->gpio_write_to_output_pin(RESET);
-//
-//    spi1->spi_transmit_receive_data(txBuffer.data(), rxBuffer.data(), len + 1);
-//
-//    spi1->spi_nss_->gpio_write_to_output_pin(SET);
-//
-//    // copy to reg_data
-//    for(u32 i = 0; i < len; ++i) {
-//        reg_data[i] = rxBuffer[i + 1];
-//    }
-//    return 0;
-//}
-//
-//u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
-//    array<u8, BME280_MAX_SIZE_WR> txBuffer = {};
-//
-//    txBuffer[0] = reg_addr;
-//    for(u32 i = 0; i < len; ++i) {
-//        txBuffer[i + 1] = reg_data[i];
-//    }
-//
-//    spi1->spi_nss_->gpio_write_to_output_pin(RESET);
-//    spi1->spi_transmit_data(txBuffer.data(), len + 1);
-//    spi1->spi_nss_->gpio_write_to_output_pin(SET);
-//
-//    return 0;
-//}
+// u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
+//     array<u8, BME280_MAX_SIZE_WR> txBuffer = {};
+//     array<u8, BME280_MAX_SIZE_WR> rxBuffer = {};
+
+//     txBuffer[0] = reg_addr;
+
+//     spi1.spi_nss_.gpio_write_to_output_pin(RESET);
+
+//     spi1.spi_transmit_receive_data(txBuffer.data(), rxBuffer.data(), len + 1);
+
+//     spi1.spi_nss_.gpio_write_to_output_pin(SET);
+
+//     // copy to reg_data
+//     for(u32 i = 0; i < len; ++i) {
+//         reg_data[i] = rxBuffer[i + 1];
+//     }
+//     return 0;
+// }
+
+// u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
+//     array<u8, BME280_MAX_SIZE_WR> txBuffer = {};
+
+//     txBuffer[0] = reg_addr;
+//     for(u32 i = 0; i < len; ++i) {
+//         txBuffer[i + 1] = reg_data[i];
+//     }
+
+//     spi1.spi_nss_.gpio_write_to_output_pin(RESET);
+//     spi1.spi_transmit_data(txBuffer.data(), len + 1);
+//     spi1.spi_nss_.gpio_write_to_output_pin(SET);
+
+//     return 0;
+// }
 
 extern "C" {
     void SPI1_IRQHandler(void) {

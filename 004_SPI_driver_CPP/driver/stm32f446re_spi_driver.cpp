@@ -6,7 +6,6 @@
  */
 
 #include "stm32f446re_spi_driver.h"
-using namespace std;
 
 /*!
  * @brief Disable all SPIs feature
@@ -104,7 +103,7 @@ void spi_handler::spi_gpios_init() {
  *
  */
 void spi_handler::spi_init(SPI_RegDef_t *spix_addr,
-                           function<void(int)> delay_fnc,
+                           std::function<void(int)> delay_fnc,
                            u8 device_mode,
                            u8 bus_config,
                            u8 sclk_speed,

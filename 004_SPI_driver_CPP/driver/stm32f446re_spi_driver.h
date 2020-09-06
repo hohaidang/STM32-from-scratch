@@ -13,7 +13,6 @@
 #include "core_cm4.h"
 #include <functional>
 #include <array>
-using namespace std;
 
 // @SPI_DeviceMode
 #define SPI_DEVICE_MODE_MASTER                  static_cast<u8>(1)   // choose SPI as Master
@@ -103,7 +102,7 @@ public:
     ~spi_handler();
 
     void spi_init(SPI_RegDef_t *spix_addr,
-                  function<void(int)> delay_fnc,
+                  std::function<void(int)> delay_fnc,
                   u8 device_mode,
                   u8 bus_config,
                   u8 sclk_speed,
@@ -118,8 +117,6 @@ public:
     void spi_transmit_data(const u8 *pTxBuffer, u32 Len);
     void spi_receive_data(u8 *pRxBuffer, u32 Len);
     void spi_transmit_receive_data(const u8 *p_tx_buffer, u8 *p_rx_buffer, u32 len);
-
-    template<size_t SIZE> void spi_transmit_data(array<u8, SIZE> &p_tx_buffer);
 
     // Data Send and Receive in interrupt mode
     void spi_transmit_data_it(u8 *p_tx_buf, const u32 len);
@@ -180,31 +177,6 @@ constexpr void spi_handler::spi_ir_config() {
             NVIC->ICER[2] |= (1 << (irq_number % 64));
         }
     }
-}
-
-template<size_t SIZE>
-void spi_handler::spi_transmit_data(array<u8, SIZE> &p_tx_buffer) {
-    if (RESET == (spix_->CR1 & SPI_CR1_SPE)) {
-        spi_peripheral_control<ENABLE>();
-    }
-    auto it = p_tx_buffer.begin();
-    while(it != p_tx_buffer.end()) {
-        /* Wait until tx buffer empty */
-        while (RESET == spi_get_SR_reg<SPI_SR_TXE>());
-
-        if(spix_->CR1 & SPI_CR1_DFF) {
-            /* 16 BIT DFF*/
-            // TODO: develop later
-
-//            spix_->DR = *
-        }
-        else {
-            spix_->DR = *it;
-            ++it;
-        }
-    }
-    while(spi_get_SR_reg<SPI_SR_BSY>());
-    spi_clear_ovr_flag();
 }
 
 /*!

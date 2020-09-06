@@ -237,7 +237,7 @@ void bme_sensor_handler::print_sensor_data() {
 
     cout << fixed << setprecision(2) << temp << " deg C, "
                                      << pres << " hPa, "
-                                     << hum << " % " << endl;
+                                     << hum << " % \n";
 #endif
 }
 

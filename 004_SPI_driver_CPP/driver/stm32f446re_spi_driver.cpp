@@ -8,19 +8,6 @@
 #include "stm32f446re_spi_driver.h"
 
 /*!
- * @brief Disable all SPIs feature
- *
- * @param: None
- *
- * @return None
- *
- */
-spi_handler::~spi_handler() {
-    spi_deinit();
-}
-
-
-/*!
  * @brief peripheral clock setup for SPI
  *
  * @param: None

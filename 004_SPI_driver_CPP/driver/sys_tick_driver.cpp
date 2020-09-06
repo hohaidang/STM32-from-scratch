@@ -51,7 +51,7 @@ void sys_tick::init() {
  * @return: None
  *
  */
-sys_tick::~sys_tick() {
+void sys_tick::de_init() {
     SYSTICK->CSR = 0; /* disable systick */
     SYSTICK->RVR = 0; /* reset reload register */
     SYSTICK->CSR &= ~(SYSTICK_CSR_CLKSOURCE | SYSTICK_CSR_TICKINT | SYSTICK_CSR_ENA);

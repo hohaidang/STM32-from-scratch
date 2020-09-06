@@ -77,10 +77,7 @@ protected:
     GPIO_RegDef_t *gpiox_;
     u8 pin_number_;
 
-public:
-    gpio_handler() = default;                   
-    ~gpio_handler();
-
+public:             
     void gpio_init( GPIO_RegDef_t *GPIOx_addr,                 /*!<possible values from @GPIOx_ADDR>*/
                     u8 pin_number,                             /*!<possible values from @GPIO_PIN_NUMS>*/
                     u8 pin_mode,                               /*!<possible values from @GPIO_PIN_MODES>*/
@@ -97,11 +94,11 @@ public:
     void gpio_write_to_output_port(const u16 value);
     void gpio_toggle_output_pin();
     void gpio_irq_handling();
+    void gpio_deinit();
 
 private:
     /* peripheral clock setup */
     void gpio_peripheral_clk_control();
-    void gpio_deinit();
 
     /* IRQ Configuration and ISR Handling */
     void gpio_irq_config(const u8 irq_number, const u8 en_or_di);

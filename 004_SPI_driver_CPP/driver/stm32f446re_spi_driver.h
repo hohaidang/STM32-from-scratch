@@ -98,9 +98,6 @@ public:
     gpio_handler spi_nss_;
 
 public:
-    spi_handler() = default;
-    ~spi_handler();
-
     void spi_init(SPI_RegDef_t *spix_addr,
                   std::function<void(int)> delay_fnc,
                   u8 device_mode,

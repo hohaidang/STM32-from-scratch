@@ -7,20 +7,6 @@
 
 #include "stm32f446re_gpio_driver.h"
 
-
-/*!
- * @brief DeConstructor, Reset GPIO PORT
- *
- * @param None
- *
- * @return None
- *
- * @node: Be careful when using many Peripheral device in the same PORT
- */
-gpio_handler::~gpio_handler() {
-    gpio_deinit();
-}
-
 /*!
  * @brief peripheral clock setup
  *

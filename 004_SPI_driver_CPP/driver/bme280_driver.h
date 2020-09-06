@@ -162,7 +162,6 @@ private:
     bme280_data data_ = { };
 public:
     bme_sensor_handler(read_fnc user_read, write_fnc user_write, delay_ms_fnc user_delay);
-    ~bme_sensor_handler() = default;
 
     BME280_Stat init_BME280();
     uint8_t getChipID() { return dev_.chipID; };

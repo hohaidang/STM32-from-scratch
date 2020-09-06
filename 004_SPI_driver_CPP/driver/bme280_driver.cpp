@@ -45,9 +45,6 @@
 /**\name Macro to combine two 8 bit data's to form a 16 bit data */
 #define BME280_CONCAT_BYTES(msb, lsb)             (((uint16_t)msb << 8) | (uint16_t)lsb)
 
-static inline u8 BME280_SET_BITS(const u8, const u8, const u8, const u8);
-static inline u8 BME280_GET_BITS(const u8, const u8, const u8);
-
 
 /*!
  * @brief This is constructor used for assign function pointer of read, write and delay
@@ -59,17 +56,17 @@ static inline u8 BME280_GET_BITS(const u8, const u8, const u8);
  * @return None
  *
  */
-BMESensor_Handler::BMESensor_Handler(read_fnc user_read,
+bme_sensor_handler::bme_sensor_handler(read_fnc user_read,
                                      write_fnc user_write,
                                      delay_ms_fnc user_delay) {
-    if(user_read == nullptr || user_write == nullptr || user_delay == nullptr) {
+    if(user_read == nullptr or user_write == nullptr or user_delay == nullptr) {
         dev_.status = SENSOR_NOT_OK;
         return;
     }
     dev_.user_read = user_read;
     dev_.user_write = user_write;
     dev_.delay_ms = user_delay;
-    dev_.status = init_BME280();
+    dev_.status = SENSOR_OK;
 }
 
 /*!
@@ -80,7 +77,7 @@ BMESensor_Handler::BMESensor_Handler(read_fnc user_read,
  * @return BME280_Stat
  *
  */
-BME280_Stat BMESensor_Handler::init_BME280() {
+BME280_Stat bme_sensor_handler::init_BME280() {
     BME280_Stat ret = SENSOR_OK;
     // read sensor ID
     u8 regAddr { BME280_CHIP_ID_ADDR };
@@ -102,6 +99,7 @@ BME280_Stat BMESensor_Handler::init_BME280() {
     else {
         ret = SENSOR_NOT_OK;
     }
+    dev_.status = ret;
     return ret;
 }
 
@@ -113,7 +111,7 @@ BME280_Stat BMESensor_Handler::init_BME280() {
  * @return BME280_Stat
  *
  */
-BME280_Stat BMESensor_Handler::softReset() {
+BME280_Stat bme_sensor_handler::softReset() {
     u8 regAddr = BME280_SOFT_RST_ADDR;
     u8 softRstVal = BME280_RST_COMMAND;
     u8 regStatus = 0, tryRun = 5;
@@ -143,7 +141,7 @@ BME280_Stat BMESensor_Handler::softReset() {
  * @return BME280_Stat
  *
  */
-BME280_Stat BMESensor_Handler::get_calib_data() {
+BME280_Stat bme_sensor_handler::get_calib_data() {
     u8 calib_data[BME280_TEMP_PRESS_CALIB_DATA_LEN] = { 0 };
     getRegData(BME280_TEMP_PRESS_CALIB_DATA_ADDR, calib_data, BME280_TEMP_PRESS_CALIB_DATA_LEN);
     parse_temp_calib_data(calib_data);
@@ -160,7 +158,7 @@ BME280_Stat BMESensor_Handler::get_calib_data() {
  * @return void
  *
  */
-void BMESensor_Handler::parse_temp_calib_data(const u8 *reg_data) {
+void bme_sensor_handler::parse_temp_calib_data(const u8 *reg_data) {
     dev_.calib_data.dig_t1 = BME280_CONCAT_BYTES(reg_data[1], reg_data[0]);
     dev_.calib_data.dig_t2 = (int16_t)BME280_CONCAT_BYTES(reg_data[3], reg_data[2]);
     dev_.calib_data.dig_t3 = (int16_t)BME280_CONCAT_BYTES(reg_data[5], reg_data[4]);
@@ -184,7 +182,7 @@ void BMESensor_Handler::parse_temp_calib_data(const u8 *reg_data) {
  * @return void
  *
  */
-void BMESensor_Handler::parse_humidity_calib_data(const u8 *reg_data) {
+void bme_sensor_handler::parse_humidity_calib_data(const u8 *reg_data) {
     int16_t dig_h4_lsb;
     int16_t dig_h4_msb;
     int16_t dig_h5_lsb;
@@ -209,7 +207,7 @@ void BMESensor_Handler::parse_humidity_calib_data(const u8 *reg_data) {
  * @return bme280_data: sensor data return
  *
  */
-bme280_data BMESensor_Handler::get_sensor_data() {
+bme280_data bme_sensor_handler::get_sensor_data() {
     bme280_uncomp_data uncomp_data = { 0 };
     u8 reg_data[BME280_P_T_H_DATA_LEN] = { 0 };
     getRegData(BME280_DATA_ADDR, reg_data, BME280_P_T_H_DATA_LEN);
@@ -230,7 +228,7 @@ bme280_data BMESensor_Handler::get_sensor_data() {
  * @return: None
  *
  */
-void BMESensor_Handler::print_sensor_data() {
+void bme_sensor_handler::print_sensor_data() {
 #ifdef DEBUG_EN
     float temp, hum, pres;
     temp = data_.temperature;
@@ -251,7 +249,7 @@ void BMESensor_Handler::print_sensor_data() {
  * @return BME280_Stat
  *
  */
-BME280_Stat BMESensor_Handler::setSensorMode(const u8 sensorMode) {
+BME280_Stat bme_sensor_handler::setSensorMode(const u8 sensorMode) {
     u8 currentMode = BME280_SLEEP_MODE;
     u8 ctrl_means_reg = 0x00;
     BME280_Stat ret = SENSOR_OK;
@@ -278,7 +276,7 @@ BME280_Stat BMESensor_Handler::setSensorMode(const u8 sensorMode) {
  * @return BME280_Stat
  *
  */
-BME280_Stat BMESensor_Handler::put_device_to_sleep(u8 &ctrl_means_reg) {
+BME280_Stat bme_sensor_handler::put_device_to_sleep(u8 &ctrl_means_reg) {
     u8 reg_set = BME280_SET_BITS(ctrl_means_reg,
                                  BME280_SLEEP_MODE,
                                  BME280_SENSOR_MODE_MSK,
@@ -286,7 +284,7 @@ BME280_Stat BMESensor_Handler::put_device_to_sleep(u8 &ctrl_means_reg) {
     return setRegData(BME280_CTRL_MEAS_ADDR, &reg_set, 1);
 }
 
-BME280_Stat BMESensor_Handler::get_status() {
+BME280_Stat bme_sensor_handler::get_status() {
     return dev_.status;
 }
 
@@ -298,7 +296,7 @@ BME280_Stat BMESensor_Handler::get_status() {
  * @return BME280_Stat
  *
  */
-BME280_Stat BMESensor_Handler::write_power_mode(const u8 mode_set, u8 &ctrl_means_reg) {
+BME280_Stat bme_sensor_handler::write_power_mode(const u8 mode_set, u8 &ctrl_means_reg) {
     ctrl_means_reg = BME280_SET_BITS(ctrl_means_reg,
                                      mode_set,
                                      BME280_SENSOR_MODE_MSK,
@@ -314,7 +312,7 @@ BME280_Stat BMESensor_Handler::write_power_mode(const u8 mode_set, u8 &ctrl_mean
  * @return BME280_Stat
  *
  */
-BME280_Stat BMESensor_Handler::getSensorMode(u8 &sensor_mode) {
+BME280_Stat bme_sensor_handler::getSensorMode(u8 &sensor_mode) {
     u8 ctrl_means_reg = 0x00;
     BME280_Stat ret = SENSOR_OK;
     ret = getRegData(BME280_CTRL_MEAS_ADDR, &ctrl_means_reg, 1);
@@ -329,7 +327,7 @@ BME280_Stat BMESensor_Handler::getSensorMode(u8 &sensor_mode) {
  * @return BME280_Stat
  *
  */
-BME280_Stat BMESensor_Handler::set_sensor_settings(const bme280_settings &desired_settings) {
+BME280_Stat bme_sensor_handler::set_sensor_settings(const bme280_settings &desired_settings) {
     u8 ctrl_means_reg = 0x00;
     BME280_Stat ret = SENSOR_OK;
     /* get ctrl means reg */
@@ -367,7 +365,7 @@ BME280_Stat BMESensor_Handler::set_sensor_settings(const bme280_settings &desire
  * @return None
  *
  */
-void BMESensor_Handler::set_osr_temp_pres_settings(u8 &cur_ctrl_means_reg, const bme280_settings settings) {
+void bme_sensor_handler::set_osr_temp_pres_settings(u8 &cur_ctrl_means_reg, const bme280_settings settings) {
     cur_ctrl_means_reg = BME280_SET_BITS(cur_ctrl_means_reg, settings.osr_t, BME280_CTRL_TEMPERATURE_MSK, BME280_CTRL_TEMPERATURE_POS);
     cur_ctrl_means_reg = BME280_SET_BITS(cur_ctrl_means_reg, settings.osr_p, BME280_CTRL_PRESSURE_MSK, BME280_CTRL_PRESSURE_POS);
     setRegData(BME280_CTRL_MEAS_ADDR, &cur_ctrl_means_reg, 1);
@@ -380,7 +378,7 @@ void BMESensor_Handler::set_osr_temp_pres_settings(u8 &cur_ctrl_means_reg, const
  * @return None
  *
  */
-void BMESensor_Handler::set_osr_humidity_settings(const u8 osr_h) {
+void bme_sensor_handler::set_osr_humidity_settings(const u8 osr_h) {
     u8 ctrl_hum = 0x00, ctrl_means = 0x00;
 
     ctrl_hum = osr_h & BME280_CTRL_HUM_MSK;
@@ -400,7 +398,7 @@ void BMESensor_Handler::set_osr_humidity_settings(const u8 osr_h) {
  * @return None
  *
  */
-BME280_Stat BMESensor_Handler::get_sensor_settings(bme280_settings &settings) {
+BME280_Stat bme_sensor_handler::get_sensor_settings(bme280_settings &settings) {
     u8 reg_data[4] = {};
     BME280_Stat ret = SENSOR_OK;
     /* get 4 registers, ctrl_hum, status, ctrl_means, config */
@@ -413,7 +411,7 @@ BME280_Stat BMESensor_Handler::get_sensor_settings(bme280_settings &settings) {
  *  @brief This API is used to parse the pressure, temperature and
  *  humidity data and store it in the bme280_uncomp_data structure instance.
  */
-void BMESensor_Handler::parse_sensor_data(u8 *reg_data, bme280_uncomp_data &uncomp_data) {
+void bme_sensor_handler::parse_sensor_data(u8 *reg_data, bme280_uncomp_data &uncomp_data) {
     /* Variables to store the sensor data */
     u32 data_xlsb;
     u32 data_lsb;
@@ -447,7 +445,7 @@ void BMESensor_Handler::parse_sensor_data(u8 *reg_data, bme280_uncomp_data &unco
  * @param[in] reg_data : Register data to be parsed.
  *
  */
-void BMESensor_Handler::parse_device_settings(const u8 *reg_data, bme280_settings &settings) {
+void bme_sensor_handler::parse_device_settings(const u8 *reg_data, bme280_settings &settings) {
     settings.osr_h = BME280_GET_BITS(reg_data[0], BME280_CTRL_HUM_MSK, BME280_CTRL_HUM_POS);
     settings.osr_p = BME280_GET_BITS(reg_data[2], BME280_CTRL_PRESSURE_MSK, BME280_CTRL_PRESSURE_POS);
     settings.osr_t = BME280_GET_BITS(reg_data[2], BME280_CTRL_TEMPERATURE_MSK, BME280_CTRL_TEMPERATURE_POS);
@@ -463,7 +461,7 @@ void BMESensor_Handler::parse_device_settings(const u8 *reg_data, bme280_setting
  * @param[in] len: len of data read
  *
  */
-BME280_Stat BMESensor_Handler::getRegData(u8 regAddr, u8 *regData, const u32 len) {
+BME280_Stat bme_sensor_handler::getRegData(u8 regAddr, u8 *regData, const u32 len) {
     regAddr |= BME280_SPI_R;
     dev_.user_read(regAddr, &regData[0], len);
     return SENSOR_OK;
@@ -477,21 +475,17 @@ BME280_Stat BMESensor_Handler::getRegData(u8 regAddr, u8 *regData, const u32 len
  * @param[in] len: len of data read
  *
  */
-BME280_Stat BMESensor_Handler::setRegData(u8 regAddr, const u8 *setData, const u32 len) {
+BME280_Stat bme_sensor_handler::setRegData(u8 regAddr, const u8 *setData, const u32 len) {
     regAddr &= BME280_SPI_W;
     dev_.user_write(regAddr, &setData[0], len);
     return SENSOR_OK;
-}
-
-u8 BMESensor_Handler::getChipID() {
-    return dev_.chipID;
 }
 
 /*!
  * @brief This internal API is used to compensate the raw temperature data and
  * return the compensated temperature data in double data type.
  */
-double BMESensor_Handler::compensate_temperature(const bme280_uncomp_data &uncomp_data)
+double bme_sensor_handler::compensate_temperature(const bme280_uncomp_data &uncomp_data)
 {
     double var1;
     double var2;
@@ -522,7 +516,7 @@ double BMESensor_Handler::compensate_temperature(const bme280_uncomp_data &uncom
  * @brief This internal API is used to compensate the raw pressure data and
  * return the compensated pressure data in double data type.
  */
-double BMESensor_Handler::compensate_pressure(const bme280_uncomp_data &uncomp_data)
+double bme_sensor_handler::compensate_pressure(const bme280_uncomp_data &uncomp_data)
 {
     double var1;
     double var2;
@@ -569,7 +563,7 @@ double BMESensor_Handler::compensate_pressure(const bme280_uncomp_data &uncomp_d
  * @brief This internal API is used to compensate the raw humidity data and
  * return the compensated humidity data in double data type.
  */
-double BMESensor_Handler::compensate_humidity(const bme280_uncomp_data &uncomp_data)
+double bme_sensor_handler::compensate_humidity(const bme280_uncomp_data &uncomp_data)
 {
     double humidity { 0.0 };
     double humidity_min { 0.0 };
@@ -603,13 +597,7 @@ double BMESensor_Handler::compensate_humidity(const bme280_uncomp_data &uncomp_d
     return humidity;
 }
 
-static inline u8 BME280_SET_BITS(const u8 reg, const u8 data, const u8 msk, const u8 pos) {
-    return static_cast<u8>( ( (reg & ~(msk)) | ((data << pos) & msk) ) );
-}
 
-static inline u8 BME280_GET_BITS(const u8 reg, const u8 msk, const u8 pos) {
-    return static_cast<u8>((reg & msk) >> pos);
-}
 
 
 #endif /* SRC_BME280_C_ */

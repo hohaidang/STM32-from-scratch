@@ -17,9 +17,9 @@ using namespace std;
 #define BME280_P_T_H_DATA_LEN                     static_cast<u8>(8u)
 
 /**@SENSOR_MODE Sensor power modes */
-#define BME280_SLEEP_MODE               static_cast<u8>(0x00)
-#define BME280_FORCED_MODE              static_cast<u8>(0x01)
-#define BME280_NORMAL_MODE              static_cast<u8>(0x03)
+#define BME280_SLEEP_MODE                         static_cast<u8>(0x00)
+#define BME280_FORCED_MODE                        static_cast<u8>(0x01)
+#define BME280_NORMAL_MODE                        static_cast<u8>(0x03)
 
 /* Maximum size of SPI read or write each time is 29 bytes, 28 bytes calibration and 1 byte address*/
 #define BME280_MAX_SIZE_WR              (BME280_TEMP_PRESS_CALIB_DATA_LEN + 1)
@@ -142,7 +142,7 @@ typedef struct {
     double humidity;
 } bme280_data;
 
-class BMESensor_Handler {
+class bme_sensor_handler {
     using read_fnc = function<u8(const u8, u8 *, u32)>;
     using write_fnc = function<u8(const u8, const u8 *, u32)>;
     using delay_ms_fnc = function<void(u32)>;
@@ -161,10 +161,11 @@ private:
     bme280 dev_ = { };
     bme280_data data_ = { };
 public:
-    BMESensor_Handler(read_fnc user_read, write_fnc user_write,
-            delay_ms_fnc user_delay);
-    ~BMESensor_Handler() = default;
-    uint8_t getChipID();
+    bme_sensor_handler(read_fnc user_read, write_fnc user_write, delay_ms_fnc user_delay);
+    ~bme_sensor_handler() = default;
+
+    BME280_Stat init_BME280();
+    uint8_t getChipID() { return dev_.chipID; };
     BME280_Stat softReset();
     BME280_Stat get_calib_data();
     BME280_Stat setSensorMode(const uint8_t sensorMode);
@@ -176,7 +177,6 @@ public:
     void print_sensor_data();
 
 private:
-    BME280_Stat init_BME280();
     BME280_Stat getRegData(u8 regAddr, u8 *regData, const u32 len);
     BME280_Stat setRegData(u8 regAddr, const u8 *setData, const u32 len);
     BME280_Stat write_power_mode(const u8 mode_set, u8 &ctrl_means_reg);
@@ -191,6 +191,16 @@ private:
     double compensate_pressure(const bme280_uncomp_data &uncomp_data);
     double compensate_humidity(const bme280_uncomp_data &uncomp_data);
 
+    inline u8 BME280_SET_BITS(const u8 reg, const u8 data, const u8 msk, const u8 pos) {
+        return static_cast<u8>( ( (reg & ~(msk)) | ((data << pos) & msk) ) );
+    }
+
+    inline u8 BME280_GET_BITS(const u8 reg, const u8 msk, const u8 pos) {
+        return static_cast<u8>((reg & msk) >> pos);
+    }
+
 };
+
+
 
 #endif /* INC_BME280_DRIVER_H_ */

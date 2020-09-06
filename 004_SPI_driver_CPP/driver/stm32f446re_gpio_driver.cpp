@@ -7,28 +7,6 @@
 
 #include "stm32f446re_gpio_driver.h"
 
-/*!
- * @brief Constructor, initialize GPIO, clock, IRQ, Alt Function
- *
- * @param None
- *
- * @return None
- *
- */
-GPIO_Handler::GPIO_Handler(GPIO_RegDef_t *gpiox_addr, u8 pin_number,
-        u8 pin_mode, u8 pin_speed, u8 output_type, u8 pupd_control,
-        u8 IRQ_priority, u8 alt_func_mode) : gpiox_(gpiox_addr),
-                                             config_( { pin_number, pin_mode, pin_speed, pupd_control, output_type, alt_func_mode })
-{
-    gpio_peripheral_clk_control();
-    gpio_init();
-    // Configure interrupt
-    if (pin_mode >= GPIO_MODE_IT_FT) {
-        u8 IRQ_number = get_irq_pin_num(pin_number);
-        gpio_irq_config(IRQ_number, ENABLE);
-        gpio_irq_priority_config(IRQ_number, IRQ_priority);
-    }
-}
 
 /*!
  * @brief DeConstructor, Reset GPIO PORT
@@ -39,7 +17,7 @@ GPIO_Handler::GPIO_Handler(GPIO_RegDef_t *gpiox_addr, u8 pin_number,
  *
  * @node: Be careful when using many Peripheral device in the same PORT
  */
-GPIO_Handler::~GPIO_Handler() {
+gpio_handler::~gpio_handler() {
     gpio_deinit();
 }
 
@@ -51,7 +29,7 @@ GPIO_Handler::~GPIO_Handler() {
  * @return None
  *
  */
-void GPIO_Handler::gpio_peripheral_clk_control() {
+void gpio_handler::gpio_peripheral_clk_control() {
     if (gpiox_ == GPIOA) {
         GPIOA_PCLK_EN();
     } else if (gpiox_ == GPIOB) {
@@ -79,73 +57,91 @@ void GPIO_Handler::gpio_peripheral_clk_control() {
  * @return None
  *
  */
-void GPIO_Handler::gpio_init() {
+void gpio_handler::gpio_init(GPIO_RegDef_t *GPIOx_addr,
+                             u8 pin_number,
+                             u8 pin_mode, 
+                             u8 pin_speed, 
+                             u8 output_type, 
+                             u8 pupd_control,
+                             u8 IRQ_priority, 
+                             u8 alt_func_mode) {
+    gpiox_ = GPIOx_addr;
+    pin_number_ = pin_number;
+    gpio_peripheral_clk_control();
+    
     uint32_t temp = 0;
     // 1. configure the mode of gpio pin
-    if (config_.GPIO_PinMode <= GPIO_MODE_ANALOG) {
+    if (pin_mode <= GPIO_MODE_ANALOG) {
         // the non interrupt mode
-        temp = config_.GPIO_PinMode << (2 * config_.GPIO_PinNumber);
-        gpiox_->MODER &= ~(0x3 << (2 * config_.GPIO_PinNumber)); // clearing
+        temp = pin_mode << (2 * pin_number_);
+        gpiox_->MODER &= ~(0x3 << (2 * pin_number_)); // clearing
         gpiox_->MODER |= temp;
     } else {
         // interrupt mode
-        if (GPIO_MODE_IT_FT == config_.GPIO_PinMode) {
+        if (GPIO_MODE_IT_FT == pin_mode) {
             // 1. configure the FTSR
-            EXTI->FTSR |= (1 << config_.GPIO_PinNumber);
+            EXTI->FTSR |= (1 << pin_number_);
 
             // clear the corresponding RTSR bit
-            EXTI->RTSR &= ~(1 << config_.GPIO_PinNumber);
+            EXTI->RTSR &= ~(1 << pin_number_);
 
-        } else if (GPIO_MODE_IT_RT == config_.GPIO_PinMode) {
+        } else if (GPIO_MODE_IT_RT == pin_mode) {
             // 1. configure the RTSR
-            EXTI->RTSR |= (1 << config_.GPIO_PinNumber);
+            EXTI->RTSR |= (1 << pin_number_);
 
             // clear the corresponding RTSR bit
-            EXTI->FTSR &= ~(1 << config_.GPIO_PinNumber);
-        } else if (GPIO_MODE_IT_RFT == config_.GPIO_PinMode) {
+            EXTI->FTSR &= ~(1 << pin_number_);
+        } else if (GPIO_MODE_IT_RFT == pin_mode) {
             // 1. configure both FTSR and RTSR
-            EXTI->FTSR |= (1 << config_.GPIO_PinNumber);
-            EXTI->RTSR |= (1 << config_.GPIO_PinNumber);
+            EXTI->FTSR |= (1 << pin_number_);
+            EXTI->RTSR |= (1 << pin_number_);
         }
 
         // 2. configure the GPIO port selection in SYSCFG_EXTICR
-        u8 temp1 = config_.GPIO_PinNumber >> 2;
-        u8 temp2 = config_.GPIO_PinNumber % 4;
+        u8 temp1 = pin_number_ >> 2;
+        u8 temp2 = pin_number_ % 4;
         u8 portCode = gpio_baseAddr_to_code(gpiox_);
         SYSCFG_PCLK_EN();
         SYSCFG->EXTICR[temp1] |= (portCode << (4 * temp2));
 
         // 3. Enable the exti interrupt delivery using IMR
-        EXTI->IMR |= 1 << config_.GPIO_PinNumber;
+        EXTI->IMR |= 1 << pin_number_;
     }
 
     temp = 0;
     // 2. configure the speed
-    temp = config_.GPIO_PinSpeed << (2 * config_.GPIO_PinNumber);
-    gpiox_->OSPEEDR &= ~(0x3 << (2 * config_.GPIO_PinNumber)); // clearing
+    temp = pin_speed << (2 * pin_number_);
+    gpiox_->OSPEEDR &= ~(0x3 << (2 * pin_number_)); // clearing
     gpiox_->OSPEEDR |= temp;
 
     temp = 0;
     // 3. configure the pupd settings
-    temp = config_.GPIO_PinPuPdControl << (2 * config_.GPIO_PinNumber);
-    gpiox_->PUPDR &= ~(0x3 << (2 * config_.GPIO_PinNumber)); // clearing
+    temp = pupd_control << (2 * pin_number_);
+    gpiox_->PUPDR &= ~(0x3 << (2 * pin_number_)); // clearing
     gpiox_->PUPDR |= temp;
 
     temp = 0;
     // 4. configure the optype
-    temp = config_.GPIO_PinOutputType << config_.GPIO_PinNumber;
-    gpiox_->OTYPER &= ~(0x1 << config_.GPIO_PinNumber); // clearing
+    temp = output_type << pin_number_;
+    gpiox_->OTYPER &= ~(0x1 << pin_number_); // clearing
     gpiox_->OTYPER |= temp;
 
     temp = 0;
     // 5. configure the alt functionality
-    if (config_.GPIO_PinMode == GPIO_MODE_ALTFN) {
+    if (pin_mode == GPIO_MODE_ALTFN) {
         // configure alt function register
         u8 temp1, temp2;
-        temp1 = config_.GPIO_PinNumber / 8;
-        temp2 = config_.GPIO_PinNumber % 8;
+        temp1 = pin_number_ / 8;
+        temp2 = pin_number_ % 8;
         gpiox_->AFR[temp1] &= ~(0xF << (4 * temp2));
-        gpiox_->AFR[temp1] |= (config_.GPIO_PinAltFunMode << (4 * temp2));
+        gpiox_->AFR[temp1] |= (alt_func_mode << (4 * temp2));
+    }
+
+    /* Configure interrupt */
+    if (pin_mode >= GPIO_MODE_IT_FT) {
+        u8 IRQ_number = get_irq_pin_num(pin_number);
+        gpio_irq_config(IRQ_number, ENABLE);
+        gpio_irq_priority_config(IRQ_number, IRQ_priority);
     }
 }
 
@@ -157,7 +153,7 @@ void GPIO_Handler::gpio_init() {
  * @return None
  *
  */
-void GPIO_Handler::gpio_deinit() {
+void gpio_handler::gpio_deinit() {
     if (gpiox_ == GPIOA) {
         GPIOA_REG_RESET();
     } else if (gpiox_ == GPIOB) {
@@ -185,9 +181,9 @@ void GPIO_Handler::gpio_deinit() {
  * @return uint8, b'0000_000x
  *
  */
-u8 GPIO_Handler::gpio_read_from_input_pin() const {
+u8 gpio_handler::gpio_read_from_input_pin() const {
     u8 value;
-    value = (u8) ((gpiox_->IDR >> config_.GPIO_PinNumber) & 0x00000001);
+    value = (u8) ((gpiox_->IDR >> pin_number_) & 0x00000001);
     return value;
 }
 
@@ -199,7 +195,7 @@ u8 GPIO_Handler::gpio_read_from_input_pin() const {
  * @return uint16_t: PORT value
  *
  */
-uint16_t GPIO_Handler::gpio_read_from_input_port() const {
+uint16_t gpio_handler::gpio_read_from_input_port() const {
     uint16_t value;
     value = gpiox_->IDR;
     return value;
@@ -213,11 +209,11 @@ uint16_t GPIO_Handler::gpio_read_from_input_port() const {
  * @return None
  *
  */
-void GPIO_Handler::gpio_write_to_output_pin(const u8 value) {
+void gpio_handler::gpio_write_to_output_pin(const u8 value) {
     if (value == SET) {
-        gpiox_->ODR |= (0x1 << config_.GPIO_PinNumber);
+        gpiox_->ODR |= (0x1 << pin_number_);
     } else {
-        gpiox_->ODR &= ~(0x1 << config_.GPIO_PinNumber);
+        gpiox_->ODR &= ~(0x1 << pin_number_);
     }
 }
 
@@ -229,7 +225,7 @@ void GPIO_Handler::gpio_write_to_output_pin(const u8 value) {
  * @return None
  *
  */
-void GPIO_Handler::gpio_write_to_output_port(const uint16_t value) {
+void gpio_handler::gpio_write_to_output_port(const uint16_t value) {
     gpiox_->ODR &= 0x0000;
     gpiox_->ODR = value;
 }
@@ -242,8 +238,8 @@ void GPIO_Handler::gpio_write_to_output_port(const uint16_t value) {
  * @return None
  *
  */
-void GPIO_Handler::gpio_toggle_output_pin() {
-    gpiox_->ODR ^= (0x1 << config_.GPIO_PinNumber);
+void gpio_handler::gpio_toggle_output_pin() {
+    gpiox_->ODR ^= (0x1 << pin_number_);
 }
 
 /*!
@@ -255,7 +251,7 @@ void GPIO_Handler::gpio_toggle_output_pin() {
  * @return None
  *
  */
-void GPIO_Handler::gpio_irq_config(const uint8_t irq_number, const uint8_t en_or_di) {
+void gpio_handler::gpio_irq_config(const uint8_t irq_number, const uint8_t en_or_di) {
     if (en_or_di == ENABLE) {
         if (irq_number <= 31) {
             //  program ISER0 register
@@ -290,7 +286,7 @@ void GPIO_Handler::gpio_irq_config(const uint8_t irq_number, const uint8_t en_or
  * @return None
  *
  */
-void GPIO_Handler::gpio_irq_priority_config(const uint8_t irq_number, const uint8_t irq_priority) {
+void gpio_handler::gpio_irq_priority_config(const uint8_t irq_number, const uint8_t irq_priority) {
     // 1. first lets find out the ipr register
     u8 iprx = irq_number >> 2;
     u8 iprx_section = irq_number % 4;
@@ -306,9 +302,12 @@ void GPIO_Handler::gpio_irq_priority_config(const uint8_t irq_number, const uint
  * @return None
  *
  */
-void GPIO_Handler::gpio_irq_handling() {
-    if (EXTI->PR & (1UL << config_.GPIO_PinNumber)) {
+void gpio_handler::gpio_irq_handling() {
+    // clear the EXIT PR register corresponding to the pin number
+    if (EXTI->PR & (1UL << pin_number_)) {
         // clear by set to 1
-        EXTI->PR |= (1UL << config_.GPIO_PinNumber);
+        EXTI->PR |= (1UL << pin_number_);
     }
 }
+
+

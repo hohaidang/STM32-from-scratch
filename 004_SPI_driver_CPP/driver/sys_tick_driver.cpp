@@ -19,14 +19,15 @@ struct compute_reload_tick {
 };
 
 /*!
- * @brief: Constructor initialize system tick with 1ms
+ * @brief:  initialize system tick with 1ms
  *
  * @param: None
  *
  * @return: None
  *
  */
-SysTick::SysTick() {
+
+void sys_tick::init() {
     SYSTICK->CSR = 0; /* disable systick */
 
     SYSTICK->RVR = compute_reload_tick<HSI_CLOCK>::value; /* set reload register */
@@ -50,7 +51,7 @@ SysTick::SysTick() {
  * @return: None
  *
  */
-SysTick::~SysTick() {
+sys_tick::~sys_tick() {
     SYSTICK->CSR = 0; /* disable systick */
     SYSTICK->RVR = 0; /* reset reload register */
     SYSTICK->CSR &= ~(SYSTICK_CSR_CLKSOURCE | SYSTICK_CSR_TICKINT | SYSTICK_CSR_ENA);
@@ -64,7 +65,7 @@ SysTick::~SysTick() {
  * @return: None
  *
  */
-void SysTick::delay_ms(const u32 period) const {
+void sys_tick::delay_ms(const u32 period) const {
     utick = period;
     while(utick != RESET);
 }

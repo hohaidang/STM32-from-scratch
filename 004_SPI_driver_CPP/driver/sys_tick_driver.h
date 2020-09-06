@@ -12,10 +12,11 @@
 
 
 
-class SysTick {
+class sys_tick {
 public:
-    SysTick();
-    ~SysTick();
+    sys_tick() = default;
+    ~sys_tick();
+    void init();
     void delay_ms(const u32 period) const;
 };
 

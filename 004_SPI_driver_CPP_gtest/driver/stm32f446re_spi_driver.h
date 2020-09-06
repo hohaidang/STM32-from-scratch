@@ -10,7 +10,6 @@
 
 #include "stm32f4xx.h"
 #include "core_cm4.h"
-#include <memory>
 #include <functional>
 #include <array>
 using namespace std;
@@ -85,18 +84,18 @@ typedef struct {
 } SPI_Handle_t;
 
 void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle, u8 AppEv);
-class GPIO_Handler;
+class gpio_handler;
 
 class SPI_Handler {
 protected:
     volatile SPI_RegDef_t *spix_; /*!< This holds the base address of SPIx(x:0,1,2) peripheral >*/
     SPI_Config_t config_ = { };
     SPI_Handle_t handle_ = { };
-    std::unique_ptr<GPIO_Handler> spi_sck_;
-    std::unique_ptr<GPIO_Handler> spi_mosi_;
-    std::unique_ptr<GPIO_Handler> spi_miso_;
+    gpio_handler spi_sck_;
+    gpio_handler spi_mosi_;
+    gpio_handler spi_miso_;
 public:
-    std::unique_ptr<GPIO_Handler> spi_nss_;
+    gpio_handler spi_nss_;
 
 public:
     SPI_Handler(SPI_RegDef_t *spix_addr,

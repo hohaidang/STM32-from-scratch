@@ -6,38 +6,7 @@
  */
 
 #include "stm32f446re_spi_driver.h"
-#include "../Src/spi_readSensordata.h"
 using namespace std;
-
-
-/*!
- * @brief Initialize SPI, GPIOs, Interrupt, etc.
- *
- * @param: None
- *
- * @return None
- *
- */
-SPI_Handler::SPI_Handler(SPI_RegDef_t *spix_addr,
-                        u8 device_mode,
-                        u8 bus_config,
-                        u8 sclk_speed,
-                        u8 dff,
-                        u8 cpol,
-                        u8 cpha,
-                        u8 ssm) : spix_(spix_addr),
-                                  config_({device_mode, bus_config, sclk_speed, dff, cpol, cpha, ssm}){
-    spi_gpios_init();
-    spi_peripheral_clock_init();
-    spi_init();
-    spi_ssi_config<ENABLE>();
-    if (SPI_SSM_EN == config_.spi_ssm) {
-        spi_ssoe_config<DISABLE>();
-    } else {
-        spi_ssoe_config<ENABLE>();
-    }
-}
-
 
 /*!
  * @brief Disable all SPIs feature
@@ -47,7 +16,7 @@ SPI_Handler::SPI_Handler(SPI_RegDef_t *spix_addr,
  * @return None
  *
  */
-SPI_Handler::~SPI_Handler() {
+spi_handler::~spi_handler() {
     spi_deinit();
 }
 
@@ -60,7 +29,7 @@ SPI_Handler::~SPI_Handler() {
  * @return None
  *
  */
-void SPI_Handler::spi_peripheral_clock_init() {
+void spi_handler::spi_peripheral_clock_init() {
     if (SPI1 == spix_) {
         SPI1_PCLK_EN();
     } else if (SPI2 == spix_) {
@@ -72,7 +41,6 @@ void SPI_Handler::spi_peripheral_clock_init() {
     }
 }
 
-
 /*!
  * @brief Initial Sck, MOSI, MISO, NSS GPIOs for SPI
  *
@@ -81,46 +49,47 @@ void SPI_Handler::spi_peripheral_clock_init() {
  * @return None
  *
  */
-void SPI_Handler::spi_gpios_init() {
+void spi_handler::spi_gpios_init() {
     if (spix_ == SPI1) {
-        spi_sck_.reset(new GPIO_Handler( GPIOA,
-                                        GPIO_PIN_NO_5,
-                                        GPIO_MODE_ALTFN,
-                                        GPIO_SPEED_HIGH,
-                                        GPIO_OP_TYPE_PP,
-                                        GPIO_NO_PUPD,
-                                        IRQ_Prio_NO_15,
-                                        GPIO_ALT_5));
+        spi_sck_.gpio_init(GPIOA, 
+                           GPIO_PIN_NO_5,
+                           GPIO_MODE_ALTFN,
+                           GPIO_SPEED_HIGH,
+                           GPIO_OP_TYPE_PP,
+                           GPIO_NO_PUPD,
+                           IRQ_Prio_NO_15,
+                           GPIO_ALT_5);
 
-        spi_mosi_.reset(new GPIO_Handler(GPIOA,
-                                        GPIO_PIN_NO_7,
-                                        GPIO_MODE_ALTFN,
-                                        GPIO_SPEED_HIGH,
-                                        GPIO_OP_TYPE_PP,
-                                        GPIO_NO_PUPD,
-                                        IRQ_Prio_NO_15,
-                                        GPIO_ALT_5));
+        spi_mosi_.gpio_init(GPIOA,
+                            GPIO_PIN_NO_7,
+                            GPIO_MODE_ALTFN,
+                            GPIO_SPEED_HIGH,
+                            GPIO_OP_TYPE_PP,
+                            GPIO_NO_PUPD,
+                            IRQ_Prio_NO_15,
+                            GPIO_ALT_5);
 
-        spi_miso_.reset(new GPIO_Handler(GPIOA,
-                                        GPIO_PIN_NO_6,
-                                        GPIO_MODE_ALTFN,
-                                        GPIO_SPEED_HIGH,
-                                        GPIO_OP_TYPE_PP,
-                                        GPIO_NO_PUPD,
-                                        IRQ_Prio_NO_15,
-                                        GPIO_ALT_5));
+        spi_miso_.gpio_init(GPIOA,
+                            GPIO_PIN_NO_6,
+                            GPIO_MODE_ALTFN,
+                            GPIO_SPEED_HIGH,
+                            GPIO_OP_TYPE_PP,
+                            GPIO_NO_PUPD,
+                            IRQ_Prio_NO_15,
+                            GPIO_ALT_5);
+
 
         if (SPI_SSM_DI == config_.spi_ssm) {
-            // Hardware NSS enable, configure for PA4
-            // TODO: develop feature for NSS
-            spi_nss_.reset(new GPIO_Handler( GPIOA,
-                                            GPIO_PIN_NO_4,
-                                            GPIO_MODE_ALTFN,
-                                            GPIO_SPEED_HIGH,
-                                            GPIO_OP_TYPE_PP,
-                                            GPIO_NO_PUPD,
-                                            IRQ_Prio_NO_15,
-                                            GPIO_ALT_5));
+            /* Hardware NSS enable, configure for PA4
+               TODO: develop feature for NSS */
+            spi_nss_.gpio_init(GPIOA,
+                               GPIO_PIN_NO_4,
+                               GPIO_MODE_ALTFN,
+                               GPIO_SPEED_HIGH,
+                               GPIO_OP_TYPE_PP,
+                               GPIO_NO_PUPD,
+                               IRQ_Prio_NO_15,
+                               GPIO_ALT_5);
         }
     }
 }
@@ -134,8 +103,40 @@ void SPI_Handler::spi_gpios_init() {
  * @return None
  *
  */
-void SPI_Handler::spi_init() {
-    // Lets configure the SPI_CR1 register
+void spi_handler::spi_init(SPI_RegDef_t *spix_addr,
+                           function<void(int)> delay_fnc,
+                           u8 device_mode,
+                           u8 bus_config,
+                           u8 sclk_speed,
+                           u8 dff,
+                           u8 cpol,
+                           u8 cpha,
+                           u8 ssm) {
+    spix_ = spix_addr;
+    handle_.delay_fnc = delay_fnc;
+    config_ = {device_mode, bus_config, sclk_speed, dff, cpol, cpha, ssm};
+    spi_gpios_init();
+    spi_peripheral_clock_init();
+    spi_reg_config();
+    spi_ssi_config<ENABLE>();
+    if (SPI_SSM_EN == ssm) {
+        spi_ssoe_config<DISABLE>();
+    } else {
+        spi_ssoe_config<ENABLE>();
+    }
+ 
+}
+
+/*!
+ * @brief Configure register of SPI
+ *
+ * @param: None
+ *
+ * @return None
+ *
+ */
+void spi_handler::spi_reg_config() {
+   /* configure the SPI_CR1 register */
     u32 temp_reg = 0;
 
     // 1. configure the device mode
@@ -174,7 +175,6 @@ void SPI_Handler::spi_init() {
     spix_->CR1 = temp_reg;
 }
 
-
 /*!
  * @brief Reset register of SPI
  *
@@ -183,7 +183,7 @@ void SPI_Handler::spi_init() {
  * @return None
  *
  */
-void SPI_Handler::spi_deinit() {
+void spi_handler::spi_deinit() {
     if (SPI1 == spix_) {
         SPI1_REG_RESET();
     } else if (SPI2 == spix_) {
@@ -203,13 +203,13 @@ void SPI_Handler::spi_deinit() {
  * @return None
  *
  */
-void SPI_Handler::spi_init_nss_sw(GPIO_RegDef_t *GPIOx_addr, const u8 pin_number) {
-    spi_nss_.reset( new GPIO_Handler(GPIOx_addr,
-                                pin_number,
-                                GPIO_MODE_OUT,
-                                GPIO_SPEED_FAST,
-                                GPIO_OP_TYPE_PP,
-                                GPIO_NO_PUPD) );
+void spi_handler::spi_init_nss_sw(GPIO_RegDef_t *GPIOx_addr, const u8 pin_number) {
+    spi_nss_.gpio_init(GPIOx_addr,
+                       pin_number,
+                       GPIO_MODE_OUT,
+                       GPIO_SPEED_FAST,
+                       GPIO_OP_TYPE_PP,
+                       GPIO_NO_PUPD);
 }
 
 /*!
@@ -221,7 +221,7 @@ void SPI_Handler::spi_init_nss_sw(GPIO_RegDef_t *GPIOx_addr, const u8 pin_number
  * @return None
  *
  */
-void SPI_Handler::spi_transmit_data(const u8 *pTxBuffer, u32 Len) {
+void spi_handler::spi_transmit_data(const u8 *pTxBuffer, u32 Len) {
     if (RESET == (spix_->CR1 & SPI_CR1_SPE)) {
         spi_peripheral_control<ENABLE>();
     }
@@ -253,7 +253,7 @@ void SPI_Handler::spi_transmit_data(const u8 *pTxBuffer, u32 Len) {
  * @return None
  *
  */
-void SPI_Handler::spi_receive_data(u8 *pRxBuffer, u32 Len) {
+void spi_handler::spi_receive_data(u8 *pRxBuffer, u32 Len) {
     if (RESET == (spix_->CR1 & SPI_CR1_SPE)) {
         spi_peripheral_control<ENABLE>();
     }
@@ -290,7 +290,7 @@ void SPI_Handler::spi_receive_data(u8 *pRxBuffer, u32 Len) {
  * @return None
  *
  */
-void SPI_Handler::spi_transmit_receive_data(const u8 *p_tx_buffer, u8 *p_rx_buffer, u32 len) {
+void spi_handler::spi_transmit_receive_data(const u8 *p_tx_buffer, u8 *p_rx_buffer, u32 len) {
     if (RESET == (spix_->CR1 & SPI_CR1_SPE)) {
         spi_peripheral_control<ENABLE>();
     }
@@ -304,7 +304,7 @@ void SPI_Handler::spi_transmit_receive_data(const u8 *p_tx_buffer, u8 *p_rx_buff
             spix_->DR = *((u16*) p_tx_buffer);
             if(init_len == len) {
                 /* First transmission is sensor's address Should delay if MCU run so fast, slave cannot load data to shift register on time*/
-                SystemTick->delay_ms(1);
+                handle_.delay_fnc(1);
             }
             len -= 2;
             (u16*) p_tx_buffer++;
@@ -312,7 +312,7 @@ void SPI_Handler::spi_transmit_receive_data(const u8 *p_tx_buffer, u8 *p_rx_buff
             spix_->DR = *p_tx_buffer;
             if(init_len == len) {
                 /* First transmission is sensor's address Should delay if MCU run so fast, slave cannot load data to shift register on time*/
-                SystemTick->delay_ms(1);
+                handle_.delay_fnc(1);
             }
             len -= 1;
             p_tx_buffer++;
@@ -347,7 +347,7 @@ void SPI_Handler::spi_transmit_receive_data(const u8 *p_tx_buffer, u8 *p_rx_buff
  * @return u8: Transmission state
  *
  */
-void SPI_Handler::spi_transmit_data_it(u8 *p_tx_buf, const u32 len) {
+void spi_handler::spi_transmit_data_it(u8 *p_tx_buf, const u32 len) {
     if (RESET == (spix_->CR1 & SPI_CR1_SPE)) {
         spi_peripheral_control<ENABLE>();
     }
@@ -388,7 +388,7 @@ void SPI_Handler::spi_transmit_data_it(u8 *p_tx_buf, const u32 len) {
  * @return u8: Transmission state
  *
  */
-void SPI_Handler::spi_receive_data_it(u8 *p_rx_buf, const u32 len) {
+void spi_handler::spi_receive_data_it(u8 *p_rx_buf, const u32 len) {
     /* Call transmit-receive function to send Dummy data on Tx line and generate clock on CLK line */
     spi_transmit_receive_data_it(p_rx_buf, p_rx_buf, len);
 }
@@ -403,7 +403,7 @@ void SPI_Handler::spi_receive_data_it(u8 *p_rx_buf, const u32 len) {
  * @return u8: Transmission State
  *
  */
-void SPI_Handler::spi_transmit_receive_data_it(u8 *p_tx_buf, u8 *p_rx_buf, const u32 len) {
+void spi_handler::spi_transmit_receive_data_it(u8 *p_tx_buf, u8 *p_rx_buf, const u32 len) {
     if (RESET == (spix_->CR1 & SPI_CR1_SPE)) {
         spi_peripheral_control<ENABLE>();
     }
@@ -447,7 +447,7 @@ void SPI_Handler::spi_transmit_receive_data_it(u8 *p_tx_buf, u8 *p_rx_buf, const
  * @return None
  *
  */
-void SPI_Handler::spi_irq_handling() {
+void spi_handler::spi_irq_handling() {
     volatile u32 SR_reg = spix_->SR;
     volatile u32 CR2_reg = spix_->CR2;
 
@@ -484,12 +484,12 @@ void SPI_Handler::spi_irq_handling() {
  * @return None
  *
  */
-void SPI_Handler::spi_tx_8bit_it() {
+void spi_handler::spi_tx_8bit_it() {
     *(volatile uint8_t *)&spix_->DR = *handle_.tx_buf;
     ++handle_.tx_buf;
     if(handle_.tx_len == handle_.init_tx_len) {
         /* First transmission is sensor's address Should delay if MCU run so fast, slave cannot load data to shift register on time*/
-        SystemTick->delay_ms(1);
+        handle_.delay_fnc(1);
     }
     --handle_.tx_len;
 
@@ -512,7 +512,7 @@ void SPI_Handler::spi_tx_8bit_it() {
  * @return None
  *
  */
-void SPI_Handler::spi_rx_8bit_it() {
+void spi_handler::spi_rx_8bit_it() {
     *handle_.rx_buf = *((volatile uint8_t *)&spix_->DR);
     ++handle_.rx_buf;
     --handle_.rx_len;
@@ -535,7 +535,7 @@ void SPI_Handler::spi_rx_8bit_it() {
  * @return None
  *
  */
-void SPI_Handler::spi_ovr_err_interrupt_handle() {
+void spi_handler::spi_ovr_err_interrupt_handle() {
     /* 1. Clear the ovr flag */
     spi_clear_ovr_flag();
     /* 2. Inform the application */
@@ -550,7 +550,7 @@ void SPI_Handler::spi_ovr_err_interrupt_handle() {
  * @return None
  *
  */
-void SPI_Handler::spi_clear_ovr_flag() {
+void spi_handler::spi_clear_ovr_flag() {
     volatile u32 temp = 0x00UL;
     temp = spix_->DR;
     temp = spix_->SR;
@@ -565,7 +565,7 @@ void SPI_Handler::spi_clear_ovr_flag() {
  * @return None
  *
  */
-void SPI_Handler::spi_close_tx_rx_isr() {
+void spi_handler::spi_close_tx_rx_isr() {
     while(spi_get_SR_reg<SPI_SR_BSY>()); /* w8 until SPI transmit done */
     spix_->CR2 &= ~(SPI_CR2_TXEIE | SPI_CR2_RXNEIE | SPI_CR2_ERRIE);
     handle_.tx_state = SPI_READY;
@@ -573,7 +573,7 @@ void SPI_Handler::spi_close_tx_rx_isr() {
     spi_clear_ovr_flag();
 }
 
-__weak void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle, u8 AppEv) {
+__weak void SPI_ApplicationEventCallback(spi_handle_t *pSPIHandle, u8 AppEv) {
     //This is a weak implementation . the user application may override this function.
 }
 

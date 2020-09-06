@@ -9,7 +9,7 @@
 #define SPI_READSENSORDATA_H_
 
 #include "../driver/sys_tick_driver.h"
-extern unique_ptr<SysTick> SystemTick;
+extern sys_tick system_tick;
 
 
 #endif /* SPI_READSENSORDATA_H_ */

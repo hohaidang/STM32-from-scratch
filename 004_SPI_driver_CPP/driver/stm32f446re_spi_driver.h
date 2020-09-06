@@ -9,9 +9,8 @@
 #define INC_STM32F446RE_SPI_DRIVER_H_
 
 #include "stm32f4xx.h"
-#include "core_cm4.h"
 #include "stm32f446re_gpio_driver.h"
-#include <memory>
+#include "core_cm4.h"
 #include <functional>
 #include <array>
 using namespace std;
@@ -21,9 +20,9 @@ using namespace std;
 #define SPI_DEVICE_MODE_SLAVE                   static_cast<u8>(0)
 
 // @SPI_BusConfig
-#define SPI_BUS_CONFIG_FD                       static_cast<u8>(1)	// full duplex
-#define SPI_BUS_CONFIG_HD                       static_cast<u8>(2)	// half duplex, transmit only
-#define SPI_BUS_CONFIG_SIMPLEX_RXONLY           static_cast<u8>(3)	// simplex Rx only
+#define SPI_BUS_CONFIG_FD                       static_cast<u8>(1)  // full duplex
+#define SPI_BUS_CONFIG_HD                       static_cast<u8>(2)  // half duplex, transmit only
+#define SPI_BUS_CONFIG_SIMPLEX_RXONLY           static_cast<u8>(3)  // simplex Rx only
 
 // @SPI_SclkSpeed
 #define SPI_SCLK_SPEED_DIV2                     static_cast<u8>(0)
@@ -71,7 +70,7 @@ typedef struct {
     u8 spi_cpol; /*!<possible values from @SPI_CPOL>*/
     u8 spi_cpha; /*!<possible values from @SPI_CPHA>*/
     u8 spi_ssm; /*!<possible values from @SPI_SSM>*/
-} SPI_Config_t;
+} spi_config_t;
 
 typedef struct {
     volatile u8 *tx_buf;                    /* !< To store the app. Tx buffer address > */
@@ -83,35 +82,35 @@ typedef struct {
     volatile u8 rx_state;                   /* !< To store Rx state > */
     std::function<void(void)> receive_fnc;  /* Function pointer for receiving data in interrupt */
     std::function<void(void)> transmit_fnc; /* Function pointer for transmission data in interrupt */
-} SPI_Handle_t;
+    std::function<void(u32)>  delay_fnc;    /* Function pointer for delay */
+} spi_handle_t;
 
-void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle, u8 AppEv);
-class GPIO_Handler;
+void SPI_ApplicationEventCallback(spi_handle_t *pSPIHandle, u8 AppEv);
 
-class SPI_Handler {
+class spi_handler {
 protected:
-    volatile SPI_RegDef_t *spix_; /*!< This holds the base address of SPIx(x:0,1,2) peripheral >*/
-    SPI_Config_t config_ = { };
-    SPI_Handle_t handle_ = { };
-    std::unique_ptr<GPIO_Handler> spi_sck_;
-    std::unique_ptr<GPIO_Handler> spi_mosi_;
-    std::unique_ptr<GPIO_Handler> spi_miso_;
+    volatile SPI_RegDef_t *spix_; /*!< This holds the base address of SPIx(x:0,1,2) peripheral >*/    
+    spi_config_t config_ = { };
+    spi_handle_t handle_ = { };
+    gpio_handler spi_sck_;
+    gpio_handler spi_mosi_;
+    gpio_handler spi_miso_;
 public:
-    std::unique_ptr<GPIO_Handler> spi_nss_;
+    gpio_handler spi_nss_;
 
 public:
-    SPI_Handler(SPI_RegDef_t *spix_addr,
-                u8 device_mode,
-                u8 bus_config,
-                u8 sclk_speed,
-                u8 dff,
-                u8 cpol,
-                u8 cpha,
-                u8 ssm);
+    spi_handler() = default;
+    ~spi_handler();
 
-    ~SPI_Handler();
-
-    void spi_init();
+    void spi_init(SPI_RegDef_t *spix_addr,
+                  function<void(int)> delay_fnc,
+                  u8 device_mode,
+                  u8 bus_config,
+                  u8 sclk_speed,
+                  u8 dff,
+                  u8 cpol,
+                  u8 cpha,
+                  u8 ssm);
     void spi_deinit();
     void spi_init_nss_sw(GPIO_RegDef_t *GPIOx_addr, const uint8_t pin_number);
 
@@ -143,6 +142,7 @@ private:
     void spi_clear_ovr_flag();
     void spi_peripheral_clock_init();
     void spi_gpios_init();
+    void spi_reg_config();
 
     void spi_rx_8bit_it();
     void spi_tx_8bit_it();
@@ -156,7 +156,7 @@ private:
 
 
 template<u8 irq_number, u8 en_or_di>
-constexpr void SPI_Handler::spi_ir_config() {
+constexpr void spi_handler::spi_ir_config() {
     if (en_or_di == ENABLE) {
         if (irq_number <= 31) {
             //  program ISER0 register
@@ -183,7 +183,7 @@ constexpr void SPI_Handler::spi_ir_config() {
 }
 
 template<size_t SIZE>
-void SPI_Handler::spi_transmit_data(array<u8, SIZE> &p_tx_buffer) {
+void spi_handler::spi_transmit_data(array<u8, SIZE> &p_tx_buffer) {
     if (RESET == (spix_->CR1 & SPI_CR1_SPE)) {
         spi_peripheral_control<ENABLE>();
     }
@@ -216,7 +216,7 @@ void SPI_Handler::spi_transmit_data(array<u8, SIZE> &p_tx_buffer) {
  *
  */
 template<u8 en_or_di>
-constexpr inline void SPI_Handler::spi_peripheral_control() {
+constexpr inline void spi_handler::spi_peripheral_control() {
     if (ENABLE == en_or_di) {
         spix_->CR1 |= SPI_CR1_SPE;
     } else {
@@ -226,7 +226,7 @@ constexpr inline void SPI_Handler::spi_peripheral_control() {
 
 
 template<u8 irq_number, u8 irq_priority>
-constexpr void SPI_Handler::spi_ir_prio_config() {
+constexpr void spi_handler::spi_ir_prio_config() {
         // 1. first lets find out the ipr register
         u8 iprx = irq_number >> 2;
         u8 iprx_section = irq_number % 4;
@@ -243,7 +243,7 @@ constexpr void SPI_Handler::spi_ir_prio_config() {
  *
  */
 template<u32 flag_name>
-constexpr inline u8 SPI_Handler::spi_get_SR_reg() {
+constexpr inline u8 spi_handler::spi_get_SR_reg() {
     return (spix_->SR & flag_name) ? SET : RESET;
 }
 
@@ -256,7 +256,7 @@ constexpr inline u8 SPI_Handler::spi_get_SR_reg() {
  *
  */
 template<u8 en_or_di>
-constexpr inline void SPI_Handler::spi_ssoe_config() {
+constexpr inline void spi_handler::spi_ssoe_config() {
     if (en_or_di == ENABLE) {
         spix_->CR2 |= SPI_CR2_SSOE;
     } else {
@@ -274,7 +274,7 @@ constexpr inline void SPI_Handler::spi_ssoe_config() {
  *
  */
 template<u8 en_or_di>
-constexpr inline void SPI_Handler::spi_ssi_config() {
+constexpr inline void spi_handler::spi_ssi_config() {
     if (en_or_di == ENABLE) {
         spix_->CR1 |= SPI_CR1_SSI;
     } else {
@@ -293,7 +293,7 @@ constexpr inline void SPI_Handler::spi_ssi_config() {
   *            @arg SPI_SR_BSY: Busy flag
   * @retval SET or RESET.
   */
-inline u8 SPI_Handler::spi_check_flag(const u32 __REG__, const u32 __FLAG__) {
+inline u8 spi_handler::spi_check_flag(const u32 __REG__, const u32 __FLAG__) {
     return ((__REG__ & __FLAG__) != RESET) ? SET : RESET;
 }
 #endif /* INC_STM32F446RE_SPI_DRIVER_H_ */

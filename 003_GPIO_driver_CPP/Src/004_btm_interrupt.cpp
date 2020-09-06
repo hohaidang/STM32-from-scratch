@@ -19,34 +19,32 @@
 
 #include "../driver/stm32f446re_gpio_driver.h"
 
-GPIO_Handler *led2;
-GPIO_Handler *user_botton;
+gpio_handler led2(GPIOA);
+gpio_handler usr_botton(GPIOC);
 
 
 int main(void)
 {
-	led2 = new GPIO_Handler(GPIOA,
-							GPIO_PIN_NO_5,
-							GPIO_MODE_OUT,
-							GPIO_SPEED_LOW,
-							GPIO_OP_TYPE_PP,
-							GPIO_NO_PUPD,
-							IRQ_Prio_NO_15);
+	led2.gpio_init(GPIO_PIN_NO_5,
+            GPIO_MODE_OUT,
+            GPIO_SPEED_LOW,
+            GPIO_OP_TYPE_PP,
+            GPIO_NO_PUPD,
+            IRQ_Prio_NO_15);
 
-	user_botton = new GPIO_Handler(GPIOC,
-								   GPIO_PIN_NO_13,
-								   GPIO_MODE_IT_FT,
-								   GPIO_SPEED_FAST,
-								   IRQ_Prio_NO_15);
-	led2->gpio_write_to_output_pin(1);
+	usr_botton.gpio_init(GPIO_PIN_NO_13,
+            GPIO_MODE_IT_FT,
+            GPIO_SPEED_FAST,
+            IRQ_Prio_NO_15);
+	led2.gpio_write_to_output_pin(1);
 	while(1);
 }
 
 extern "C" {
 	void EXTI15_10_IRQHandler(void) {
 		// handle the interrupt
-		led2->gpio_toggle_output_pin();
-		user_botton->gpio_irq_handling();
+		led2.gpio_toggle_output_pin();
+		usr_botton.gpio_irq_handling();
 	}
 }
 

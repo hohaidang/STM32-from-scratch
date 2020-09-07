@@ -9,6 +9,7 @@
 #define INC_CORE_CM4_H_
 
 #include <stdint.h>
+
 using u8 = uint8_t;
 using u32 = uint32_t;
 
@@ -69,14 +70,13 @@ typedef struct
   __vo u32 CPACR;                  /*!< Offset: 0x088 (R/W)  Coprocessor Access Control Register */
 } SCB_Reg_t;
 
+
+
+
 #define SCS_BASE            (0xE000E000UL)                            /*!< System Control Space Base Address */
 #define SysTick_BASEADDR    (SCS_BASE +  0x0010UL)                    /*!< SysTick Base Address */
 #define NVIC_BASEADDR       (SCS_BASE +  0x0100UL)                    /*!< NVIC Base Address */
 #define SCB_BASEADDR        (SCS_BASE +  0x0D00UL)                    /*!< System Control Block Base Address */
-
-#define SYSTICK             ( reinterpret_cast<SysTick_Reg_t *>  (SysTick_BASEADDR)  )   /*!< SysTick configuration struct */
-#define NVIC                ( reinterpret_cast<NVIC_Reg_t *>     (NVIC_BASEADDR)     )   /*!< NVIC configuration struct */
-#define SCB                 ( reinterpret_cast<SCB_Reg_t *>      (SCB_BASEADDR)      )   /*!< SCB configuration struct */
 
 /*
  * Bit position definitions SCK_SHPR
@@ -107,5 +107,13 @@ typedef struct
 // Cortex M4 just have 16 priorities NVIC (4 most significant bits)
 // https://community.arm.com/developer/ip-products/system/b/embedded-blog/posts/cutting-through-the-confusion-with-arm-cortex-m-interrupt-priorities
 #define NO_PR_BITS_IMPLEMENTED          4u
+
+#ifndef GOOGLE_UNIT_TEST
+
+#define SYSTICK             ( reinterpret_cast<SysTick_Reg_t *>  (SysTick_BASEADDR)  )   /*!< SysTick configuration struct */
+#define NVIC                ( reinterpret_cast<NVIC_Reg_t *>     (NVIC_BASEADDR)     )   /*!< NVIC configuration struct */
+#define SCB                 ( reinterpret_cast<SCB_Reg_t *>      (SCB_BASEADDR)      )   /*!< SCB configuration struct */
+
+#endif
 
 #endif /* INC_CORE_CM4_H_ */

@@ -7,9 +7,11 @@
 
 #ifndef INC_STM32F446RE_GPIO_DRIVER_H_
 #define INC_STM32F446RE_GPIO_DRIVER_H_
-
 #include "stm32f4xx.h"
 #include "core_cm4.h"
+#ifdef GOOGLE_UNIT_TEST
+#include  "../unit_test/unit_test_def.h"
+#endif
 
 // @GPIO_PIN_NUMS
 #define GPIO_PIN_NO_0           static_cast<u8>(0)
@@ -77,10 +79,7 @@ protected:
     GPIO_RegDef_t *gpiox_;
     u8 pin_number_;
 
-public:
-    gpio_handler() = default;                   
-    ~gpio_handler();
-
+public:             
     void gpio_init( GPIO_RegDef_t *GPIOx_addr,                 /*!<possible values from @GPIOx_ADDR>*/
                     u8 pin_number,                             /*!<possible values from @GPIO_PIN_NUMS>*/
                     u8 pin_mode,                               /*!<possible values from @GPIO_PIN_MODES>*/
@@ -97,21 +96,33 @@ public:
     void gpio_write_to_output_port(const u16 value);
     void gpio_toggle_output_pin();
     void gpio_irq_handling();
+    void gpio_deinit();
 
 private:
     /* peripheral clock setup */
     void gpio_peripheral_clk_control();
-    void gpio_deinit();
 
     /* IRQ Configuration and ISR Handling */
     void gpio_irq_config(const u8 irq_number, const u8 en_or_di);
     void gpio_irq_priority_config(const u8 irq_number, const u8 irq_priority);
     inline u8 get_irq_pin_num(u8 pin_number);
+    inline u8 gpio_baseAddr_to_code(GPIO_RegDef_t *Port);
 };
 
 inline u8 gpio_handler::get_irq_pin_num(u8 pin_number) {
     return (pin_number < 5) ? pin_number + 6 :
            (pin_number < 10) ? EXTI9_5_IRQn :
            (pin_number < 16) ? EXTI15_10_IRQn : 0;
+}
+
+inline u8 gpio_handler::gpio_baseAddr_to_code(GPIO_RegDef_t *Port) {
+    return ( (Port == GPIOA) ? 0x00 : \
+             (Port == GPIOB) ? 0x01 : \
+             (Port == GPIOC) ? 0x02 : \
+             (Port == GPIOD) ? 0x03 : \
+             (Port == GPIOE) ? 0x04 : \
+             (Port == GPIOF) ? 0x05 : \
+             (Port == GPIOG) ? 0x06 : \
+             (Port == GPIOH) ? 0x07 : 0x00 );
 }
 #endif /* INC_STM32F446RE_GPIO_DRIVER_H_ */

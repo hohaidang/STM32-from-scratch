@@ -9,14 +9,13 @@
 #define INC_SYS_TICK_DRIVER_H_
 
 #include "stm32f4xx.h"
-
+#include "core_cm4.h"
 
 
 class sys_tick {
 public:
-    sys_tick() = default;
-    ~sys_tick();
     void init();
+    void de_init();
     void delay_ms(const u32 period) const;
 };
 

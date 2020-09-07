@@ -8,6 +8,9 @@
 
 #include "sys_tick_driver.h"
 #include "core_cm4.h"
+#ifdef GOOGLE_UNIT_TEST
+#include "unit_test_def.h"
+#endif
 
 #define HSI_CLOCK                   (u32)(16000000UL) /* 16MHz */
 
@@ -51,7 +54,7 @@ void sys_tick::init() {
  * @return: None
  *
  */
-sys_tick::~sys_tick() {
+void sys_tick::de_init() {
     SYSTICK->CSR = 0; /* disable systick */
     SYSTICK->RVR = 0; /* reset reload register */
     SYSTICK->CSR &= ~(SYSTICK_CSR_CLKSOURCE | SYSTICK_CSR_TICKINT | SYSTICK_CSR_ENA);

@@ -1,6 +1,0 @@
-gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
-004_btm_interrupt.cpp:26:5:int main()	40	static
-004_btm_interrupt.cpp:46:7:void EXTI15_10_IRQHandler()	8	static
-004_btm_interrupt.cpp:51:1:void __static_initialization_and_destruction_0(int, int)	16	static
-004_btm_interrupt.cpp:51:1:cpp)	8	static
-004_btm_interrupt.cpp:51:1:cpp)	8	static

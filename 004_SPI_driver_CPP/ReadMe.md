@@ -38,8 +38,12 @@ VDD 3.3V
 
 GND
 
+# Google Unit Test Run:
+
+$ bazel run unit_test:ut_gpio
+
 ![Sensor_Board_Setup1](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/Board_Sensor_1.jpeg)
 ![Sensor_Board_Setup2](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/Board_Sensor_2.jpeg)
 ![Read_SensorData](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/ReadSensor.png)
-
 ![Read_SensorData](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/ReadSensor_2.png)
+![unit_test](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/UT_004.png)

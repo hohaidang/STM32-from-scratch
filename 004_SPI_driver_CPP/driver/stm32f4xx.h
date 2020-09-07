@@ -11,7 +11,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define DEBUG_EN
 #ifdef DEBUG_EN
 #include <iostream>
 #include <iomanip>
@@ -241,25 +240,6 @@ typedef struct {
 
 
 
-
-// @GPIOx_ADDR
-#define GPIOA                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOA_BASEADDR) )
-#define GPIOB                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOB_BASEADDR) )
-#define GPIOC                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOC_BASEADDR) )
-#define GPIOD                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOD_BASEADDR) )
-#define GPIOE                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOE_BASEADDR) )
-#define GPIOF                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOF_BASEADDR) )
-#define GPIOG                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOG_BASEADDR) )
-#define GPIOH                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOH_BASEADDR) )
-#define RCC                         ( reinterpret_cast<RCC_RegDef_t *>      (RCC_BASEADDR) )
-#define EXTI                        ( reinterpret_cast<EXTI_RegDef_t *>     (EXTI_BASEADDR) )
-#define SYSCFG                      ( reinterpret_cast<SYSCFG_RegDef_t *>   (SYSCFG_BASEADDR) )
-
-#define SPI1                        ( reinterpret_cast<SPI_RegDef_t *>      (SPI1_BASEADDR) )
-#define SPI2                        ( reinterpret_cast<SPI_RegDef_t *>      (SPI2_BASEADDR) )
-#define SPI3                        ( reinterpret_cast<SPI_RegDef_t *>      (SPI3_BASEADDR) )
-#define SPI4                        ( reinterpret_cast<SPI_RegDef_t *>      (SPI4_BASEADDR) )
-
 // RCC CLOCK ENABLE
 #define GPIOA_PCLK_EN()             (RCC->AHB1ENR |=  (1 << 0u))
 #define GPIOB_PCLK_EN()             (RCC->AHB1ENR |=  (1 << 1u))
@@ -417,15 +397,31 @@ typedef struct {
 
 #define SPI_SR_FRE_Pos                      (8U)
 
-inline uint8_t gpio_baseAddr_to_code(GPIO_RegDef_t *Port) {
-    return ( (Port == GPIOA) ? 0x00 : \
-             (Port == GPIOB) ? 0x01 : \
-             (Port == GPIOC) ? 0x02 : \
-             (Port == GPIOD) ? 0x03 : \
-             (Port == GPIOE) ? 0x04 : \
-             (Port == GPIOF) ? 0x05 : \
-             (Port == GPIOG) ? 0x06 : \
-             (Port == GPIOH) ? 0x07 : 0x00 );
-}
+//#include "core_cm4.h"
+
+#ifndef GOOGLE_UNIT_TEST
+// @GPIOx_ADDR
+#define GPIOA                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOA_BASEADDR) )
+#define GPIOB                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOB_BASEADDR) )
+#define GPIOC                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOC_BASEADDR) )
+#define GPIOD                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOD_BASEADDR) )
+#define GPIOE                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOE_BASEADDR) )
+#define GPIOF                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOF_BASEADDR) )
+#define GPIOG                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOG_BASEADDR) )
+#define GPIOH                       ( reinterpret_cast<GPIO_RegDef_t *>     (GPIOH_BASEADDR) )
+#define RCC                         ( reinterpret_cast<RCC_RegDef_t *>      (RCC_BASEADDR) )
+#define EXTI                        ( reinterpret_cast<EXTI_RegDef_t *>     (EXTI_BASEADDR) )
+#define SYSCFG                      ( reinterpret_cast<SYSCFG_RegDef_t *>   (SYSCFG_BASEADDR) )
+
+#define SPI1                        ( reinterpret_cast<SPI_RegDef_t *>      (SPI1_BASEADDR) )
+#define SPI2                        ( reinterpret_cast<SPI_RegDef_t *>      (SPI2_BASEADDR) )
+#define SPI3                        ( reinterpret_cast<SPI_RegDef_t *>      (SPI3_BASEADDR) )
+#define SPI4                        ( reinterpret_cast<SPI_RegDef_t *>      (SPI4_BASEADDR) )
+
+
+#else
+
+#endif
+
 
 #endif /* INC_STM3F407XX_H_ */

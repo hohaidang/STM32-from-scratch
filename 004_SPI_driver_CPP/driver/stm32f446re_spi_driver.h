@@ -13,6 +13,9 @@
 #include "core_cm4.h"
 #include <functional>
 #include <array>
+#ifdef GOOGLE_UNIT_TEST
+#include  "../unit_test/unit_test_def.h"
+#endif
 
 // @SPI_DeviceMode
 #define SPI_DEVICE_MODE_MASTER                  static_cast<u8>(1)   // choose SPI as Master

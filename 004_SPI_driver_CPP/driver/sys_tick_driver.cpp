@@ -8,6 +8,9 @@
 
 #include "sys_tick_driver.h"
 #include "core_cm4.h"
+#ifdef GOOGLE_UNIT_TEST
+#include "unit_test_def.h"
+#endif
 
 #define HSI_CLOCK                   (u32)(16000000UL) /* 16MHz */
 

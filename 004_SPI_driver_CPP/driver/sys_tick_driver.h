@@ -9,7 +9,7 @@
 #define INC_SYS_TICK_DRIVER_H_
 
 #include "stm32f4xx.h"
-
+#include "core_cm4.h"
 
 
 class sys_tick {

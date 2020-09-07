@@ -7,9 +7,11 @@
 
 #ifndef INC_STM32F446RE_GPIO_DRIVER_H_
 #define INC_STM32F446RE_GPIO_DRIVER_H_
-
 #include "stm32f4xx.h"
 #include "core_cm4.h"
+#ifdef GOOGLE_UNIT_TEST
+#include  "../unit_test/unit_test_def.h"
+#endif
 
 // @GPIO_PIN_NUMS
 #define GPIO_PIN_NO_0           static_cast<u8>(0)
@@ -104,11 +106,23 @@ private:
     void gpio_irq_config(const u8 irq_number, const u8 en_or_di);
     void gpio_irq_priority_config(const u8 irq_number, const u8 irq_priority);
     inline u8 get_irq_pin_num(u8 pin_number);
+    inline u8 gpio_baseAddr_to_code(GPIO_RegDef_t *Port);
 };
 
 inline u8 gpio_handler::get_irq_pin_num(u8 pin_number) {
     return (pin_number < 5) ? pin_number + 6 :
            (pin_number < 10) ? EXTI9_5_IRQn :
            (pin_number < 16) ? EXTI15_10_IRQn : 0;
+}
+
+inline u8 gpio_handler::gpio_baseAddr_to_code(GPIO_RegDef_t *Port) {
+    return ( (Port == GPIOA) ? 0x00 : \
+             (Port == GPIOB) ? 0x01 : \
+             (Port == GPIOC) ? 0x02 : \
+             (Port == GPIOD) ? 0x03 : \
+             (Port == GPIOE) ? 0x04 : \
+             (Port == GPIOF) ? 0x05 : \
+             (Port == GPIOG) ? 0x06 : \
+             (Port == GPIOH) ? 0x07 : 0x00 );
 }
 #endif /* INC_STM32F446RE_GPIO_DRIVER_H_ */

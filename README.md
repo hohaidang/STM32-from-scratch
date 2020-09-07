@@ -22,4 +22,7 @@ Almost projects are devloped in C++11.
 ![Read_SensorData](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/ReadSensor.png)
 
 # Google Unit Test Apply for Embedded System
+
+Checkout 004_SPI_driver_cpp for more details
+
 ![unit_test](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/UT_004.png)

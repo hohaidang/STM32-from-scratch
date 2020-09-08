@@ -295,5 +295,3 @@ void gpio_handler::gpio_irq_handling() {
         EXTI->PR |= (1UL << pin_number_);
     }
 }
-
-

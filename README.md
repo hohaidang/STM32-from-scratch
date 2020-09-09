@@ -23,4 +23,4 @@ Apply Google Unit Test and Test Coverage Report to Embedded project
 ![Sensor_Board_Setup1](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/Board_Sensor_1.jpeg)
 ![Read_SensorData](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/ReadSensor.png)
 ![unit_test](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/UT_004.png)
-![test_coverage](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/test_coverage.PNG)
+![test_coverage](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/test_coverage.png)

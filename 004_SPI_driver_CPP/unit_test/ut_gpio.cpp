@@ -1,5 +1,5 @@
 #include <array>
-#include "driver/stm32f446re_gpio_driver.h"
+#include "stm32f446re_gpio_driver.h"
 #include "gtest/gtest.h"
 
 #define GPIO_(n) GPIO##n
@@ -38,10 +38,10 @@ TEST_F(gpio_test, gpio_init) {
         EXPECT_EQ((gpiox->PUPDR >> (2 * pin_no)) & 0x03, GPIO_OP_TYPE_PP);
         EXPECT_EQ((gpiox->AFR[pin_no / 8] >> (4 * (pin_no % 8))) & 0xFF, GPIO_ALT_5); 
 
-        for (int i = 0; i < sizeof(NVIC->ISER) / sizeof(u32); ++i) {
+        for (size_t i = 0; i < sizeof(NVIC->ISER) / sizeof(u32); ++i) {
             EXPECT_EQ(NVIC->ISER[i], 0x00);
         }
-        for (int i = 0; i < sizeof(NVIC->IPR) / sizeof(u32); ++i) {
+        for (size_t i = 0; i < sizeof(NVIC->IPR) / sizeof(u32); ++i) {
             EXPECT_EQ(NVIC->IPR[i], 0x00);
         }
     }
@@ -73,9 +73,11 @@ TEST_F(gpio_test, gpio_init_irq) {
     EXPECT_EQ(NVIC->ISER[0], 0x800000);
     EXPECT_EQ(NVIC->ICER[0], 0x00);
     EXPECT_EQ(NVIC->IPR[5], 0xE0000000);
-    for(int i = 0; i < sizeof(NVIC->IPR) / sizeof(u32); ++i) {
+    for(size_t i = 0; i < sizeof(NVIC->IPR) / sizeof(u32); ++i) {
         if(i != 5) 
-            EXPECT_EQ(NVIC->IPR[i], 0x00);
+	{
+		EXPECT_EQ(NVIC->IPR[i], 0x00);
+	}            
     }
 }
 

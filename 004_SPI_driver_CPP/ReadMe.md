@@ -38,12 +38,28 @@ VDD 3.3V
 
 GND
 
-# Google Unit Test Run:
-
-$ bazel run unit_test:ut_gpio
 
 ![Sensor_Board_Setup1](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/Board_Sensor_1.jpeg)
 ![Sensor_Board_Setup2](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/Board_Sensor_2.jpeg)
 ![Read_SensorData](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/ReadSensor.png)
 ![Read_SensorData](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/ReadSensor_2.png)
+
+# Google Unit Test Run:
+
+$ bazel run unit_test:ut_gpio
+
+# Generate test coverage report
+
+Only available in Ubuntu (Tested 18.04)
+
+Copy stm32f446re_gpio_driver.cpp, stm32f446re_gpio_driver.h, core_cm4.h, stm32f4xx.h into unit_test folder
+
+$ bazel coverage unit_test:ut_gpio --combined_report=lcov
+
+Generate html file
+
+$ genhtml bazel-out/_coverage/_coverage_report.dat
+
+Open index-sort-l.html
+
 ![unit_test](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/UT_004.png)

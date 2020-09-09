@@ -58,7 +58,7 @@ $ bazel coverage unit_test:ut_gpio --combined_report=lcov
 
 Generate html file
 
-$ genhtml bazel-out/_coverage/_coverage_report.dat
+$ genhtml bazel-out/_coverage/_coverage_report.dat -o test_coverage
 
 Open index-sort-l.html
 

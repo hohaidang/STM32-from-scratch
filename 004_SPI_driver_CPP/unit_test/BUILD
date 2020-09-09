@@ -1,17 +1,18 @@
-cc_binary(
+#cc_binary(
+cc_test(
     name = "ut_gpio",
     srcs = ["ut_gpio.cpp"],
+    defines = ["GOOGLE_UNIT_TEST"], # compiler switch activate
     deps = [
-        "//driver:gpio_driver",
+        ":gpio_driver",
         "@googletest//:gtest_main",
     ],
 )
 
 cc_library(
-    name = "unit_test_def",
-    srcs = ["unit_test_def.cpp"],
-    hdrs = ["unit_test_def.h"],
-    defines = ["GOOGLE_UNIT_TEST"],
-    deps = ["//driver:core_cm4", "//driver:stm32f4xx"],
+    name = "gpio_driver",
+    srcs = ["stm32f446re_gpio_driver.cpp", "unit_test_def.cpp"],
+    hdrs = ["core_cm4.h", "stm32f4xx.h", "stm32f446re_gpio_driver.h", "unit_test_def.h"],
+    defines = ["GOOGLE_UNIT_TEST"], # compiler switch activate
     visibility = ["//visibility:public"],
 )

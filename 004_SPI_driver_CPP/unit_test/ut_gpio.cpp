@@ -150,7 +150,6 @@ TEST_F(gpio_test, gpio_init_irq_rft) {
 }
 
 TEST_F(gpio_test, gpio_init_irq_disable) {
-    u32 expected = 0;
     mc.gpio_init(GPIOB,
                  GPIO_PIN_NO_6,
                  GPIO_MODE_IT_FT,
@@ -297,9 +296,4 @@ TEST_F(gpio_test, gpio_irq_handling) {
     EXTI->PR = 0UL << GPIO_PIN_NO_13;
     mc.gpio_irq_handling();
     EXPECT_EQ((EXTI->PR >> GPIO_PIN_NO_13) & 0x01, 0x00);
-}
-
-int main(int argc, char **argv) {
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

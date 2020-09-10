@@ -1,4 +1,3 @@
-#cc_binary(
 cc_test(
     name = "ut_gpio",
     srcs = ["ut_gpio.cpp"],

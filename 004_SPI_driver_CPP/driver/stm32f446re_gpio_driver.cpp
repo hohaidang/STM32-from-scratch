@@ -245,9 +245,6 @@ void gpio_handler::gpio_irq_config(const uint8_t irq_number, const uint8_t en_or
         } else if (irq_number > 31 && irq_number < 64) {
             // program ISER1 register
             NVIC->ISER[1] |= (1 << (irq_number % 32));
-        } else if (irq_number >= 64 && irq_number < 96) {
-            // program ISER2 register
-            NVIC->ISER[2] |= (1 << (irq_number % 64));
         }
     } else {
         if (irq_number <= 31) {
@@ -256,9 +253,6 @@ void gpio_handler::gpio_irq_config(const uint8_t irq_number, const uint8_t en_or
         } else if (irq_number > 31 && irq_number < 64) {
             // program ICER1 register
             NVIC->ICER[1] |= (1 << (irq_number % 32));
-        } else if (irq_number >= 64 && irq_number < 96) {
-            // program ICE2 register
-            NVIC->ICER[2] |= (1 << (irq_number % 64));
         }
     }
 }

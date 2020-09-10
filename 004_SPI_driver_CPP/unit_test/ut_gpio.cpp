@@ -47,7 +47,41 @@ TEST_F(gpio_test, gpio_init) {
     }
 }
 
-TEST_F(gpio_test, gpio_init_irq) {
+TEST_F(gpio_test, gpio_init_irq_ft) {
+    u32 expected = 0;
+    mc.gpio_init(GPIOB,
+                 GPIO_PIN_NO_6,
+                 GPIO_MODE_IT_FT,
+                 GPIO_SPEED_FAST,
+                 GPIO_OP_TYPE_OD,
+                 GPIO_PIN_PD,
+                 IRQ_Prio_NO_14,
+                 GPIO_ALT_5);
+
+    expected |= (1U << 1U);
+    EXPECT_EQ(RCC->AHB1ENR, expected);
+    
+    EXPECT_EQ(GPIOB->MODER, 0x00);
+    EXPECT_EQ(EXTI->FTSR, 0x40); /* no interrupt configure */
+    EXPECT_EQ(EXTI->RTSR, 0x00);
+    expected = 0x2000;
+    EXPECT_EQ(GPIOB->OSPEEDR, expected);
+    EXPECT_EQ(GPIOB->OTYPER, 0x40);
+    EXPECT_EQ(GPIOB->PUPDR, 0x2000);
+    EXPECT_EQ(GPIOB->AFR[0], 0x00);
+    EXPECT_EQ(GPIOB->AFR[1], 0x00);
+    EXPECT_EQ(NVIC->ISER[0], 0x800000);
+    EXPECT_EQ(NVIC->ICER[0], 0x00);
+    EXPECT_EQ(NVIC->IPR[5], 0xE0000000);
+    for(size_t i = 0; i < sizeof(NVIC->IPR) / sizeof(u32); ++i) {
+        if(i != 5) 
+	    {
+		    EXPECT_EQ(NVIC->IPR[i], 0x00);
+	    }            
+    }
+}
+
+TEST_F(gpio_test, gpio_init_irq_rt) {
     u32 expected = 0;
     mc.gpio_init(GPIOB,
                  GPIO_PIN_NO_6,
@@ -75,23 +109,95 @@ TEST_F(gpio_test, gpio_init_irq) {
     EXPECT_EQ(NVIC->IPR[5], 0xE0000000);
     for(size_t i = 0; i < sizeof(NVIC->IPR) / sizeof(u32); ++i) {
         if(i != 5) 
-	{
-		EXPECT_EQ(NVIC->IPR[i], 0x00);
-	}            
+	    {
+		    EXPECT_EQ(NVIC->IPR[i], 0x00);
+	    }            
     }
 }
 
-TEST_F(gpio_test, gpio_de_init) {
-    mc.gpio_init(GPIOD,
+TEST_F(gpio_test, gpio_init_irq_rft) {
+    u32 expected = 0;
+    mc.gpio_init(GPIOB,
                  GPIO_PIN_NO_6,
-                 GPIO_MODE_IT_RT,
+                 GPIO_MODE_IT_RFT,
                  GPIO_SPEED_FAST,
                  GPIO_OP_TYPE_OD,
                  GPIO_PIN_PD,
                  IRQ_Prio_NO_14,
                  GPIO_ALT_5);
-    mc.gpio_deinit();
-    EXPECT_EQ(RCC->AHB1RSTR, 0x00);
+
+    expected |= (1U << 1U);
+    EXPECT_EQ(RCC->AHB1ENR, expected);
+    
+    EXPECT_EQ(GPIOB->MODER, 0x00);
+    EXPECT_EQ(EXTI->FTSR, 0x40); /* no interrupt configure */
+    EXPECT_EQ(EXTI->RTSR, 0x40);
+    expected = 0x2000;
+    EXPECT_EQ(GPIOB->OSPEEDR, expected);
+    EXPECT_EQ(GPIOB->OTYPER, 0x40);
+    EXPECT_EQ(GPIOB->PUPDR, 0x2000);
+    EXPECT_EQ(GPIOB->AFR[0], 0x00);
+    EXPECT_EQ(GPIOB->AFR[1], 0x00);
+    EXPECT_EQ(NVIC->ISER[0], 0x800000);
+    EXPECT_EQ(NVIC->ICER[0], 0x00);
+    EXPECT_EQ(NVIC->IPR[5], 0xE0000000);
+    for(size_t i = 0; i < sizeof(NVIC->IPR) / sizeof(u32); ++i) {
+        if(i != 5) 
+	    {
+		    EXPECT_EQ(NVIC->IPR[i], 0x00);
+	    }            
+    }
+}
+
+TEST_F(gpio_test, gpio_init_irq_disable) {
+    u32 expected = 0;
+    mc.gpio_init(GPIOB,
+                 GPIO_PIN_NO_6,
+                 GPIO_MODE_IT_FT,
+                 GPIO_SPEED_FAST,
+                 GPIO_OP_TYPE_OD,
+                 GPIO_PIN_PD,
+                 IRQ_Prio_NO_14,
+                 GPIO_ALT_5);
+
+    EXPECT_EQ(NVIC->ISER[0], 0x800000);
+    EXPECT_EQ(NVIC->ICER[0], 0x00);
+    mc.gpio_irq_config(23, DISABLE);
+    EXPECT_EQ(NVIC->ISER[0], 0x800000);
+    EXPECT_EQ(NVIC->ICER[0], 0x800000);
+
+    memset(&reg, 0, sizeof(reg));
+    mc.gpio_init(GPIOB,
+                 GPIO_PIN_NO_15,
+                 GPIO_MODE_IT_FT,
+                 GPIO_SPEED_FAST,
+                 GPIO_OP_TYPE_OD,
+                 GPIO_PIN_PD,
+                 IRQ_Prio_NO_14,
+                 GPIO_ALT_5);
+    EXPECT_EQ(NVIC->ISER[1], 0x100);
+    EXPECT_EQ(NVIC->ICER[1], 0x000);
+    mc.gpio_irq_config(40, DISABLE);
+    EXPECT_EQ(NVIC->ISER[1], 0x100);
+    EXPECT_EQ(NVIC->ICER[1], 0x100);
+}
+
+TEST_F(gpio_test, gpio_de_init)
+{
+    for (int i = 0; i < 8; ++i)
+    {
+        GPIO_RegDef_t *gpiox = GPIO_(A + i);
+        mc.gpio_init(gpiox,
+                       GPIO_PIN_NO_6,
+                       GPIO_MODE_IT_RT,
+                       GPIO_SPEED_FAST,
+                       GPIO_OP_TYPE_OD,
+                       GPIO_PIN_PD,
+                       IRQ_Prio_NO_14,
+                       GPIO_ALT_5);
+        mc.gpio_deinit();
+        EXPECT_EQ(RCC->AHB1RSTR, 0x00 << i);
+    }
 }
 
 TEST_F(gpio_test, gpio_read_from_input_pin) {

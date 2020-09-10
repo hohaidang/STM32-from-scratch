@@ -10,7 +10,7 @@
 #include "stm32f4xx.h"
 #include "core_cm4.h"
 #ifdef GOOGLE_UNIT_TEST
-#include  "unit_test_def.h"
+#include  "../unit_test/unit_test_def.h"
 #endif
 
 // @GPIO_PIN_NUMS
@@ -97,13 +97,13 @@ public:
     void gpio_toggle_output_pin();
     void gpio_irq_handling();
     void gpio_deinit();
+    void gpio_irq_config(const u8 irq_number, const u8 en_or_di);
 
 private:
     /* peripheral clock setup */
     void gpio_peripheral_clk_control();
 
     /* IRQ Configuration and ISR Handling */
-    void gpio_irq_config(const u8 irq_number, const u8 en_or_di);
     void gpio_irq_priority_config(const u8 irq_number, const u8 irq_priority);
     inline u8 get_irq_pin_num(u8 pin_number);
     inline u8 gpio_baseAddr_to_code(GPIO_RegDef_t *Port);

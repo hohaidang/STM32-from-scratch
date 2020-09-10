@@ -9,9 +9,6 @@
 #define INC_STM32F446RE_GPIO_DRIVER_H_
 #include "stm32f4xx.h"
 #include "core_cm4.h"
-#ifdef GOOGLE_UNIT_TEST
-#include  "../unit_test/unit_test_def.h"
-#endif
 
 // @GPIO_PIN_NUMS
 #define GPIO_PIN_NO_0           static_cast<u8>(0)

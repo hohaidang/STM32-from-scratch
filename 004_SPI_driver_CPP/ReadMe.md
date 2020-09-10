@@ -66,7 +66,7 @@ Only available in Ubuntu (Tested 18.04)
 
 Copy stm32f446re_gpio_driver.cpp, stm32f446re_gpio_driver.h, core_cm4.h, stm32f4xx.h into unit_test folder
 
-$ bazel coverage unit_test:ut_gpio --combined_report=lcov
+$ bazel coverage //unit_test/... --combined_report=lcov
 
 Generate html file
 

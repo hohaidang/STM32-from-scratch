@@ -342,7 +342,7 @@ typedef struct {
 #define SPI_CR1_BIDIOE          (SPI_CR1_BIDIOE_Msk)
 
 #define SPI_CR1_BIDIMODE_Pos    (15U)
-#define SPI_CR1_BIDIMODE_Msk    (static_cast<u32>(1UL << SPI_CR1_BIDIOE_Pos))
+#define SPI_CR1_BIDIMODE_Msk    (static_cast<u32>(1UL << SPI_CR1_BIDIMODE_Pos))
 #define SPI_CR1_BIDIMODE        (SPI_CR1_BIDIMODE_Msk)
 
 #define SPI_CR1_SPE_MSK     (1U << SPI_CR1_SPE)

@@ -5,20 +5,15 @@
  *      Author: hohaidang
  */
 
-
 #include "sys_tick_driver.h"
 #include "core_cm4.h"
-#ifdef GOOGLE_UNIT_TEST
-#include "unit_test_def.h"
-#endif
 
-#define HSI_CLOCK                   (u32)(16000000UL) /* 16MHz */
+#define HSI_CLOCK (u32)(16000000UL) /* 16MHz */
 
 static volatile int32_t utick = 0x00000000UL;
 
-template <u32 Clk_Source>
-struct compute_reload_tick {
-    enum { value = static_cast<u32>((Clk_Source / 1000U) - 1U) };
+template <u32 Clk_Source> struct compute_reload_tick {
+  enum { value = static_cast<u32>((Clk_Source / 1000U) - 1U) };
 };
 
 /*!
@@ -31,19 +26,22 @@ struct compute_reload_tick {
  */
 
 void sys_tick::init() {
-    SYSTICK->CSR = 0; /* disable systick */
+  SYSTICK->CSR = 0; /* disable systick */
 
-    SYSTICK->RVR = compute_reload_tick<HSI_CLOCK>::value; /* set reload register */
+  SYSTICK->RVR =
+      compute_reload_tick<HSI_CLOCK>::value; /* set reload register */
 
-    SCB->SHPR[2] |= static_cast<u32>(IRQ_Prio_NO_0 << SCB_SHPR_SYSTICK_Pos); /* Set priority 0 for system tick */
+  /* Set priority 0 for system tick */
+  SCB->SHPR[2] |= static_cast<u32>(IRQ_Prio_NO_0 << SCB_SHPR_SYSTICK_Pos);
 
-    // Reset Systick counter value
-    SYSTICK->CVR = 0;
+  // Reset Systick counter value
+  SYSTICK->CVR = 0;
 
-    /* Select processor clock
-     * Enable System Tick interrupt
-     */
-    SYSTICK->CSR |= (SYSTICK_CSR_CLKSOURCE | SYSTICK_CSR_TICKINT | SYSTICK_CSR_ENA);
+  /* Select processor clock
+   * Enable System Tick interrupt
+   */
+  SYSTICK->CSR |=
+      (SYSTICK_CSR_CLKSOURCE | SYSTICK_CSR_TICKINT | SYSTICK_CSR_ENA);
 }
 
 /*!
@@ -55,9 +53,10 @@ void sys_tick::init() {
  *
  */
 void sys_tick::de_init() {
-    SYSTICK->CSR = 0; /* disable systick */
-    SYSTICK->RVR = 0; /* reset reload register */
-    SYSTICK->CSR &= ~(SYSTICK_CSR_CLKSOURCE | SYSTICK_CSR_TICKINT | SYSTICK_CSR_ENA);
+  SYSTICK->CSR = 0; /* disable systick */
+  SYSTICK->RVR = 0; /* reset reload register */
+  SYSTICK->CSR &=
+      ~(SYSTICK_CSR_CLKSOURCE | SYSTICK_CSR_TICKINT | SYSTICK_CSR_ENA);
 }
 
 /*!
@@ -69,12 +68,14 @@ void sys_tick::de_init() {
  *
  */
 void sys_tick::delay_ms(const u32 period) const {
-    utick = period;
-    while(utick != RESET);
+  utick = period;
+  while (utick != RESET)
+    ;
 }
 
 /*!
- * @brief: Interrupt service routine for system tick. This API will be triggered every time counter count from 1 to 0. (1ms)
+ * @brief: Interrupt service routine for system tick. This API will be triggered
+ * every time counter count from 1 to 0. (1ms)
  *
  * @param: None
  *
@@ -82,7 +83,5 @@ void sys_tick::delay_ms(const u32 period) const {
  *
  */
 extern "C" {
-    void SysTick_Handler(void) {
-        utick = (utick > 0) ? (utick - 1u) : (utick);
-    }
+void SysTick_Handler(void) { utick = (utick > 0) ? (utick - 1u) : (utick); }
 }

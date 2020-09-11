@@ -74,4 +74,4 @@ $ genhtml bazel-out/_coverage/_coverage_report.dat -o test_coverage
 
 Open index-sort-l.html
 
-![test_coverage](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/test_coverage_004.png)
+![test_coverage](https://github.com/hohaidang/STM32-from-scratch/blob/master/Documents/Images/test_coverage.PNG)

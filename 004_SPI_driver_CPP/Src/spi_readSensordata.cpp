@@ -16,17 +16,17 @@
  *
  ******************************************************************************
  */
-#include "../driver/stm32f4xx.h"
-#include "../driver/stm32f446re_spi_driver.h"
 #include "../driver/bme280_driver.h"
+#include "../driver/stm32f446re_spi_driver.h"
+#include "../driver/stm32f4xx.h"
 #include "../driver/sys_tick_driver.h"
 #include <array>
-using namespace std;
 
+using namespace std;
 
 void InitilizePeripheral(void);
 void user_delay_us(u32);
-u8 user_spi_read (const u8, u8 *, u32);
+u8 user_spi_read(const u8, u8 *, u32);
 u8 user_spi_write(const u8, const u8 *, u32);
 void user_delay_ms(u32 period);
 
@@ -34,102 +34,88 @@ sys_tick system_tick;
 spi_handler spi1;
 bme_sensor_handler bme280(user_spi_read, user_spi_write, user_delay_ms);
 
-int main(void)
-{
-    bme280_settings temp = { 0 };
-    InitilizePeripheral();
+int main(void) {
+  bme280_settings temp = {0};
+  InitilizePeripheral();
 
-    if (bme280.get_status() == SENSOR_OK) {
-        bme280.setSensorMode(BME280_NORMAL_MODE);
+  if (bme280.get_status() == SENSOR_OK) {
+    bme280.setSensorMode(BME280_NORMAL_MODE);
 
-        bme280_settings settings;
-        settings.osr_h = 0x07; // x16
-        settings.osr_t = 0x07; // x16
-        settings.osr_p = 0x07; // x16
-        bme280.set_sensor_settings(settings);
-        bme280.get_sensor_settings(temp);
-        while(1) {
-            // get sensor data
-            bme280.get_sensor_data();
+    bme280_settings settings;
+    settings.osr_h = 0x07; // x16
+    settings.osr_t = 0x07; // x16
+    settings.osr_p = 0x07; // x16
+    bme280.set_sensor_settings(settings);
+    bme280.get_sensor_settings(temp);
+    while (1) {
+      // get sensor data
+      bme280.get_sensor_data();
 
 #ifdef DEBUG_EN
-			bme280.print_sensor_data();
+      bme280.print_sensor_data();
 #endif
-			system_tick.delay_ms(1000);
-       }
+      system_tick.delay_ms(1000);
     }
-    else {
+  } else {
 #ifdef DEBUG_EN
-    	cout << "Sensor Init failed. Please check again hardware connection pins" << endl;
+    cout << "Sensor Init failed. Please check again hardware connection pins"
+         << endl;
 #endif
-    }
+  }
 
-
-   return 0;
+  return 0;
 }
-
 
 void InitilizePeripheral(void) {
-    // HSI Clock 16 MHz
-    system_tick.init();
-    spi1.spi_init(SPI1,
-                  user_delay_ms,
-                  SPI_DEVICE_MODE_MASTER,
-                  SPI_BUS_CONFIG_FD,
-                  SPI_SCLK_SPEED_DIV2,
-                  SPI_DFF_8BITS,
-                  SPI_CPOL_LOW,
-                  SPI_CPHA_LOW,
-                  SPI_SSM_EN);
+  // HSI Clock 16 MHz
+  system_tick.init();
+  spi1.spi_init(SPI1, user_delay_ms, SPI_DEVICE_MODE_MASTER, SPI_BUS_CONFIG_FD,
+                SPI_SCLK_SPEED_DIV2, SPI_DFF_8BITS, SPI_CPOL_LOW, SPI_CPHA_LOW,
+                SPI_SSM_EN);
 
+  spi1.spi_ir_config<SPI1_IRQn, ENABLE>();
+  spi1.spi_ir_prio_config<SPI1_IRQn, IRQ_Prio_NO_15>();
+  spi1.spi_init_nss_sw(GPIOB, GPIO_PIN_NO_6);
+  spi1.spi_nss_.gpio_write_to_output_pin(SET);
 
-    spi1.spi_ir_config<SPI1_IRQn, ENABLE>();
-    spi1.spi_ir_prio_config<SPI1_IRQn, IRQ_Prio_NO_15>();
-    spi1.spi_init_nss_sw(GPIOB, GPIO_PIN_NO_6);
-    spi1.spi_nss_.gpio_write_to_output_pin(SET);
-
-    bme280.init_BME280();
+  bme280.init_BME280();
 }
 
-void user_delay_ms(u32 period)
-{
-    system_tick.delay_ms(period);
-}
+void user_delay_ms(u32 period) { system_tick.delay_ms(period); }
 
-u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
-   array<u8, BME280_MAX_SIZE_WR> txBuffer{};
-   array<u8, BME280_MAX_SIZE_WR> rxBuffer{};
+u8 user_spi_read(const u8 reg_addr, u8 *reg_data, u32 len) {
+  array<u8, BME280_MAX_SIZE_WR> txBuffer{};
+  array<u8, BME280_MAX_SIZE_WR> rxBuffer{};
 
-   txBuffer[0] = reg_addr;
+  txBuffer[0] = reg_addr;
 
-   spi1.spi_nss_.gpio_write_to_output_pin(RESET);
+  spi1.spi_nss_.gpio_write_to_output_pin(RESET);
 
-   spi1.spi_transmit_receive_data_it(txBuffer.data(), rxBuffer.data(), len + 1);
+  spi1.spi_transmit_receive_data_it(txBuffer.data(), rxBuffer.data(), len + 1);
 
-   spi1.spi_nss_.gpio_write_to_output_pin(SET);
-   // copy to reg_data
-   for(u32 i = 0; i < len; ++i) {
-       reg_data[i] = rxBuffer[i + 1];
-   }
-   return 0;
+  spi1.spi_nss_.gpio_write_to_output_pin(SET);
+  // copy to reg_data
+  for (u32 i = 0; i < len; ++i) {
+    reg_data[i] = rxBuffer[i + 1];
+  }
+  return 0;
 }
 
 u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
-   array<u8, BME280_MAX_SIZE_WR> txBuffer{};
-   txBuffer[0] = reg_addr;
-   for(u32 i = 0; i < len; ++i) {
-       txBuffer[i + 1] = reg_data[i];
-   }
+  array<u8, BME280_MAX_SIZE_WR> txBuffer{};
+  txBuffer[0] = reg_addr;
+  for (u32 i = 0; i < len; ++i) {
+    txBuffer[i + 1] = reg_data[i];
+  }
 
-   spi1.spi_nss_.gpio_write_to_output_pin(RESET);
+  spi1.spi_nss_.gpio_write_to_output_pin(RESET);
 
-   spi1.spi_transmit_data_it(txBuffer.data(), len + 1);
+  spi1.spi_transmit_data_it(txBuffer.data(), len + 1);
 
-   spi1.spi_nss_.gpio_write_to_output_pin(SET);
+  spi1.spi_nss_.gpio_write_to_output_pin(SET);
 
-   return 0;
+  return 0;
 }
-
 
 // u8 user_spi_read (const u8 reg_addr, u8 *reg_data, u32 len) {
 //     array<u8, BME280_MAX_SIZE_WR> txBuffer = {};
@@ -139,7 +125,8 @@ u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
 
 //     spi1.spi_nss_.gpio_write_to_output_pin(RESET);
 
-//     spi1.spi_transmit_receive_data(txBuffer.data(), rxBuffer.data(), len + 1);
+//     spi1.spi_transmit_receive_data(txBuffer.data(), rxBuffer.data(), len +
+//     1);
 
 //     spi1.spi_nss_.gpio_write_to_output_pin(SET);
 
@@ -166,8 +153,8 @@ u8 user_spi_write(const u8 reg_addr, const u8 *reg_data, u32 len) {
 // }
 
 extern "C" {
-    void SPI1_IRQHandler(void) {
-        // handle the interrupt
-        spi1.spi_irq_handling();
-    }
+void SPI1_IRQHandler(void) {
+  // handle the interrupt
+  spi1.spi_irq_handling();
+}
 }

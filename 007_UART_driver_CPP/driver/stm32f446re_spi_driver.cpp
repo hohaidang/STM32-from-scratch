@@ -317,7 +317,7 @@ void spi_handler::spi_transmit_data_it(u8 *p_tx_buf, const u32 len) {
     spi_peripheral_control<ENABLE>();
   }
 
-  while (handle_.tx_state != SPI_READY or handle_.rx_state != SPI_READY)
+  while (handle_.tx_state != SPI_READY || handle_.rx_state != SPI_READY)
     ;
 
   /* 1. Pass pointer to tx buffer and assign length of transmission */
@@ -402,7 +402,7 @@ void spi_handler::spi_transmit_receive_data_it(u8 *p_tx_buf, u8 *p_rx_buf,
   /* Enable TXEIE control bit to get interrupt whenever TXE flag is set in SR */
   spix_->CR2 |= (SPI_CR2_RXNEIE | SPI_CR2_ERRIE | SPI_CR2_TXEIE);
 
-  while (handle_.rx_state != SPI_READY or handle_.tx_state != SPI_READY)
+  while (handle_.rx_state != SPI_READY || handle_.tx_state != SPI_READY)
     ; /* w8 until SPI transmit completed*/
 }
 
@@ -426,22 +426,22 @@ void spi_handler::spi_irq_handling() {
   /* Receive Interrupt
    * If overrun occurs, transmission may on going or overrun's previous
    * transmission*/
-  if (spi_check_flag(SR_reg, SPI_SR_RXNE) and
-      spi_check_flag(CR2_reg, SPI_CR2_RXNEIE) and
+  if (spi_check_flag(SR_reg, SPI_SR_RXNE) &&
+      spi_check_flag(CR2_reg, SPI_CR2_RXNEIE) &&
       !spi_check_flag(SR_reg, SPI_SR_OVR)) {
     handle_.receive_fnc();
     return;
   }
 
   /* Transmit Interrupt */
-  if (spi_check_flag(SR_reg, SPI_SR_TXE) and
+  if (spi_check_flag(SR_reg, SPI_SR_TXE) &&
       spi_check_flag(CR2_reg, SPI_CR2_TXEIE)) {
     handle_.transmit_fnc();
     return;
   }
 
   /* Overrun Interrupt */
-  if (spi_check_flag(SR_reg, SPI_SR_OVR) and
+  if (spi_check_flag(SR_reg, SPI_SR_OVR) &&
       spi_check_flag(CR2_reg, SPI_CR2_ERRIE)) {
     spi_ovr_err_interrupt_handle();
     return;

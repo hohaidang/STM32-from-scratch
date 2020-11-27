@@ -67,12 +67,11 @@ void spi_handler::spi_gpios_init() {
  * @return None
  *
  */
-void spi_handler::spi_init(SPI_RegDef_t *spix_addr,
-                           std::function<void(int)> delay_fnc, u8 device_mode,
-                           u8 bus_config, u8 sclk_speed, u8 dff, u8 cpol,
-                           u8 cpha, u8 ssm) {
+void spi_handler::spi_init(SPI_RegDef_t *spix_addr, void (*delay_fnc_ptr)(u32),
+                           u8 device_mode, u8 bus_config, u8 sclk_speed, u8 dff,
+                           u8 cpol, u8 cpha, u8 ssm) {
   spix_ = spix_addr;
-  handle_.delay_fnc = delay_fnc;
+  delay_func_ = delay_fnc_ptr;
   config_ = {device_mode, bus_config, sclk_speed, dff, cpol, cpha, ssm};
   spi_gpios_init();
   spi_peripheral_clock_init();
@@ -269,7 +268,7 @@ void spi_handler::spi_transmit_receive_data(const u8 *p_tx_buffer,
       if (init_len == len) {
         /* First transmission is sensor's address Should delay if MCU run so
          * fast, slave cannot load data to shift register on time*/
-        handle_.delay_fnc(1);
+        delay_func_(1);
       }
       len -= 2;
       (u16 *)p_tx_buffer++;
@@ -278,7 +277,7 @@ void spi_handler::spi_transmit_receive_data(const u8 *p_tx_buffer,
       if (init_len == len) {
         /* First transmission is sensor's address Should delay if MCU run so
          * fast, slave cannot load data to shift register on time*/
-        handle_.delay_fnc(1);
+        delay_func_(1);
       }
       len -= 1;
       p_tx_buffer++;
@@ -329,9 +328,9 @@ void spi_handler::spi_transmit_data_it(u8 *p_tx_buf, const u32 len) {
 
   if (spix_->CR1 & SPI_CR1_DFF) {
     /* Not Support 16bit yet */
-    handle_.transmit_fnc = nullptr;
+    transmit_func_ = nullptr;
   } else {
-    handle_.transmit_fnc = [=]() { this->spi_tx_8bit_it(); };
+    transmit_func_ = &spi_handler::spi_tx_8bit_it;
   }
 
   // 2. Mark the SPI state as busy in transmission so that no other code
@@ -386,11 +385,11 @@ void spi_handler::spi_transmit_receive_data_it(u8 *p_tx_buf, u8 *p_rx_buf,
 
   if (spix_->CR1 & SPI_CR1_DFF) {
     /* Not Support 16bit yet */
-    handle_.transmit_fnc = nullptr;
-    handle_.receive_fnc = nullptr;
+    transmit_func_ = nullptr;
+    receive_func_ = nullptr;
   } else {
-    handle_.transmit_fnc = [=]() { this->spi_tx_8bit_it(); };
-    handle_.receive_fnc = [=]() { this->spi_rx_8bit_it(); };
+    transmit_func_ = &spi_handler::spi_tx_8bit_it;
+    receive_func_ = &spi_handler::spi_rx_8bit_it;
   }
 
   /* Mark the SPI state as busy in transmission so that no other code
@@ -429,14 +428,14 @@ void spi_handler::spi_irq_handling() {
   if (spi_check_flag(SR_reg, SPI_SR_RXNE) and
       spi_check_flag(CR2_reg, SPI_CR2_RXNEIE) and
       !spi_check_flag(SR_reg, SPI_SR_OVR)) {
-    handle_.receive_fnc();
+    (this->*receive_func_)();
     return;
   }
 
   /* Transmit Interrupt */
   if (spi_check_flag(SR_reg, SPI_SR_TXE) and
       spi_check_flag(CR2_reg, SPI_CR2_TXEIE)) {
-    handle_.transmit_fnc();
+    (this->*transmit_func_)();
     return;
   }
 
@@ -463,7 +462,7 @@ void spi_handler::spi_tx_8bit_it() {
   if (handle_.tx_len == handle_.init_tx_len) {
     /* First transmission is sensor's address Should delay if MCU run so fast,
      * slave cannot load data to shift register on time*/
-    handle_.delay_fnc(1);
+    delay_func_(1);
   }
   --handle_.tx_len;
 

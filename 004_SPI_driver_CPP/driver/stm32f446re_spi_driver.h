@@ -11,8 +11,6 @@
 #include "core_cm4.h"
 #include "stm32f446re_gpio_driver.h"
 #include "stm32f4xx.h"
-#include <array>
-#include <functional>
 
 // @SPI_DeviceMode
 #define SPI_DEVICE_MODE_MASTER static_cast<u8>(1) // choose SPI as Master
@@ -93,35 +91,20 @@ typedef struct {
 /* Function pointer for transmission data in interrupt */
 /* Function pointer for delay */
 typedef struct {
-  volatile u8 *tx_buf;
-  volatile u8 *rx_buf;
   volatile u32 tx_len;
   volatile u32 init_tx_len;
   volatile u32 rx_len;
+  volatile u8 *tx_buf;
+  volatile u8 *rx_buf;
   volatile u8 tx_state;
   volatile u8 rx_state;
-  std::function<void(void)> receive_fnc;
-  std::function<void(void)> transmit_fnc;
-  std::function<void(u32)> delay_fnc;
 } spi_handle_t;
 
 void SPI_ApplicationEventCallback(spi_handle_t *pSPIHandle, u8 AppEv);
 
 class spi_handler {
-protected:
-  volatile SPI_RegDef_t
-      *spix_; /*!< This holds the base address of SPIx(x:0,1,2) peripheral >*/
-  spi_config_t config_ = {};
-  spi_handle_t handle_ = {};
-  gpio_handler spi_sck_;
-  gpio_handler spi_mosi_;
-  gpio_handler spi_miso_;
-
 public:
-  gpio_handler spi_nss_;
-
-public:
-  void spi_init(SPI_RegDef_t *spix_addr, std::function<void(int)> delay_fnc,
+  void spi_init(SPI_RegDef_t *spix_addr, void (*delay_fnc_ptr)(u32),
                 u8 device_mode, u8 bus_config, u8 sclk_speed, u8 dff, u8 cpol,
                 u8 cpha, u8 ssm);
   void spi_deinit();
@@ -162,6 +145,21 @@ private:
   template <u8 en_or_di> constexpr inline void spi_ssoe_config();
   template <u8 en_or_di> constexpr inline void spi_peripheral_control();
   inline u8 spi_check_flag(const u32 __REG__, u32 __FLAG__);
+
+protected:
+  /*!< This holds the base address of SPIx(x:0,1,2) peripheral >*/
+  volatile SPI_RegDef_t *spix_;
+  spi_config_t config_ = {};
+  spi_handle_t handle_ = {};
+  gpio_handler spi_sck_;
+  gpio_handler spi_mosi_;
+  gpio_handler spi_miso_;
+  void (spi_handler::*transmit_func_)(void);
+  void (spi_handler::*receive_func_)(void);
+  void (*delay_func_)(u32);
+
+public:
+  gpio_handler spi_nss_;
 };
 
 template <u8 irq_number, u8 en_or_di>

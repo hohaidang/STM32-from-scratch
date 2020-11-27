@@ -17,12 +17,15 @@
  ******************************************************************************
  */
 
-#if !defined(__SOFT_FP__) && defined(__ARM_FP)
-  #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
-#endif
+#include "../driver/stm32f446re_uart_driver.h"
 
-int main(void)
-{
-    /* Loop forever */
-	for(;;);
+uart_handler uart4(UART4, UART_MODE_TXRX, UART_STD_BAUD_115200, UART_STOPBIT_1,
+                   UART_WORDLEN_8BITS, UART_PARITY_DISABLE,
+                   UART_HW_FLOW_CTRL_NONE);
+
+int main(void) {
+  uart4.init();
+  /* Loop forever */
+  for (;;)
+    ;
 }
